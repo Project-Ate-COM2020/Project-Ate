@@ -1,0 +1,15 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
+
+# Django
+db.sqlite3
+*.log
+
+# VS Code
+.vscode/
