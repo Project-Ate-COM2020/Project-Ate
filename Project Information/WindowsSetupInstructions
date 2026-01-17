@@ -1,0 +1,129 @@
+Unfinished as of 17/01/2026
+
+WINDOWS
+
+Introduction:
+I find the best way to think about this project is as 2 seperate servers 
+- a backend server that acts as a really basic API containing all business logic and serves this to path endpoints
+- a frontend server that the user will interact with, this has the nice looking html/css/js and will communicate with our backend API to fetch business logic
+This means we need to set up each server differently, in the github I have separated each one into a different server (frontend/backend) for readability, this guide will take 
+you through cloning the github, installing dependencies and how to run the servers locally. At the end it will also explain how to develop properly
+e.g: when to git fetch and git pull and how to test locally
+
+STEP 1:
+  Clone Repository (Prerequisites: Git)
+  
+  1) open VS Code
+  2) Clone repository with the following command
+  > git clone https://github.com/JamesAlexanderC/Project-Ate.git
+  3) fill out your GitHub username + password for verification when prompted
+  4) reopen vs code inside the folder that has been made
+
+STEP 2:
+  Django backend setup (Prerequisites: Python 3.11)
+  
+  Step 0, 0.1, 0.2 show you how to set up and use a virtual environment (provides a dedicated python interpreter and packages you install on it are isolated to the venv),
+  these steps are fully optional and down to preference, if you follow them make sure you activate and deactivate the venv as directed to avoid errors and version conflicts.
+  
+  0) Set up python virtual environment for Django backend framework and libraries with the following command 
+  > python -m venv venv
+  0.1) Activate the environemnt when you are working on the Django backend with the following command (must be run from the project root folder) 
+  > venv\Scripts\activate
+  0.2) Deactivate the environment when you finish or when you start working on the React frontend with the following command
+  > deactivate
+  
+  1) Navigate into backend directory with the following command
+  > cd backend
+  2) Install the backend requirements with the following command
+  > pip install -r requirements.txt
+  3) Create the SQLite database with the following command
+  > python manage.py migrate
+  4) Verify the environment is working by running the server with the following command
+  > python manage.py runserver
+  5) This should have run the backend server, access it by visiting 'http://127.0.0.1:8000/' in your browser
+  6) Close the server on the command line (Ctrl+C)
+  7) Create a new user so you can access the built in admin panel with the following command
+  > python manage.py createsuperuser
+  8) Make the username and password whatever you want, you can leave the email blank
+  9) Now run the server again as directed in step 4
+  10) Access admin panel by visiting 'http://127.0.0.1:8000/admin/' in your browser,
+  from here you can easily edit the database. Note: changes to the DB are never stored in github
+  **This is a development server, never expose it to a public port**
+
+STEP 3:
+  React frontend setup (Prerequisites: None)
+  
+  You can follow this part in a seperate window or the same window as the last part, 
+  if you want to run the backend and frontend together, you will have to run them both from different windows,
+  if you are following this part in the same window as the last part make sure your virtual environment (if you have one) is deactivated,
+  if you are following this part in a different window, make sure it's opened to the same directory as the previous one (Project-Ate)
+  
+  1) Visit 'https://nodejs.org/en/download' and download the windows msi installer
+  2) Run the installer, and make sure to check 'add to path'
+  ) if you are using the same window as you were previously navigate back to the root directory with following command
+  > cd ..
+  3) Navigate into frontend directory with the following command
+  > cd frontend
+  4) Verify npm is correctly installed to path by running the following 3 commands one after another
+  > node -v
+  > npm -v
+  > npx -v
+  5) Install packages defined in packages.json with the following command
+  > npm install
+  6) Verify the environment is working by running the server with the following command
+  > npm run dev
+  5) This should have run the backend server, access it by visiting 'http://127.0.0.1:5173/' in your browser
+  You should see the default react landing page
+  **This is a development server, never expose it to a public port**
+
+DEBUGGING ERRORS:
+  There may well be problems with this setup I'm not perfect, I'll list common errors below:
+  1) Venv activate script system denied permission - you need to change scripting permissions in powershell - google it or let me know and I can fix it
+  2) File not found - make sure you are in the right directory, at the start steps 2 and 3 there are instructions to cd to backend for step 2 and fronted for step 3
+  3) Can't find node/npm/npx - Node.js installer can sometimes be weird, you need to add the directory to the system path variable
+   - open file explorer and go to 'C:\Program Files\nodejs' - if this fails let me know
+   - if not go to windows start menu and search 'environment variables'
+   - click on the program that pops up
+   - click 'advanced'
+   - click 'Environment Variables'
+   - click 'Path' in the list of variables for user <your name>
+   - click 'edit' - DO NOT CLICK NEW
+   - click 'new' in the popup
+   - paste 'C:\Program Files\nodejs'
+   - press ok and close the program
+   - restart all vscode windows and terminals then restart the guide at verifying the installation of Node.js - if this fails let me know
+
+Any other errors you can google or let me know, don't force push something to github if you're unsure you've configured it correctly, it could break
+ 
+Now you have fully installed and created the development environment, after any code changes you can run the server to make sure it doesn't break,
+and use the testing suites in each app to test functionality. to run the backend server after editing it you need to run the following commands:
+> python manage.py makemigrations
+> python manage.py migrate
+> python manage.py runserver
+
+To run the backend you simply use the following command
+> npm run dev
+
+BEFORE YOU START CODING RUN THE FOLLOWING COMMANDS:
+> git fetch
+> git pull
+
+WHEN YOU FINISH CODING:
+run the following commands to sync remote repo
+> git fetch
+> git pull
+then use vscodes integrated git manager to stage all commits, push all commits, then update remote
+
+The previous instructions assume 2 people won't be working on the same exact file, if they are you will need to be able to merge which we can sort out later
+
+This is all the information I can think of to include for now, read it over a few times, verify your development environment it took me quite a while to get it working.
+
+WE WILL NEED TO SORT OUT A BETTER SYSTEM FOR CONTRIBUTING GIT CHANGES - e.g: main repo has a main and dev branch, 
+everyone keeps local main branch up to date and commits their own work to dev when it's ready. Either way will need to be discussed on Tuesday
+
+
+You should now have the project development environment fully setup with the knowledge of how to run the frontend and backend server locally.
+
+
+
+
