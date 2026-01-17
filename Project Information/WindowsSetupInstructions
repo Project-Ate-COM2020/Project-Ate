@@ -27,7 +27,7 @@ STEP 2:
   
   0) Set up python virtual environment for Django backend framework and libraries with the following command 
   > python -m venv venv
-  0.1) Activate the environemnt when you are working on the Django backend with the following command (must be run from the project root folder) 
+  0.1) Activate the environemnt when you are working on the Django backend with the following command (must be run from the project root folder so the path points to the activate executable) 
   > venv\Scripts\activate
   0.2) Deactivate the environment when you finish or when you start working on the React frontend with the following command
   > deactivate
