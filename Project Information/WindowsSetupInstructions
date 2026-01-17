@@ -22,7 +22,7 @@ STEP 1:
 STEP 2:
   Django backend setup (Prerequisites: Python 3.11)
   
-  Step 0, 0.1, 0.2 show you how to set up and use a virtual environment (provides a dedicated python interpreter and packages you install on it are isolated to the venv),
+  Step 0, 0.1 and 0.2 show you how to set up and use a virtual environment (provides a dedicated python interpreter and packages you install on it are isolated to the venv),
   these steps are fully optional and down to preference, if you follow them make sure you activate and deactivate the venv as directed to avoid errors and version conflicts.
   
   0) Set up python virtual environment for Django backend framework and libraries with the following command 
