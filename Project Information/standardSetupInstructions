@@ -1,0 +1,39 @@
+This is a shortened version of the other file - OS independent
+
+1) Clone github
+
+setting up backend
+
+2) install venv in environment (optional)
+
+3) these steps are done in the 'backend' directory
+
+4) run 'pip install -r requirements.txt' to install requirements list
+
+5) create database using 'python manage.py migrate' - this database is on the .gitignore so any changes here wont affect version control
+
+6) run server with command 'python manage.py runserver'
+
+setting up frontend 
+
+7) go to https://nodejs.org/en/download and find the installer for your OS - install node and add it to PATH
+
+8) run 'npm install' to install react dependencies
+
+9) run 'npm run dev' to run the server
+
+useful commands in backend:
+> python manage.py makemigrations
+> python manage.py migrate
+these two commands form and then create a database using DJangos built in ORM, use these if you have edited the db in any way and need to see the changes
+
+> python manage.py runserver
+run the server
+
+> python manage.py createsuperuser
+create a user for the built in admin/ endpoint that lets you put test data in the database
+
+for frontend the only command you need to know is 'npm run dev' which runs the server as saved
+
+THERE IS IMPORTANT INFORMATION ON GIT STANDARDS WE WILL IMPLEMENT IN THE OTHER FILE, MAKE SURE YOU READ THIS
+
