@@ -1,2 +1,49 @@
-Will put instructions on how to set up development environment here, for windows and mac
+Unfinished as of 17/01/2026
+
+WINDOWS
+
+
+Clone Repository (Prerequisites: Git)
+
+1) open VS Code
+2) Clone repository with the following command
+> git clone https://github.com/JamesAlexanderC/Project-Ate.git
+3) reopen vs code inside the folder that has been made
+
+Django backend setup (Prerequisites: Python 3.11)
+
+Step 0, 0.1, 0.2 show you how to set up and use a virtual environment (provides a dedicated python interpreter and packages you install on it are isolated to the venv).
+These steps are fully optional and down to preference, if you follow them make sure you activate and deactivate the venv as directed to avoid errors and version conflicts.
+
+0) Set up python virtual environment for Django backend framework and libraries with the following command 
+> python -m venv venv
+0.1) Activate the environemnt when you are working on the Django backend with the following command (must be run from the project root folder) 
+> venv\Scripts\activate
+0.2) Deactivate the environment when you finish or when you start working on the React frontend with the following command
+> deactivate
+
+1) Navigate into backend directory with the following command
+> cd backend
+2) Install the backend requirements with the following command
+> pip install -r requirements.txt
+3) Create the SQLite database with the following command
+> python manage.py migrate
+4) Verify the environment is working by running the server with the following command
+> python manage.py runserver
+5) This should have run the backend server, access it by visiting 'http://127.0.0.1:8000/admin' in your browser
+6) Close the server on the command line (Ctrl+C)
+7) Create a new user so you can access the built in admin panel with the following command
+> python manage.py createsuperuser
+8) Make the username and password whatever you want, you can leave the email blank
+9) now run the server again as directed in step 5
+10) access admin panel, from here you can easily edit the database. Note: changes to the DB are never stored in github
+**This is a development server, never expose it to a public port**
+
+React frontend setup (Prerequisites: Python 3.11)
+
+
+
+
+
+
 
