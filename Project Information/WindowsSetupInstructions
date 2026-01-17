@@ -4,7 +4,7 @@ WINDOWS
 
 Introduction:
 I find the best way to think about this project is as 2 seperate servers 
-- a backend server that acts as a really basic API containing all business logic and serves this to path endpoints
+- a backend server that acts as an API containing all business logic and serves this to path endpoints
 - a frontend server that the user will interact with, this has the nice looking html/css/js and will communicate with our backend API to fetch business logic
 This means we need to set up each server differently, in the github I have separated each one into a different server (frontend/backend) for readability, this guide will take 
 you through cloning the github, installing dependencies and how to run the servers locally. At the end it will also explain how to develop properly
