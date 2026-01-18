@@ -1,0 +1,5 @@
+We are using the react, axios, react-router-dom and tailwind css librarie
+
+because there is no framework, the file structure and where code should be put MUST be defined by the frontend technical lead in this file
+
+this will allow for proper code readability and maintainability

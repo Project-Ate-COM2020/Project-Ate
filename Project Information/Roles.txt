@@ -1,0 +1,35 @@
+Everyone should take on 2 roles, a team role and development role, as everyone will need to develop, as well as complete tasks surround development
+
+Team roles: THESE ARE DIFFERENT TO THOSE SUGGESTED ON THE MODULE, WE CAN DECIDE WHICH ONES WE PREFER ON TUESDAY
+
+Team Lead:
+ - Create and manage gantt chart
+ - Set targets with each member individually
+ - Ensure progress is made towards targets set
+
+Backend Technical lead:
+ - enforces test driven development (or whatever style we want to do)
+ - enforces version control etiquette
+ - ensures code quality
+ - ensures correct level of code separation and readability
+ - ensures file system remains intact and code is structured appropriately
+ - updates utily.py with reused classes/function to improve code reusability
+
+Frontend Technical lead:
+ - enforces chosen development style 
+ - enforces version control etiquette
+ - ensures code quality
+ - ensures correct level of code separation and readability
+ - will need to create file system as we have no fronted framework (this filesystem may change over time but must be very well documented)
+ - ensures file system doesn't get confused and is followed by developers
+ - may have other responsibilities in terms of developing shared code
+
+Documentation manager:
+ - enforces documentation policy - e.g making sure everyone comments and explains major design decisions in txt files
+ - creates system wide documentation - logging development process and design decisions, creating production docs for usage, creating testing documentation and evidence of passes
+
+Devops manager:
+ - Responsible for maintaining libraries and frameworks used in development - adding new apps and updating old ones
+ - Makes sure people can access codebase and use git properly
+ - in charge of sorting testing datasets, and integration testing further down the licence_decision
+
