@@ -1,0 +1,25 @@
+This is an example of the sort of Django file structure we will be working with, and an overview of what each file does
+
+/backend
+|manage.py                    - this is djangos server manager that runs our server for us based on the logic we define
+|requirements.txt             - this contains the pip packages we need to install on each development environment 
+|
+|/backend
+||__init__.py                 - apparently needed to make python interpreter see this directory as a package, file is empty
+||settings.py                 - server settings, where we add any extra modules we install (in this case our rest framework)
+||urls.py                     - defines the url paths of our different services, it will assign each one a path e.g /marketplace or/game
+||wsgi.py                     - for use with a deployment grade server (not needed for development)
+|
+|/core                        - this is our first Django app - it will be the one responsible for database management
+|__init__.py                  - same again, empty file
+|models.py                    - this is where our DB creation is, natively uses Djangos ORM, can use raw SQL if preffered
+|managers.py                  - provides a way for the rest of the apps to easily query the database
+|
+|
+|/marketplace
+|
+|/analytics
+|
+|/forecasting
+|
+|/gamelayer
