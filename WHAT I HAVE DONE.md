@@ -14,20 +14,16 @@ I think that's everything
 
 Personal design decisions that need to be discussed and can be changed:
 
-we decided on React-Django-MySQL in meeting 1 - I have changed MySQL to SQLite as it's built in, 
-however for integration testing and to make sure everyone knows what test data could be, we could switch to the mySQL server option.
+we decided on React-Django-MySQL in meeting 1 - I have changed MySQL to SQLite as it's built in, however for integration testing and to make sure everyone knows what test data could be, we could switch to the mySQL server option.
 
 I have also implemented the React-Django setup as a fully fledged external webserver - internal API model, the alternative would be to use 
 DjangoDB as the whole stack and get rid of React - this however I think would make it much harder to differentiate coding responsibilities
 and it would be harder to keep track of work as well as meaning we lose all the benefit of functional JS and Tailwind CSS.
 
-I also binned off the suggested group roles - I think it is crucial that we each have a very objective and defined coding task that is somewhat self
-contained, that way we don't have to deal with mixups. This means I have made team and development roles - these are not finished and there are a few changes
-I would make, can be done on tuesday. However the whole thing is entirely subjective and we can decide to do something else entirely, like the
+I also binned off the suggested group roles - I think it is crucial that we each have a very objective and defined coding task that is somewhat self contained, that way we don't have to deal with mixups. This means I have made team and development roles - these are not finished and there are a few changes I would make, can be done on tuesday. However the whole thing is entirely subjective and we can decide to do something else entirely, like the
 suggested group roles on ele.
 
-I used functional javascript rather than functional typescript for react - we could change this but I thought most people would probably be more 
-comfortable with javascript despite the development benefits of static type checking.
+I used functional javascript rather than functional typescript for react - we could change this but I thought most people would probably be more comfortable with javascript despite the development benefits of static type checking.
 
 I have already assumed the decomposed features which are pretty clearly defined in the project spec:
 (I have assumed we will not work on profiles just yet as it's quite an involved feature that's not required for the prototype at all)
