@@ -1,0 +1,70 @@
+This is an example of the sort of Django file structure we will be working with, and an overview of what each file does
+
+/backend                       - this is the 'root' backend folder - the first thing you see when you open the github
+|
+|manage.py                     - this is djangos server manager that runs our server for us based on the logic we define
+|requirements.txt              - this contains the pip packages we need to install on each development environment 
+|
+|/backend
+||__init__.py                  - apparently needed to make python interpreter see this directory as a package, file is empty
+||settings.py                  - server settings, where we add any extra modules we install (in this case our rest framework)
+||urls.py                      - defines the url paths of our different services, it will assign each one a path e.g /marketplace or/game
+||wsgi.py                      - for use with a deployment grade server (not needed for development)
+|
+|/core                         - this is our first Django app - it will be the one responsible for database management
+||__init__.py                  - same again, empty file
+||models.py                    - this is where our DB creation is, natively uses Djangos ORM, can use raw SQL if preffered
+||managers.py                  - provides a way for the rest of the apps to easily query the database (will be developed with the models.py)
+||utils.py                     - because this core directory will be imported by everything, having a shared set of utility functions improves code reusability
+|
+|/marketplace                  - every app directory from here has the same structure - as in essence they do the same thing, with different business logic behind them
+||__init__.py                  - as explained
+||urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
+||serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
+||views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
+||/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
+|||service1.py
+|||service2.py
+||
+||/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
+|||test1.py
+|||test2.py
+|
+|/analytics                    
+||__init__.py                  - as explained
+||urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
+||serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
+||views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
+||/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
+|||service1.py
+|||service2.py
+||
+||/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
+|||test1.py
+|||test2.py
+|
+|/forecasting
+||__init__.py                  - as explained
+||urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
+||serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
+||views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
+||/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
+|||service1.py
+|||service2.py
+||
+||/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
+|||test1.py
+|||test2.py
+|
+|/game layer
+||__init__.py                  - as explained
+||urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
+||serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
+||views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
+||/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
+|||service1.py
+|||service2.py
+||
+||/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
+|||test1.py
+|||test2.py
