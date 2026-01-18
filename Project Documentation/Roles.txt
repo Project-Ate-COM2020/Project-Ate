@@ -33,3 +33,7 @@ Devops manager:
  - Makes sure people can access codebase and use git properly
  - in charge of sorting testing datasets, and integration testing further down the licence_decision
 
+UI design manager:
+ - repsonsible for maintaining a consistent design philosophy (colours and shapes and stuff)
+ - 
+
