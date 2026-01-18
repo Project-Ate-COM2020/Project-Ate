@@ -14,7 +14,7 @@ This is an example of the sort of Django file structure we will be working with,
     |/core                         - this is our first Django app - it will be the one responsible for database management
     |   |__init__.py                  - same again, empty file
     |   |models.py                    - this is where our DB creation is, natively uses Djangos ORM, can use raw SQL if preffered
-    |   |managers.py                  - provides a way for the rest of the apps to easily query the database (will be developed with the models.py)
+    |   |managers.py                  - provides a way for the rest of the apps to easily query the database (will be developed in line with the models.py)
     |   |utils.py                     - because this core directory will be imported by everything, having a shared set of utility functions improves code reusability
     |
     |/marketplace                  - every app directory from here has the same structure - as in essence they do the same thing, with different business logic behind them

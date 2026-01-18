@@ -45,3 +45,5 @@ testing_evidence.pdf contents:
     Proof your automated tests run
     At least one completed end-to-end manual scenario with evidence
     Clear pass/fail outcomes
+
+Also check the final section of the coursework brief for the marking rubric - and the standards for each part of this submission

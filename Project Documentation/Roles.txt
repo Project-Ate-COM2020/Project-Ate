@@ -31,9 +31,13 @@ Documentation manager:
 Devops manager:
  - Responsible for maintaining libraries and frameworks used in development - adding new apps and updating old ones
  - Makes sure people can access codebase and use git properly
- - in charge of sorting testing datasets, and integration testing further down the licence_decision
+ - in charge of sorting testing datasets, and integration testing further down the license_decision
 
 UI design manager:
  - repsonsible for maintaining a consistent design philosophy (colours and shapes and stuff)
- - 
+ - responsible for colour scheme
+
+Compliance manager:
+ - responsible for license management - what license we will use - project ownership with client. as well as managing dependency clients to ensure no copyleft licenses in production
+ - also responsible for legal disclaimers for client such as allergens, delivery times, expiry dates and such
 
