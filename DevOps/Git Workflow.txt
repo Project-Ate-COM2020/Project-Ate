@@ -8,7 +8,9 @@ Development will be obviously where we will code - and periodically we will merg
 
 this is the main part - how we will add code (This is up to date as of 19/01/2026, and I will try to find all other conflicting instructions and update those)
 
-when you want to make a feature (e.g a new API endpoint) - (make sure your local repo is up to date) you branch Development, creating a new branch e.g API view for satistics graph 1
+MAKE SURE REPO IS UP TO DATE AT ALL TIMES USING 'git fetch' THIS ENSURES NO CONFLICTS
+
+when you want to make a feature (e.g a new API endpoint) - you branch Development, creating a new branch e.g API view for satistics graph 1
 
 then, commit all your code to this branch as you are coding, you should be the only one using this branch so there should be no conflicts
 
@@ -20,3 +22,5 @@ these pulls will then add features to the Development Code base in a structured,
 
 The development code base can be merged to the main codebase when stable to produce a a snapshot of the current stable runnable release
 We should do this at each sprint meeting, then run and test both servers from a client perspective to try and find any improvements we could make
+
+because no commits are made outside individual specific branches, there should be no danger of unforseen conflicts
