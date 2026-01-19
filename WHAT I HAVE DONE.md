@@ -1,7 +1,7 @@
 **What I have done since Thursday - to prepare for Tuesday**
 I have set up our system stack with the small change of MySQL -> SQLite in this github
 
-I used vite for the react server, and included a few react dependecies (react-dom, react-router-dom, axios, tailwindcss) to make most of the full frontend framework
+I used vite for the react server, and included a few react dependecies (react-dom, react-router-dom, axios, tailwindcss) to make most of the full frontend framework - we still need to decide on a directory design
 
 Django is it's own full framework, I have only installed the Django-rest-framework to make building it as an API much easier
 
