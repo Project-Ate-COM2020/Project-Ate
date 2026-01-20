@@ -18,3 +18,9 @@ class Bundle(models.Model):
     price = models.FloatField()
     pickup_window = models.CharField(max_length=20)
     status = models.IntegerField()
+
+
+class Consumer(models.Model):
+    display_name = models.CharField(max_length=20)
+    streak = models.IntegerField()
+    badges = models.TextField()
