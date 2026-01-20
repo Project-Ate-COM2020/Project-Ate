@@ -6,7 +6,10 @@ from .models import Bundle, BundleSerializer
 
 
 class Bundles(APIView):
+
     def get(self, request):
         bundles = Bundle.objects.all()
 
-        return Response(bundles)
+        serializer = BundleSerializer(bundles, many=True)
+
+        return Response(serializer.data)
