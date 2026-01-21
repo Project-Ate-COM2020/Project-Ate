@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AnalyticsPage from "./analyticsPages/analytics";
 import GamePage from "./gamePages/game";
 import MarketplacePage from "./marketplacePages/marketplace";
-import NotFoundPage from "./reusableComponents/NotFoundPage";
+import PageNotFound from "./reusableComponents/pageNotFound";
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="*" element={<pageNotFound />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );

@@ -1,9 +1,9 @@
 import React from "react";
 
-function analytics() {
+function Analytics() {
     return (
-        <P>I think this will be really cool and work</P>
+        <p>Analytics</p>
     )
 }
 
-export default analytics;
+export default Analytics;
