@@ -16,7 +16,7 @@ function App() {
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<pageNotFound />} />
       </Routes>
     </Router>
   );
