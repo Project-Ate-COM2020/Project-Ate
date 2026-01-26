@@ -1,66 +1,106 @@
-/**
- * Gamification page (prototype scaffold)
- * Goals: (not all implemented yet)
- *  - show users rescue streak
- *  - summarise their personal impact
- *  - display recently rescued bundles
- *  - badges 
- *
- *  - this is a scaffold, UI sections are in place with TO DOs
- *  -  hook up real API calls once backend endpoints are made by backend partner
- */
+// Prototype gamification page
+// Shows users rescue streak, overall impact, and recent activity
+// badges have been left out for now
 
 import React, { useEffect, useState } from "react";
 import { fetchGameSummary, fetchRecentRescues } from "../api/game";
 
 export default function Game() {
-  // state (placeholder for now)
   const [summary, setSummary] = useState(null);
   const [recentRescues, setRecentRescues] = useState([]);
   const [error, setError] = useState(null);
 
-  /**
-   * load gamification data
-   * TO DO, replace when endpoints exist
-   */
-  function loadGameData() {
+  // pull everything we need for this page
+  async function load() {
+    setError(null);
+
+    try {
+      const summaryResponse = await fetchGameSummary();
+      const recentResponse = await fetchRecentRescues(10);
+      setSummary(summaryResponse);
+      setRecentRescues(Array.isArray(recentResponse) ? recentResponse : []);
+    } catch (e) {
+      // simplify unexpected errors for users
+      setError(e instanceof Error ? e : new Error("Failed to load game data"));
+    }
   }
 
-  // load data when page mounts
+  // load once on mount
   useEffect(() => {
+    load();
   }, []);
+
+  // early UI states
+
+  if (error) {
+    return (
+      <div>
+        <h2>Rescue Streaks</h2>
+        <p style={{ color: "red" }}>{error.message}</p>
+        <button type="button" onClick={load}>
+          Try again
+        </button>
+      </div>
+    );
+  }
+
+  if (!summary) {
+    return (
+      <div>
+        <h2>Rescue Streaks</h2>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  //  Main page UI
 
   return (
     <div>
       <h2>Rescue Streaks</h2>
 
-      {/* TO DO, render loading state  */}
-      {/* TO DO, render error state  */}
-
-      {/* Streaks */}
       <section>
         <h3>Streak</h3>
-        {/* TO DO, show current streak (weeks) */}
-        {/* TO DO, show if the user has rescued this week */}
+        <p>
+          <strong>Current streak:</strong>{" "}
+          {summary.current_streak_weeks} week(s)
+        </p>
+        <p>
+          <strong>This week:</strong>{" "}
+          {summary.has_rescued_this_week ? "rescued" : " not yet"}
+        </p>
       </section>
 
-      {/* Impact */}
       <section>
         <h3>Personal impact</h3>
-        {/* TO DO, show total rescued bundles */}
-        {/* TO DO, show estimated CO2 saved */}
+        <p>
+          <strong>Total rescued bundles:</strong>{" "}
+          {summary.total_rescued_bundles}
+        </p>
+        <p>
+          <strong>Estimated CO₂ saved:</strong>{" "}
+          {summary.estimated_co2e_saved_kg} kg
+        </p>
       </section>
 
-      {/* Badges */}
-      <section>
-        <h3>Badges</h3>
-        {/* TO DO, list badges/ badges to earn */}
-      </section>
-
-      {/* Recent Activity */}
       <section>
         <h3>Recent rescues</h3>
-        {/* TO DO, list recent rescues */}
+
+        {recentRescues.length > 0 ? (
+          <ul>
+            {recentRescues.map((rescue) => (
+              <li key={rescue.reservation_id}>
+                {rescue.category ? `${rescue.category} — ` : ""}
+                {rescue.seller_name ? `${rescue.seller_name} — ` : ""}
+                {rescue.collected_at
+                  ? new Date(rescue.collected_at).toLocaleString()
+                  : "—"}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No recent rescues.</p>
+        )}
       </section>
     </div>
   );
