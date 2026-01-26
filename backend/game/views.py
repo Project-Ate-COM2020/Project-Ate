@@ -23,7 +23,7 @@ class GameSummaryView(APIView):
             "current_streak": consumer.streak, 
             "total_rescues": collected.count(), 
             "co2_estimate": collected.count * 2
-            ##using 2 as a guess for average co2 used in a meal
+            # using 2 as a guess for average co2 used in a meal
             })
     
 class RecentRescuesView(ListAPIView):
@@ -37,3 +37,8 @@ class RecentRescuesView(ListAPIView):
         return (
             Reservation.objects.filter(consumer=consumer, status="collected").order_by("collected_at")[:limit]
         )
+
+# test view
+class TestView(APIView):
+    def get(self, request):
+        return Response({"ok": True})
