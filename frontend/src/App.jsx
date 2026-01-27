@@ -15,7 +15,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element = {<PageNotFound />} />
+        <Route path="/user" element={<userHomePage />} />
+        <Route path="/seller" element={<userHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
