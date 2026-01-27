@@ -1,4 +1,6 @@
 import React from "react";
+import NavBar from "../reusableComponents/navBar.jsx";
+
 
 function SellerHomePage(){
     return(
