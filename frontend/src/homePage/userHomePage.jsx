@@ -1,5 +1,5 @@
-import NavBar from "../navBar/navBar.jsx";
-import Listings from "../listings/listings.jsx";
+import NavBar from "../reusableComponents/navBar.jsx";
+import Listings from "../reusableComponents/listings.jsx";
 
 function HomePage(){
     return(
