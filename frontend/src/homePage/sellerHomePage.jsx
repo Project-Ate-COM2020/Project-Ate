@@ -3,6 +3,10 @@ import React from "react";
 function SellerHomePage(){
     return(
     <div>
+    <div>
+        <NavBar />
+    </div>
+    <div>
         <title>Home Page</title>
         <h1>You are: GET SELLER NAME</h1>
         <hr />
@@ -18,6 +22,7 @@ function SellerHomePage(){
         <h2>Sales Forecasts:</h2>
         <p>GET FORECAST DATA</p>
         <hr />
+    </div>
     </div>
     );
 
