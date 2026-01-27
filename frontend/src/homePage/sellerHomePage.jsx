@@ -28,6 +28,6 @@ function SellerHomePage(){
     </div>
     );
 
-}
+}// for the views - rather than create inside this dir I will create inside the respective pages dirs to avoid confusion
 
 export default SellerHomePage;
