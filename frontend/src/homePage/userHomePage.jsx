@@ -1,7 +1,7 @@
 import NavBar from "../reusableComponents/navBar.jsx";
 import Listings from "../reusableComponents/listings.jsx";
 
-function HomePage(){
+function UserHomePage(){
     return(
     <>
         <NavBar />
@@ -12,4 +12,4 @@ function HomePage(){
 
 }
 
-export default HomePage;
+export default UserHomePage;

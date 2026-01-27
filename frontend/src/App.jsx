@@ -7,7 +7,8 @@ import AnalyticsPage from "./analyticsPages/analytics";
 import GamePage from "./gamePages/game";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
-import HomePage from "./homePage/homePage.jsx";
+import UserHomePage from "./homePage/userHomePage.jsx";
+import SellerHomePage from "./homePage/sellerHomePage.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -16,8 +17,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element = {<PageNotFound />} />
-        <Route path="/user" element={<userHomePage />} />
-        <Route path="/seller" element={<userHomePage />} />
+        <Route path="/user" element={<UserHomePage />} />
+        <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
@@ -29,3 +30,5 @@ function App() {
 
 // export the app
 export default App;
+
+//TODOS: buyer/seller is inconsistent terminology, need to replace 'user' with 'buyer' everywhere
