@@ -25,6 +25,9 @@ export default function SellerListings({seller}) {
       <div key={bundle.id}>
         <h3>{bundle.name}</h3>
         <p>£{bundle.price}</p>
+        <p>Stock remaining: {bundle.stock}</p>
+        <p>Sales: {bundle.sales}</p>
+        <p>Reservations in progress: {bundle.reservations}</p>
       </div>
     );
   }
