@@ -1,5 +1,6 @@
 // importing api functions to fetch data
 import FetchData from "./fetchData";
+import NavBar from "../components/NavBar";
 
 // defining main function of component
 function Analytics() {
@@ -11,6 +12,7 @@ function Analytics() {
     return (
         <div>
         <title>Seller Analytics</title>
+        < NavBar />
         <h1>Analytics</h1>
         <hr />
         <FetchData dataEntry="sales" />
