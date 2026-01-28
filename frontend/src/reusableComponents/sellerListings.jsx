@@ -13,10 +13,9 @@ export default function SellerListings({seller}) {
 
 
   useEffect(() => {
-    let raw_bundles  = fetch(`/bundles?${seller}`) 
-    let bundles = raw_bundles.json()
+    let bundles  = fetch(`/bundles?${seller}`) 
     setBundles(bundles) // reformatted Will's code - think this is slightly more readable
-  }, []);
+  }, [seller]); // currently use expliceit live_bundles
 
   const bundleElements = []; // this is an array of the divs, each one is a bundle
   for (let i = 0; i < fakeBundles.length; i++) {
@@ -33,8 +32,8 @@ export default function SellerListings({seller}) {
   }
 
   return (
+    // this is just a div containing all the bundle elements
     <div>
-      <h2>Available Bundles</h2>
       {bundleElements}
     </div>
   );
