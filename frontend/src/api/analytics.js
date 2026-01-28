@@ -9,10 +9,10 @@ async function getJson(path) {
 }
 
 export const fetchSalesData = () =>
-  getJson("/api/analytics/sales/");
+  getJson("/analytics/sales/");
 
 export const fetchNoShowData = () =>
-  getJson("/api/analytics/no-shows/");
+  getJson("/analytics/no-shows/");
 
 export const fetchRevenueData = () =>
-  getJson("/api/analytics/revenue/");
+  getJson("/analytics/revenue/");
