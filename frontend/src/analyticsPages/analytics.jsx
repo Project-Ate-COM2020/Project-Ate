@@ -6,7 +6,6 @@ import { fetchSalesData, fetchNoShowData, fetchRevenueData } from "../api/analyt
 // defining main function of component
 function Analytics() {
     // defining constants to hold fetched data and loading state
-    const [salesData, setSalesData] = useState(null);
     const [noShowData, setNoShowData] = useState(null);
     const [revenueData, setRevenueData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -43,8 +42,7 @@ function Analytics() {
         <title>Seller Analytics</title>
         <h1>Analytics</h1>
         <hr />
-        <h2>Sales Data:</h2>
-        <p>{salesData ? JSON.stringify(salesData) : "No data available"}</p>
+        
         <hr />
         <h2>Percentage No shows:</h2>
         <p>{noShowData ? JSON.stringify(noShowData) : "No data available"}</p>
