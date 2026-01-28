@@ -10,6 +10,7 @@ import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
 import SellerHomePage from "./homePage/sellerHomePage.jsx";
+import SellerMarketplace from "./marketplacePages/sellerMarketplace.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -22,6 +23,7 @@ function App() {
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
+        <Route path="/seller/Marketplace" element={<SellerMarketplace />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
