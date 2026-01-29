@@ -34,6 +34,7 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
+        {/*<Route path="/basket" element={<Basket />} />*/}
       </Routes>
     </Router>
   );
