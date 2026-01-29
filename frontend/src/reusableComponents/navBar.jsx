@@ -3,15 +3,17 @@ add in the links to the different webpages needed and badges*/
 
 /* -profile - home - login - basket - orders */
 
+// future hooks to get streak length and bagdes displayed and well a custom user name 
+
 export default function NavBar() {
     return (
       <nav>
-        <a href ="/">Project-Ate</a>
+        <a href ="/user">Project-Ate</a>
         <ul>
-            <li><a href="/">profile</a></li>    
-            <li><a href="/">bakset</a> </li>   
-            <li><a href="/">login</a></li>    
-            <li><a href="/">orders</a></li>     
+            <li><a href="/">Profile</a></li>    
+            {/*<li><a href="/basket">Bakset</a> </li>*/}
+            <li><a href="/">Login</a></li>    
+            <li><a href="/">Orders</a></li>     
             
         </ul>
       </nav>

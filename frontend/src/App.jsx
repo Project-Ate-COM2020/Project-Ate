@@ -8,6 +8,8 @@ import GamePage from "./gamePages/game";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
+//import Basket from "./Basket/basket.jsx";
+
 
 
 // simple function defining the element to be returned based on the URL
@@ -22,6 +24,7 @@ function App() {
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<PageNotFound />} />
+        {/*<Route path="/basket" element={<Basket />} />*/}
       </Routes>
     </Router>
   );
