@@ -13,35 +13,28 @@ urlpatterns = [
     path(
         "marketplace/bundles/between",
         views.BundlesView.as_view(),
-        name="bundles-newest",
+        name=views.BundlesView.name,
     ),
-    # get the newest n bundles
-    # GET ... /marketplace/bundles/newest?count=20
-    path(
-        "marketplace/bundles/newest",
-        views.BundlesView.as_view(),
-        name="bundles-newest",
-    ),
-    # get newest n bundles
+    # get oldest n bundles
     # GET ... /marketplace/bundles/oldest?count=20
     path(
         "marketplace/bundles/oldest",
-        views.BundlesView.as_view(),
-        name="bundles-oldest",
+        views.BundleOldestView.as_view(),
+        name=views.BundleOldestView.name,
     ),
     # get bundles older than a specified date
     # GET ... /marketplace/bundles/older?date=YYYY-MM-DD
     path(
         r"marketplace/bundles/older/",
-        views.BundlesView.as_view(),
-        name="bundles-older",
+        views.BundleOlderView.as_view(),
+        name=views.BundleOlderView.name,
     ),
     # get bundles younger than a specified date
     # GET ... /marketplace/bundles/newer?date=YYYY-MM-DD
     path(
-        r"marketplace/bundles/younger/",
-        views.BundlesView.as_view(),
-        name="bundles-younger",
+        "marketplace/bundles/newer/",
+        views.BundleNewerView.as_view(),
+        name=views.BundleNewerView.name,
     ),
     # get bundles whose shops are open now
     # GET ... /marketplace/bundles/open <- gets open now
@@ -49,9 +42,9 @@ urlpatterns = [
     # {TZD} can be plus or minus then hours minutes ahead / behind e.g +01:50 or -02:00
     # either to or from can be omitted
     path(
-        r"marketplace/bundles/open/",
-        views.BundlesView.as_view(),
-        name="bundles-open",
+        "marketplace/bundles/open/",
+        views.BundleOpenView.as_view(),
+        name=views.BundleOpenView.name,
     ),
     # get bundles whose collections are between specific range
     # GET ... /marketplace/bundles/collection?from=YYYY-MM-DDTHH-MM-SS{TZD}?to=...
@@ -59,55 +52,73 @@ urlpatterns = [
     # either to or from can be omitted
     path(
         r"marketplace/bundles/collection/",
-        views.BundlesView.as_view(),
-        name="bundles-open",
+        views.BundleCollectionView.as_view(),
+        name=views.BundleCollectionView.name,
     ),
     path(
-        "marketplace/bundle/<int:bundle_id>/", views.BundleView.as_view(), name="bundle"
+        "marketplace/bundle/<int:bundle_id>/",
+        views.BundleView.as_view(),
+        name=views.BundleView.name,
     ),
     #
     #
     #    USAGE SAME AS ABOVE ONLY DIFFERENCE IS THAT IT ONLY OPERATES ON SELLERS BUNDLES INSTEAD OF GLOBALLY
     #
     #
+    # create seller
+    path(
+        "marketplace/seller",
+        views.CreateSellerView.as_view(),
+        name=views.CreateSellerView.name,
+    ),
     # get seller data
     path(
-        "marketplace/seller/<int:seller_id>/", views.BundleView.as_view(), name="seller"
+        "marketplace/seller/<int:seller_id>/",
+        views.SellerView.as_view(),
+        name=views.SellerView.name,
     ),
     # get bundles for a seller
     path(
         "marketplace/seller/<int:seller_id>/bundles",
-        views.BundleView.as_view(),
-        name="seller-bundles",
+        views.SellerBundlesView.as_view(),
+        name=views.SellerBundlesView.name,
     ),
     path(
         "marketplace/seller/<int:seller_id>/bundles/between",
-        views.BundlesView.as_view(),
-        name="seller-bundles-newest",
+        views.SellerBundleBetweenView.as_view(),
+        name=views.SellerBundleBetweenView.name,
     ),
     path(
         "marketplace/seller/<int:seller_id>/bundles/newest",
-        views.BundlesView.as_view(),
-        name="seller-bundles-newest",
+        views.SellerBundleNewestView.as_view(),
+        name=views.SellerBundleNewestView.name,
     ),
     path(
         "marketplace/seller/<int:seller_id>/bundles/oldest",
-        views.BundlesView.as_view(),
-        name="seller-bundles-oldest",
+        views.SellerBundleOldestView.as_view(),
+        name=views.SellerBundleOldestView.name,
     ),
     path(
-        r"marketplace/seller/<int:seller_id>/bundles/older/",
-        views.BundlesView.as_view(),
-        name="seller-bundles-older",
+        "marketplace/seller/<int:seller_id>/bundles/older/",
+        views.SellerBundleOlderView.as_view(),
+        name=views.SellerBundleOlderView.name,
     ),
     path(
-        r"marketplace/seller/<int:seller_id>/bundles/younger/",
-        views.BundlesView.as_view(),
-        name="seller-bundles-younger",
+        "marketplace/seller/<int:seller_id>/bundles/younger/",
+        views.BundleNewerView.as_view(),
+        name=views.BundleNewerView.name,
     ),
     path(
-        r"marketplace/seller/<int:seller_id>/bundles/collection/",
-        views.BundlesView.as_view(),
-        name="seller-bundles-open",
+        "marketplace/seller/<int:seller_id>/bundles/collection/",
+        views.BundleCollectionView.as_view(),
+        name=views.BundleCollectionView.name,
+    ),
+    #
+    # Reservation end points
+    #
+    path(
+        "marketplace/reservations",
+        views.CreateReservationView.as_view(),
+        name=views.CreateReservationView.name,
     ),
 ]

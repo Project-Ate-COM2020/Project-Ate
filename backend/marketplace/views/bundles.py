@@ -9,6 +9,7 @@ from ..models import Bundle, BundleSerializer
 
 # get all bundles
 class BundlesView(APIView):
+    name: str = "bundles"
 
     def get(self, request):
         bundles = Bundle.objects.all()
@@ -20,6 +21,7 @@ class BundlesView(APIView):
 
 # get a specific bundle
 class BundleView(APIView):
+    name: str = "bundle"
 
     def get(self, request, bundle_id):
         try:
@@ -34,47 +36,56 @@ class BundleView(APIView):
 
 # get newest bundles
 class BundleNewestView(APIView):
+    name = "bundles-newest"
+
     def get(self, request, bundle_id):
-        pass
+        count = request.GET.get("count", 20)
 
 
 # get oldest bundles
 class BundleOldestView(APIView):
+    name = "bundles-oldest"
+
     def get(self, request, bundle_id):
-        pass
+        count = request.GET.get("count", 20)
 
 
 # get bundles made between date range bundles
 class BundleBetweenView(APIView):
+    name = "bundles-between"
+
     def get(self, request, bundle_id):
-        pass
+        date_from = request.GET.get("from")
+        date_to = request.GET.get("to")
 
 
 # get bundles made between date range bundles
 class BundleOlderView(APIView):
+    name = "bundles-older"
+
     def get(self, request, bundle_id):
-        pass
+        date = request.GET.get("date")
 
 
 # get bundles newer than a specified date
 class BundleNewerView(APIView):
+    name = "bundles-newer"
+
     def get(self, request, bundle_id):
-        pass
+        date = request.GET.get("date")
 
 
 # get bundles with open businesses
 class BundleOpenView(APIView):
+    name = "bundles-open"
+
     def get(self, request, bundle_id):
         pass
 
 
 # get bundles made between date range bundles
-class BundleBetweenView(APIView):
-    def get(self, request, bundle_id):
-        pass
+class BundleCollectionView(APIView):
+    name = "bundles-collection"
 
-
-# get bundles made between date range bundles
-class BundleBetweenView(APIView):
     def get(self, request, bundle_id):
         pass

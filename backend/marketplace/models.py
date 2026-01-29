@@ -52,3 +52,16 @@ class ConsumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
         fields = ["display_name", "streak", "badges"]
+
+
+class Reservation(models.Model):
+    bundle = models.ForeignKey(Bundle, on_delete=models.CASCADE)
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    claim_code = models.CharField(max_length=20)
+    status = models.IntegerField()
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = ["bundle", "consumer", "claim_code", "status"]
