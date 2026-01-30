@@ -9,6 +9,7 @@ import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
+import Orders from "./orders/orders.jsx";
 
 
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<PageNotFound />} />
         {/*<Route path="/basket" element={<Basket />} />*/}
+        <Route path="/orders" element={<Orders />}/>
       </Routes>
     </Router>
   );
