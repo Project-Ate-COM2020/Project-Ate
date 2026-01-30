@@ -1,7 +1,7 @@
 /* The nav bar goes at the top of the page to help navigate the website
 add in the links to the different webpages needed and badges*/
 
-/* -profile - home - login - basket - orders */
+import './navBar.css';
 
 export default function NavBar() {
     return (
