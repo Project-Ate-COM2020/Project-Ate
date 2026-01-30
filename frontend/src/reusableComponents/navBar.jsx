@@ -13,7 +13,7 @@ export default function NavBar() {
             <li><a href="/">Profile</a></li>    
             {/*<li><a href="/basket">Bakset</a> </li>*/}
             <li><a href="/">Login</a></li>    
-            <li><a href="/">Orders</a></li>     
+            <li><a href="/orders">Orders</a></li>     
             
         </ul>
       </nav>

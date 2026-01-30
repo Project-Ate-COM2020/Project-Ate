@@ -1,9 +1,14 @@
 /* Lists all the available bundle postings to the user */
 import fakeBundles from "./fakeBundles";
+import { addFakeOrder, makeClaimCode, getFakeOrders } from "./fakeOrdersStore"
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
 
 
-export default function Listings() {
+
+export default function Listings({ mode = "listings" }) {
+
+  const isOrders = mode === "orders"; /*changes the mode when on the /orders page*/
+
   const [bundles, setBundles] = useState([]); /* It is a hook that stores the bundles and the function to load bundles from memory */ 
   const [loading, setLoading] = useState(true);/* It stores a true or false value depending on which toggle to use*/ 
 
@@ -14,6 +19,8 @@ export default function Listings() {
   const [apiFailed, setApiFailed] = useState(false); 
 
   const [selectedBundleId, setSelectedBundleId] = useState(null);
+  const [fakeOrdersVersion, setFakeOrdersVersion] = useState(0);
+
  
 
   // This a an async function that loads the bundles whilst the rest of the page loads 
@@ -24,7 +31,11 @@ export default function Listings() {
         setApiFailed(false);
 
         // **************************************************
-        const res = await fetch("/api/marketplace/bundles");
+        const url = isOrders
+          ? "/api/marketplace/orders"
+          : "/api/marketplace/bundles";
+
+        const res = await fetch(url, { credentials: "include" });
         //*************************************************** -> need update to cnnect to the backend 
 
 
@@ -34,12 +45,30 @@ export default function Listings() {
         // converts data into json 
         const data = await res.json(); 
 
+        // normalizes orders and bundles 
+        const normalised = isOrders
+          ? data.map((order)=>{
+            const collection = order.collection; /*Need to edit to connect to the backend */
+            return {
+              id: posting.id,
+              name: posting.name,
+              price: posting.price,
+              company: posting.company,
+              collectionLocation: posting.collectionLocation,
+              expiryDate: posting.expiryDate,
+              allergens: posting.allergens,
+              description: posting.description,
+              claim_code: order.claim_code,
+            };
+          })
+        : data;
+
         // If backend returns empty list return error message and use fake bundles 
-        if (!Array.isArray(data) || data.length === 0) {
+        if (!Array.isArray(normalised) || normalised.length === 0) {
           setApiFailed(true);
           setBundles([]);
         } else {
-          setBundles(data);
+          setBundles(normalised);
         }
       } catch (err) {
         console.error("Failed to load bundles:", err);
@@ -51,14 +80,21 @@ export default function Listings() {
     }
 
     loadBundles();
-  }, []);
+  }, [isOrders]);
+
 
   // Decide which bundle to use real or fake but doing a cache calculation 
   // only re does the calculation if any of the 3 var changes in the array below 
   const bundlesToShow = useMemo(() => {
+    if (isOrders) {
+      if (useFake) return getFakeOrders();
+      if (apiFailed) return getFakeOrders();   // <- fallback
+      return bundles;
+    }
+  
     if (useFake || apiFailed) return fakeBundles;
     return bundles;
-  }, [useFake, apiFailed, bundles]);
+  }, [isOrders, useFake, apiFailed, bundles]);
 
   // find the selected bundle object so the info data is correct for it 
   const selectedBundle = useMemo(() => {
@@ -67,36 +103,52 @@ export default function Listings() {
   }, [selectedBundleId, bundlesToShow]);
 
 
-
   // POST OP to redeem code
 
-  async function redeemBundleCode(bundleId){
+  async function redeemBundleCode(bundleId) {
     try {
-      // Fake mode
-      if (useFake || apiFailed){
-        alert(`FAKE Bundle ${bundleId} redeemed`);
+      // Find the bundle object (needed for fake orders)
+      const bundle = bundlesToShow.find((b) => b.id === bundleId);
+      if (!bundle) {
+        alert("Bundle not found");
         return;
       }
-      
-
-      //Real POST - Edit when you have got the backend 
+  
+      // FAKE MODE
+      if (useFake || apiFailed) {
+        const claim = makeClaimCode();
+  
+        addFakeOrder({
+          order_id: Date.now(),              // fake unique id
+          claim_code: claim,
+          status: "RESERVED",
+          created_at: new Date().toISOString(),
+  
+          // store full bundle info so Orders page can render it
+          ...bundle,
+        });
+  
+        alert(`(FAKE) Order created!\nCode: ${claim}`);
+        return;
+      }
+  
+      // REAL MODE (backend)
       const res = await fetch("/api/marketplace/orders/redeem", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      credentials: "include", // keep if using Django sessions
-      body: JSON.stringify({
-        bundle_id: bundleId,
-      }),
-    });
-
-      if (!res.ok){
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          bundle_id: bundleId,
+        }),
+      });
+  
+      if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `HTTP ${res.status}`);
       }
-
+  
       const data = await res.json();
       alert(`Redeemed successfully! Order ID: ${data.order_id ?? "OK"}`);
     } catch (err) {
@@ -110,7 +162,7 @@ export default function Listings() {
 
   return (
     <div style={{ padding: 16, maxWidth: 600 }}>
-      <h2>Available Bundles</h2>
+      <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
 
       {/* Toggle + status */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
@@ -208,15 +260,24 @@ export default function Listings() {
               {selectedBundleId === bundle.id ? "Hide info" : "Info"}
             </button>
 
-              <button onClick={() =>  redeemBundleCode(bundle.id)}>
-                Redeem code
+            {isOrders ? (
+              <span style={{ margin: "0 0 10px 0" }}>
+                <strong>Code:</strong> {bundle.claim_code ?? "—"}
+              </span>
+            ) : (
+              <button onClick={() => redeemBundleCode(bundle.id)}>
+                  Redeem code
               </button>
+            )}
+
             </div>
           </div>
         ))}
 
         {bundlesToShow.length === 0 && !loading && (
-          <p style={{ margin: 0 }}>No bundles available.</p>
+          <p style={{ margin: 0 }}>
+            {isOrders ? "No orders yet." : "No bundles available."}
+          </p>
         )}
       </div>
     </div>
