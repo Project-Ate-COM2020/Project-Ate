@@ -2,7 +2,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+
 // import the files for each URL endpoint
+import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
 import ForecastPage from "./forecastPages/forecast.jsx";
 import GamePage from "./gamePages/game";
@@ -18,12 +20,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element = {<PageNotFound />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
-        <Route path="/seller/Marketplace" element={<SellerMarketplace />} />
+        <Route path="/seller/marketplace" element={<SellerMarketplace />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
@@ -35,4 +39,4 @@ function App() {
 // export the app
 export default App;
 
-//TODOS: buyer/seller is inconsistent terminology, need to replace 'user' with 'buyer' everywhere
+// TODOS: buyer/seller is inconsistent terminology, need to replace 'user' with 'buyer' everywhere
