@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import the files for each URL endpoint
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
+import ForecastPage from "./forecastPages/forecast.jsx";
 import GamePage from "./gamePages/game";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
@@ -28,7 +29,7 @@ function App() {
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/seller/marketplace" element={<SellerMarketplace />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
-
+        <Route path="/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
