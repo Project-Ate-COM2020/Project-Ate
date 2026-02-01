@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
 
+
+/* THIS WHOLE PAGE, BASICALLY: TAKE INPUT (CATEGORY, TIME WINDOW, WEATHER, DAY OF WEEK, NO. BUNDLES, SELLER ID) 
+AND RETURN OUTUPT (NO. EXPECTED RESERVATION, NO. EXPECTED NO-SHOWS) FROM BACKEND */
+
+
+
+
 function ForecastPage(){
     const [forecasts, setForecasts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -9,14 +16,13 @@ function ForecastPage(){
     const [weather, setWeather] = useState("");
     const [day_of_week, setDayOfWeek] = useState("");
     const [sellerID, setSellerID] = useState("");
-    const [noBundles, setNoBundles] = useState(0);
-
-    // get API data using api/.js helpers
+    const [noBundles, setNoBundles] = useState(1);
 
     // need to globalise this reusable code
     const loadData = async () => {
     setLoading(true);
 
+    // not using JS helpers any more - hooks seem more standard and simpler
     const response = await fetch("http://127.0.0.1:8000/forecast/prediction/", {
         method: "POST",
         headers: {
