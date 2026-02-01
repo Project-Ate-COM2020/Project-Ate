@@ -4,10 +4,10 @@ import NavBar from "../reusableComponents/navBar.jsx";
 function ForecastPage(){
     const [forecasts, setForecasts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [bundleCategory, setBundleCategory] = useState("");
-    const [pickupTime, setPickupTime] = useState("");
+    const [category, setCategory] = useState("");
+    const [time_window, setTimeWindow] = useState("");
     const [weather, setWeather] = useState("");
-    const [dayOfTheWeek, setDayOfTheWeek] = useState("");
+    const [day_of_week, setDayOfWeek] = useState("");
     const [sellerID, setSellerID] = useState("");
     const [noBundles, setNoBundles] = useState(0);
 
@@ -15,12 +15,27 @@ function ForecastPage(){
 
     // need to globalise this reusable code
     const loadData = async () => {
-        setLoading(true);
-        const response = await fetch("/forecast/forecast-prediction?sellerID="+sellerID+"&bundleCategory="+bundleCategory+"&pickupTime="+pickupTime+"&weather="+weather+"&dayOfTheWeek="+dayOfTheWeek);
-        const data = await response.json();
-        setForecasts(data);
-        setLoading(false);
-    }
+    setLoading(true);
+
+    const response = await fetch("http://127.0.0.1:8000/forecast/prediction/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            sellerID,
+            category,
+            time_window,
+            weather,
+            day_of_week,
+        }),
+    });
+
+    const data = await response.json();
+    setForecasts(data);
+    setLoading(false);
+};
+
     // now forecasts will contain the fetched data from /forecasts endpoint THIS IS NOT NEARLY FINISHED ONLY FOR OWN DEV
 
     let reservations_avg = "";
@@ -43,7 +58,7 @@ function ForecastPage(){
                 <h1>Sales Forecasts for: {sellerID}</h1>
                 <hr />
                 <div>
-                    <select value={pickupTime} onChange={(e) => setPickupTime(e.target.value)}>
+                    <select value={time_window} onChange={(e) => setTimeWindow(e.target.value)}>
                         <option value="00:00-01:00">0-1am</option>
                         <option value="01:00-02:00">1-2am</option>
                         <option value="02:00-03:00">2-3am</option>
@@ -70,7 +85,7 @@ function ForecastPage(){
                         <option value="23:00-00:00">11-12am</option>                    
                     </select>
                     <hr />
-                    <select value={bundleCategory} onChange={(e) => setBundleCategory(e.target.value)}>
+                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
                         <option value="Bakery">Bakery</option>
                         <option value="Hot Meals">Hot Meals</option>
                         <option value="Fresh Produce">Fresh Produce</option>
@@ -86,7 +101,7 @@ function ForecastPage(){
                     </select>
                     <hr />
                     <p>Day of the week available</p>
-                    <select value={dayOfTheWeek} onChange={(e) => setDayOfTheWeek(e.target.value)}>
+                    <select value={day_of_week} onChange={(e) => setDayOfWeek(e.target.value)}>
                         <option value={1}>Monday</option>
                         <option value={2}>Tuesday</option>
                         <option value={3}>Wednesday</option>
