@@ -1,0 +1,150 @@
+import React, { useEffect, useState } from "react";
+import NavBar from "../reusableComponents/navBar.jsx";
+
+function ForecastPage(){
+    const [forecasts, setForecasts] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [category, setCategory] = useState("Bakery");
+    const [time_window, setTimeWindow] = useState("00:00-01:00");
+    const [weather, setWeather] = useState(0);
+    const [day_of_week, setDayOfWeek] = useState(1);
+    const [sellerID, setSellerID] = useState("");
+    const [no_bundles, setNoBundles] = useState(0);
+
+    // get API data using api/.js helpers
+
+    // need to globalise this reusable code
+    const loadData = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const response = await fetch("http://127.0.0.1:8000/forecast/prediction/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sellerID,
+        category,
+        time_window,
+        weather: Number(weather),
+        day_of_week: Number(day_of_week),
+        no_bundles: Number(no_bundles),
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    const data = await response.json();
+    setForecasts(data);
+  } catch (e) {
+    console.error(e);
+    setError("Failed to load forecast. Check console.");
+    setForecasts(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+    // now forecasts will contain the fetched data from /forecasts endpoint THIS IS NOT NEARLY FINISHED ONLY FOR OWN DEV
+
+    
+
+    return(
+        <div>
+            <div>
+                <NavBar />
+            </div>
+            <div>
+                <h1>Sales Forecasts for: {sellerID}</h1>
+                <hr />
+                <div>
+                    <select value={time_window} onChange={(e) => setTimeWindow(e.target.value)}>
+                        <option value="00:00-01:00">0-1am</option>
+                        <option value="01:00-02:00">1-2am</option>
+                        <option value="02:00-03:00">2-3am</option>
+                        <option value="03:00-04:00">3-4am</option>
+                        <option value="04:00-05:00">4-5am</option>
+                        <option value="05:00-06:00">5-6am</option>
+                        <option value="06:00-07:00">6-7am</option>
+                        <option value="07:00-08:00">7-8am</option>
+                        <option value="08:00-09:00">8-9am</option>
+                        <option value="09:00-10:00">9-10am</option>
+                        <option value="10:00-11:00">10-11am</option>
+                        <option value="11:00-12:00">11-12pm</option>
+                        <option value="12:00-13:00">12-1pm</option>
+                        <option value="13:00-14:00">1-2pm</option>
+                        <option value="14:00-15:00">2-3pm</option>
+                        <option value="15:00-16:00">3-4pm</option>
+                        <option value="16:00-17:00">4-5pm</option>
+                        <option value="17:00-18:00">5-6pm</option>
+                        <option value="18:00-19:00">6-7pm</option>
+                        <option value="19:00-20:00">7-8pm</option>
+                        <option value="20:00-21:00">8-9pm</option>
+                        <option value="21:00-22:00">9-10pm</option>
+                        <option value="22:00-23:00">10-11pm</option>
+                        <option value="23:00-00:00">11-12am</option>                    
+                    </select>
+                    <hr />
+                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <option value="Bakery">Bakery</option>
+                        <option value="Hot Meals">Hot Meals</option>
+                        <option value="Fresh Produce">Fresh Produce</option>
+                        <option value="Dairy">Dairy</option>
+                        <option value="Prepared Salads">Prepared Salads</option>
+                        <option value="Desserts">Desserts</option>
+                    </select>
+                    <hr />
+                    <p>Expected weather conditions</p>
+                    <select value={weather} onChange={(e) => setWeather(e.target.value)}>
+                        <option value={0}>Sunny</option>
+                        <option value={1}>Raining</option>
+                    </select>
+                    <hr />
+                    <p>Day of the week available</p>
+                    <select value={day_of_week} onChange={(e) => setDayOfWeek(e.target.value)}>
+                        <option value={1}>Monday</option>
+                        <option value={2}>Tuesday</option>
+                        <option value={3}>Wednesday</option>
+                        <option value={4}>Thursday</option>
+                        <option value={5}>Friday</option>
+                        <option value={6}>Saturday</option>
+                        <option value={7}>Sunday</option>
+                    </select>
+                    <hr />
+                    <p>No. Bundles to sell</p>
+                    <input
+                    type="number"
+                    min="0"
+                    value={no_bundles}
+                    onChange={(e) => setNoBundles(Number(e.target.value))}
+                    />
+
+                    <hr />
+                    <button onClick={loadData}>Load Forecasts</button>
+                </div>
+                <hr />
+                <div>
+                <h2>Number of expected reservations</h2>
+                <p>
+                    {loading ? "Loading..." : (forecasts?.expected_reservations ?? "-")}
+                </p>
+
+                <h2>Number of expected no shows</h2>
+                <p>
+                    {loading ? "Loading..." : (forecasts?.expected_no_show_count ?? "-")}
+                </p>
+
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                </div>
+
+            </div>
+        </div>
+    );
+}
+
+export default ForecastPage;
