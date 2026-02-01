@@ -1,6 +1,6 @@
 /* Lists all the available bundle postings to the user */
 import fakeBundles from "./fakeBundles";
-import { addFakeOrder, makeClaimCode, getFakeOrders } from "./fakeOrdersStore"
+import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore"
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
 
 
@@ -160,6 +160,50 @@ export default function Listings({ mode = "listings" }) {
     setSelectedBundleId((current) => (current === bundleId ? null : bundleId));
   }
 
+  // return orders back to stock 
+  async function returnOrderToStock(order) {
+    try{
+      if(!order) return;
+
+      if(useFake || apiFailed){
+        if(order.order_id== null){
+          alert("Can't remove fake order: missing order_id");
+          return;
+        }
+        removeFakeOrder(order.order_id);
+        setFakeOrdersVersion((v) => v + 1);
+        alert("(FAKE) Returned to stock (removed from fake orders).");
+        window.location.reload();
+        return;
+      }
+    
+    // real mode 
+    const res = await fetch("/api/marketplace/orders/return",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        order_id: order.order_id,   
+        bundle_id: order.id,       
+      }),
+  });
+
+  if (!res.ok){
+    const text = await res.text();
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+
+  alert("Returned to stock.");
+
+  setLoading(true);
+  window.location.reload();
+  } catch (err){
+    alert(`Return failed: ${err.message}`);
+  }
+}
+
+
+
   return (
     <div style={{ padding: 16, maxWidth: 600 }}>
       <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
@@ -261,9 +305,15 @@ export default function Listings({ mode = "listings" }) {
             </button>
 
             {isOrders ? (
+              <>
               <span style={{ margin: "0 0 10px 0" }}>
                 <strong>Code:</strong> {bundle.claim_code ?? "—"}
               </span>
+
+              <button onClick={() => returnOrderToStock(bundle)}>
+              Return to stock
+              </button>
+              </>
             ) : (
               <button onClick={() => redeemBundleCode(bundle.id)}>
                   Redeem code

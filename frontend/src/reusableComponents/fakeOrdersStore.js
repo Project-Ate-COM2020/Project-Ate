@@ -17,9 +17,13 @@ export function addFakeOrder(order) {
   return next;
 }
 
-export function clearFakeOrders() {
-  localStorage.removeItem(KEY);
-}
+export function removeFakeOrder(orderId) {
+    const orders = getFakeOrders();
+    const next = orders.filter((o) => o.order_id !== orderId);
+    localStorage.setItem(KEY, JSON.stringify(next));
+    return next;
+  }
+
 
 export function makeClaimCode() {
   // Simple fake code generator like "ABCD-1234"
