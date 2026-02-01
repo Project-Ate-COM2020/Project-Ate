@@ -5,7 +5,7 @@ import NavBar from "../reusableComponents/navBar.jsx";
 /* THIS WHOLE PAGE, BASICALLY: TAKE INPUT (CATEGORY, TIME WINDOW, WEATHER, DAY OF WEEK, NO. BUNDLES, SELLER ID) 
 AND RETURN OUTUPT (NO. EXPECTED RESERVATION, NO. EXPECTED NO-SHOWS) FROM BACKEND */
 
-
+/* All that needs to this page is prettying it up */
 
 
 function ForecastPage(){
