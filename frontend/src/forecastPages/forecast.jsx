@@ -28,6 +28,7 @@ function ForecastPage(){
             time_window,
             weather,
             day_of_week,
+            noBundles,
         }),
     });
 
@@ -59,6 +60,7 @@ function ForecastPage(){
                 <hr />
                 <div>
                     <select value={time_window} onChange={(e) => setTimeWindow(e.target.value)}>
+                        <option value="">Select time window</option>
                         <option value="00:00-01:00">0-1am</option>
                         <option value="01:00-02:00">1-2am</option>
                         <option value="02:00-03:00">2-3am</option>
@@ -86,6 +88,7 @@ function ForecastPage(){
                     </select>
                     <hr />
                     <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <option value="">Select category</option>
                         <option value="Bakery">Bakery</option>
                         <option value="Hot Meals">Hot Meals</option>
                         <option value="Fresh Produce">Fresh Produce</option>
@@ -96,12 +99,14 @@ function ForecastPage(){
                     <hr />
                     <p>Expected weather conditions</p>
                     <select value={weather} onChange={(e) => setWeather(e.target.value)}>
+                        <option value="">Select weather</option>
                         <option value={0}>Sunny</option>
                         <option value={1}>Raining</option>
                     </select>
                     <hr />
                     <p>Day of the week available</p>
                     <select value={day_of_week} onChange={(e) => setDayOfWeek(e.target.value)}>
+                        <option value="">Select day of the week</option>
                         <option value={1}>Monday</option>
                         <option value={2}>Tuesday</option>
                         <option value={3}>Wednesday</option>
@@ -112,7 +117,7 @@ function ForecastPage(){
                     </select>
                     <hr />
                     <p>No. Bundles to sell</p>
-                    <input type="number" min="0" placeholder="" value={noBundles} onChange={(e) => setNoBundles(e.target.value)} />
+                    <input type="number" min="1" placeholder="1" value={noBundles} onChange={(e) => setNoBundles(e.target.value)} />
                     <hr />
                     <button onClick={loadData}>Load Forecasts</button>
                 </div>
