@@ -5,10 +5,10 @@ function ForecastPage(){
     const [forecasts, setForecasts] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [category, setCategory] = useState("");
-    const [time_window, setTimeWindow] = useState("");
-    const [weather, setWeather] = useState("");
-    const [day_of_week, setDayOfWeek] = useState("");
+    const [category, setCategory] = useState("Bakery");
+    const [time_window, setTimeWindow] = useState("00:00-01:00");
+    const [weather, setWeather] = useState(0);
+    const [day_of_week, setDayOfWeek] = useState(1);
     const [sellerID, setSellerID] = useState("");
     const [no_bundles, setNoBundles] = useState(0);
 
