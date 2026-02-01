@@ -4,25 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
-
-@dataclass
-class ForecastInput:
-    seller_id: int
-    category: str
-    day_of_week: int
-    time_window: str
-    weather: None
-
-
 def get_similar_listings(df, inp):
     # Get adjacent days (one above, one below, and the day itself)
-    adjacent_days = get_adjacent_days(inp.day_of_week)
-    similar_times = get_adjacent_time_slots(inp.time_window)
+    adjacent_days = get_adjacent_days(inp["day_of_week"])
+    similar_times = get_adjacent_time_slots(inp["time_window"])
     subset = df[
-        (df["category"] == inp.category)
+        (df["category"] == inp["category"])
         & (df["day_of_week"].isin(adjacent_days))
         & (df["time_window"].isin(similar_times))
     ]
+    print(subset)
     return subset
         
 def get_adjacent_time_slots(time_range):
@@ -60,11 +51,10 @@ def get_adjacent_days(day_of_week):
     Returns:
         [prev_day, current_day, next_day]
     """
-    return [
-        (int(day_of_week) - 1) % 7,
-        int(day_of_week),
-        (int(day_of_week) + 1) % 7,
-    ]
+    d = int(day_of_week)  # 1..7
+    prev_day = 7 if d == 1 else d - 1
+    next_day = 1 if d == 7 else d + 1
+    return [prev_day, d, next_day]
     
 def get_no_show_probability(subset):
     """
@@ -79,3 +69,28 @@ def get_no_show_probability(subset):
     if total_reservations == 0:
         return 0.0
     return total_no_show / total_reservations
+
+def get_expected_no_show_count(subset, inp):
+    """get_no_show_probability * no_bundles"""
+    no_show_prob = get_no_show_probability(subset)
+    return no_show_prob * inp["no_bundles"]
+
+
+def get_expected_reservations(subset, inp):
+    """
+    Reservations rate * requested no_bundles
+    where rate = observed_reservations / total_stock
+    """
+    if len(subset) == 0:
+        return 0.0
+    total_reservations = subset["observed_reservations"].sum()
+    total_stock = (
+        subset["observed_reservations"].sum()
+        + subset["unreserved_stock"].sum()
+        + subset["observed_no_show"].sum()
+    )
+    if total_stock == 0:
+        return 0.0
+
+    reservation_rate = total_reservations / total_stock
+    return reservation_rate * inp["no_bundles"]
