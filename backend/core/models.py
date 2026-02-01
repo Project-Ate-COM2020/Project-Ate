@@ -191,6 +191,7 @@ class ForecastInput(models.Model):
     weather_flag = models.IntegerField(default=0)
     observed_reservations = models.IntegerField()
     observed_no_show = models.IntegerField()
+    unreserved_stock = models.IntegerField(null=True, blank=True)
 
     class Meta:
         db_table = 'forecast_input'

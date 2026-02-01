@@ -2,52 +2,57 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
 
 function ForecastPage(){
-    const [forecasts, setForecasts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [forecasts, setForecasts] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [category, setCategory] = useState("");
     const [time_window, setTimeWindow] = useState("");
     const [weather, setWeather] = useState("");
     const [day_of_week, setDayOfWeek] = useState("");
     const [sellerID, setSellerID] = useState("");
-    const [noBundles, setNoBundles] = useState(0);
+    const [no_bundles, setNoBundles] = useState(0);
 
     // get API data using api/.js helpers
 
     // need to globalise this reusable code
     const loadData = async () => {
+  try {
     setLoading(true);
+    setError(null);
 
     const response = await fetch("http://127.0.0.1:8000/forecast/prediction/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            sellerID,
-            category,
-            time_window,
-            weather,
-            day_of_week,
-        }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sellerID,
+        category,
+        time_window,
+        weather: Number(weather),
+        day_of_week: Number(day_of_week),
+        no_bundles: Number(no_bundles),
+      }),
     });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
 
     const data = await response.json();
     setForecasts(data);
+  } catch (e) {
+    console.error(e);
+    setError("Failed to load forecast. Check console.");
+    setForecasts(null);
+  } finally {
     setLoading(false);
+  }
 };
+
 
     // now forecasts will contain the fetched data from /forecasts endpoint THIS IS NOT NEARLY FINISHED ONLY FOR OWN DEV
 
-    let reservations_avg = "";
-    let noShows_avg = "";
-
-    if (loading) {
-        reservations_avg = "Loading...";
-        noShows_avg = "loading...";
-    } else {
-        reservations_avg = forecasts.reservation_avg;
-        noShows_avg = forecasts.noShow_avg;
-    }
+    
 
     return(
         <div>
@@ -91,7 +96,7 @@ function ForecastPage(){
                         <option value="Fresh Produce">Fresh Produce</option>
                         <option value="Dairy">Dairy</option>
                         <option value="Prepared Salads">Prepared Salads</option>
-                        <option value="Deserts">Deserts</option>
+                        <option value="Desserts">Desserts</option>
                     </select>
                     <hr />
                     <p>Expected weather conditions</p>
@@ -112,17 +117,31 @@ function ForecastPage(){
                     </select>
                     <hr />
                     <p>No. Bundles to sell</p>
-                    <input type="number" min="0" placeholder="" value={noBundles} onChange={(e) => setNoBundles(e.target.value)} />
+                    <input
+                    type="number"
+                    min="0"
+                    value={no_bundles}
+                    onChange={(e) => setNoBundles(Number(e.target.value))}
+                    />
+
                     <hr />
                     <button onClick={loadData}>Load Forecasts</button>
                 </div>
                 <hr />
                 <div>
-                    <h2>Number of expected reservations</h2>
-                    <p>{reservations_avg}</p>
-                    <h2>Number of expected no shows</h2>
-                    <p>{noShows_avg}</p>
+                <h2>Number of expected reservations</h2>
+                <p>
+                    {loading ? "Loading..." : (forecasts?.expected_reservations ?? "-")}
+                </p>
+
+                <h2>Number of expected no shows</h2>
+                <p>
+                    {loading ? "Loading..." : (forecasts?.expected_no_show_count ?? "-")}
+                </p>
+
+                {error && <p style={{ color: "red" }}>{error}</p>}
                 </div>
+
             </div>
         </div>
     );

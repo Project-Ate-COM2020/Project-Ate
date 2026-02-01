@@ -20,6 +20,7 @@ class ForecastInputSerializer(serializers.ModelSerializer):
             "weather_flag",
             "observed_reservations",
             "observed_no_show",
+            "unreserved_stock",
         ]
 
 
