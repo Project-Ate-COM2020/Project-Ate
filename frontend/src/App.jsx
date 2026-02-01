@@ -28,8 +28,8 @@ function App() {
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/seller/marketplace" element={<SellerMarketplace />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/forecast" element={<ForecastPage />} />
+        <Route path="/seller/analytics" element={<AnalyticsPage />} />
+        <Route path="/seller/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
