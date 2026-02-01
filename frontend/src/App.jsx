@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 // import the files for each URL endpoint
+import BuyerSignupPage from "./authorisationPages/buyerSignUpPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
 import ForecastPage from "./forecastPages/forecast.jsx";
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup/buyer" element={<BuyerSignupPage />} />
 
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
