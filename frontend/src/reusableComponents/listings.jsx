@@ -4,7 +4,7 @@ import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./f
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
 
 
-
+// Automatically assumes the state is listings unless metioned elsewhere 
 export default function Listings({ mode = "listings" }) {
 
   const isOrders = mode === "orders"; /*changes the mode when on the /orders page*/
@@ -12,15 +12,18 @@ export default function Listings({ mode = "listings" }) {
   const [bundles, setBundles] = useState([]); /* It is a hook that stores the bundles and the function to load bundles from memory */ 
   const [loading, setLoading] = useState(true);/* It stores a true or false value depending on which toggle to use*/ 
 
-  // manual toggle: if clicked forces to user fake bundles instead of real bundles 
+  // manual toggle for fake and real data for testing purposes 
   const [useFake, setUseFake] = useState(false); 
 
-  // This is the Auto fall back if the API fails
+  // This is the Fall back if the API fails 
   const [apiFailed, setApiFailed] = useState(false); 
 
+  // stores which bundle has been selected for the info button to appear 
   const [selectedBundleId, setSelectedBundleId] = useState(null);
-  const [fakeOrdersVersion, setFakeOrdersVersion] = useState(0);
 
+  // version counters forcing react to upadate when the remove button is pressed 
+  const [fakeOrdersVersion, setFakeOrdersVersion] = useState(0);
+  const [ordersVersion, setOrdersVersion] = useState(0)
  
 
   // This a an async function that loads the bundles whilst the rest of the page loads 
@@ -80,21 +83,20 @@ export default function Listings({ mode = "listings" }) {
     }
 
     loadBundles();
-  }, [isOrders]);
+  }, [isOrders, ordersVersion]);
 
 
-  // Decide which bundle to use real or fake but doing a cache calculation 
-  // only re does the calculation if any of the 3 var changes in the array below 
+  // updates the react components when the variables in the [] change on the webpage 
   const bundlesToShow = useMemo(() => {
     if (isOrders) {
       if (useFake) return getFakeOrders();
-      if (apiFailed) return getFakeOrders();   // <- fallback
+      if (apiFailed) return getFakeOrders();   // fallback
       return bundles;
     }
   
     if (useFake || apiFailed) return fakeBundles;
     return bundles;
-  }, [isOrders, useFake, apiFailed, bundles]);
+  }, [isOrders, useFake, apiFailed, bundles,fakeOrdersVersion,]);
 
   // find the selected bundle object so the info data is correct for it 
   const selectedBundle = useMemo(() => {
@@ -156,6 +158,7 @@ export default function Listings({ mode = "listings" }) {
     }
   }
 
+  //detirmines if a bundles info is on display or not and toggles between the close and the info button
   function toggleInfo(bundleId) {
     setSelectedBundleId((current) => (current === bundleId ? null : bundleId));
   }
@@ -173,11 +176,10 @@ export default function Listings({ mode = "listings" }) {
         removeFakeOrder(order.order_id);
         setFakeOrdersVersion((v) => v + 1);
         alert("(FAKE) Returned to stock (removed from fake orders).");
-        window.location.reload();
         return;
       }
     
-    // real mode 
+      // REAL MODE
     const res = await fetch("/api/marketplace/orders/return",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -195,8 +197,9 @@ export default function Listings({ mode = "listings" }) {
 
   alert("Returned to stock.");
 
-  setLoading(true);
-  window.location.reload();
+  setBundles((prev) => prev.filter((o) => o.order_id !== order.order_id));
+  setOrdersVersion((v) => v + 1);
+  
   } catch (err){
     alert(`Return failed: ${err.message}`);
   }
@@ -208,7 +211,7 @@ export default function Listings({ mode = "listings" }) {
     <div style={{ padding: 16, maxWidth: 600 }}>
       <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
 
-      {/* Toggle + status */}
+      {/* toggle: allows you to compare real and fake data */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <input
@@ -234,7 +237,7 @@ export default function Listings({ mode = "listings" }) {
         )}
       </div>
 
-      {/*info dropdown panel that pushes the list down */}
+      {/*info dropdown panel */}
       {selectedBundle && (
         <div
           style={{
@@ -250,7 +253,7 @@ export default function Listings({ mode = "listings" }) {
               <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
             </div>
 
-          <button onClick={() => setSelectedBundleId(null)}>Close</button>
+          <button type="button" onClick={() => setSelectedBundleId(null)}>Close</button>
           </div>
 
           <p style={{ margin: "8px 0" }}>
@@ -282,7 +285,7 @@ export default function Listings({ mode = "listings" }) {
       <div
         style={{
           maxHeight: 320,          // controls how tall before scrolling
-          overflowY: "auto",       // enables scroll wheel / trackpad scrolling
+          overflowY: "auto",       // enables scrolling
           border: "1px solid #ddd",
           borderRadius: 8,
           padding: 12,
@@ -299,13 +302,15 @@ export default function Listings({ mode = "listings" }) {
             <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name}</h3>
             <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
 
-            <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => toggleInfo(bundle.id)}>
-              {selectedBundleId === bundle.id ? "Hide info" : "Info"}
-            </button>
-
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap"}}>
+              <button
+                type="button"
+                onClick={() => toggleInfo(bundle.id)}
+              >
+                {selectedBundleId === bundle.id ? "Hide info" : "Info"}
+              </button>
             {isOrders ? (
-              <>
+              <div style={{display: "flex",gap: 8, alignItems: "center", flexWrap: "wrap",}}>
               <span style={{ margin: "0 0 10px 0" }}>
                 <strong>Code:</strong> {bundle.claim_code ?? "—"}
               </span>
@@ -313,7 +318,7 @@ export default function Listings({ mode = "listings" }) {
               <button onClick={() => returnOrderToStock(bundle)}>
               Return to stock
               </button>
-              </>
+              </div>
             ) : (
               <button onClick={() => redeemBundleCode(bundle.id)}>
                   Redeem code
