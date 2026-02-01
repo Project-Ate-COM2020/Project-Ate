@@ -17,3 +17,11 @@ $gradient-bottom-right: linear-gradient(135deg, #1f2421ff, #216869ff, #49a078ff,
 $gradient-top-left: linear-gradient(225deg, #1f2421ff, #216869ff, #49a078ff, #9cc5a1ff, #dce1deff);
 $gradient-bottom-left: linear-gradient(315deg, #1f2421ff, #216869ff, #49a078ff, #9cc5a1ff, #dce1deff);
 $gradient-radial: radial-gradient(#1f2421ff, #216869ff, #49a078ff, #9cc5a1ff, #dce1deff); */
+
+/* This is background colours for every page - ensures consistency */
+html, body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1f2421ff, #216869ff, #49a078ff, #9cc5a1ff, #dce1deff);
+    margin: 0;
+    padding: 0;
+}
