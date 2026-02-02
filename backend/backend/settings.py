@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     
     # For specific API development
     'rest_framework',
+    # for the game to run
+    'game.apps.GameConfig',
 ]
 
 MIDDLEWARE = [

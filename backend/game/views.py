@@ -11,7 +11,7 @@ from .serializers import ReservationSerializer
 # Create your views here.
 
 class GameSummaryView(APIView):
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
@@ -27,7 +27,7 @@ class GameSummaryView(APIView):
             })
     
 class RecentRescuesView(ListAPIView):
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
     serializer_class = ReservationSerializer
 
     def get_queryset(self):

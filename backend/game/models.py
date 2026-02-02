@@ -18,7 +18,7 @@ class Reservation(models.Model):
     consumer_id = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     ##establishing consumer_id as a foreign key so we can do the recent reservations count
     ##if a consumer is deleted then reservations are also deleted 
-    STATUS_CHOICES = [("no-show"), ("collected"), ("expired")]
+    STATUS_CHOICES = [("no-show", "No show"), ("collected", "Collected"), ("expired", "Expired")]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     ##defines status as only being able to take the values no-show, collected or expired
     collected_at = models.DateTimeField() 
