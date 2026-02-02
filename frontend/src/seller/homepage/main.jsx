@@ -34,6 +34,7 @@ then implement MVP, then first sprint before pull requesting this branch hopeful
 
 
 function SellerHomePage(){
+    const [location, setLocation] = useState("Exeter");
     return(
     <div>
     <div>
