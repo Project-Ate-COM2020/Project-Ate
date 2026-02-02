@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 // import the files for each URL endpoint
-import BuyerSignupPage from "./authorisationPages/buyerSignUpPage.jsx";
+import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
 import ForecastPage from "./forecastPages/forecast.jsx";
@@ -23,13 +23,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element = {<PageNotFound />} />
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<userHomePage />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
-
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
