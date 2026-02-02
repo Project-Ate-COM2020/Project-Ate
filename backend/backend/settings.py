@@ -43,9 +43,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # For specific API development
-    "rest_framework",
-    "rest_framework_simplejwt",
-    "marketplace",
+    'rest_framework',
+    # for the game to run
+    'game.apps.GameConfig',
 ]
 
 MIDDLEWARE = [
