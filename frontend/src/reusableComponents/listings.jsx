@@ -1,40 +1,340 @@
-/*lists all the avable bundle postings to the user*/
-
-import { useEffect, useState } from "react";
-
-export default function Listings() {
-  const [bundles, setBundles] = useState([]);
-
-  const fakeBundles = [
-    { id: 1, name: "Student Bundle", price: 9.99 },
-    { id: 2, name: "Meal Prep Bundle", price: 14.5 },
-    { id: 3, name: "Family Bundle", price: 24.99 },
-  ];
+/* Lists all the available bundle postings to the user */
+import fakeBundles from "./fakeBundles";
+import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore"
+import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
 
 
+// Automatically assumes the state is listings unless metioned elsewhere 
+export default function Listings({ mode = "listings" }) {
+
+  const isOrders = mode === "orders"; /*changes the mode when on the /orders page*/
+
+  const [bundles, setBundles] = useState([]); /* It is a hook that stores the bundles and the function to load bundles from memory */ 
+  const [loading, setLoading] = useState(true);/* It stores a true or false value depending on which toggle to use*/ 
+
+  // manual toggle for fake and real data for testing purposes 
+  const [useFake, setUseFake] = useState(false); 
+
+  // This is the Fall back if the API fails 
+  const [apiFailed, setApiFailed] = useState(false); 
+
+  // stores which bundle has been selected for the info button to appear 
+  const [selectedBundleId, setSelectedBundleId] = useState(null);
+
+  // version counters forcing react to upadate when the remove button is pressed 
+  const [fakeOrdersVersion, setFakeOrdersVersion] = useState(0);
+  const [ordersVersion, setOrdersVersion] = useState(0)
+ 
+
+  // This a an async function that loads the bundles whilst the rest of the page loads 
   useEffect(() => {
-    fetch("/api/bundles") // need to connect to json to get all bundle postings
-      .then(res => res.json())
-      .then(data => setBundles(data));
-  }, []);
+    async function loadBundles() {
+      try {
+        setLoading(true);
+        setApiFailed(false);
+
+        // **************************************************
+        const url = isOrders
+          ? "/api/marketplace/orders"
+          : "/api/marketplace/bundles";
+
+        const res = await fetch(url, { credentials: "include" });
+        //*************************************************** -> need update to cnnect to the backend 
+
+
+        // allows you to debug if there is any issues connecting to django backend 
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        // converts data into json 
+        const data = await res.json(); 
+
+        // normalizes orders and bundles 
+        const normalised = isOrders
+          ? data.map((order)=>{
+            const collection = order.collection; /*Need to edit to connect to the backend */
+            return {
+              id: posting.id,
+              name: posting.name,
+              price: posting.price,
+              company: posting.company,
+              collectionLocation: posting.collectionLocation,
+              expiryDate: posting.expiryDate,
+              allergens: posting.allergens,
+              description: posting.description,
+              claim_code: order.claim_code,
+            };
+          })
+        : data;
+
+        // If backend returns empty list return error message and use fake bundles 
+        if (!Array.isArray(normalised) || normalised.length === 0) {
+          setApiFailed(true);
+          setBundles([]);
+        } else {
+          setBundles(normalised);
+        }
+      } catch (err) {
+        console.error("Failed to load bundles:", err);
+        setApiFailed(true);
+        setBundles([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadBundles();
+  }, [isOrders, ordersVersion]);
+
+
+  // updates the react components when the variables in the [] change on the webpage 
+  const bundlesToShow = useMemo(() => {
+    if (isOrders) {
+      if (useFake) return getFakeOrders();
+      if (apiFailed) return getFakeOrders();   // fallback
+      return bundles;
+    }
+  
+    if (useFake || apiFailed) return fakeBundles;
+    return bundles;
+  }, [isOrders, useFake, apiFailed, bundles,fakeOrdersVersion,]);
+
+  // find the selected bundle object so the info data is correct for it 
+  const selectedBundle = useMemo(() => {
+    if (selectedBundleId == null) return null;
+    return bundlesToShow.find((b) => b.id === selectedBundleId) || null;
+  }, [selectedBundleId, bundlesToShow]);
+
+
+  // POST OP to redeem code
+
+  async function redeemBundleCode(bundleId) {
+    try {
+      // Find the bundle object (needed for fake orders)
+      const bundle = bundlesToShow.find((b) => b.id === bundleId);
+      if (!bundle) {
+        alert("Bundle not found");
+        return;
+      }
+  
+      // FAKE MODE
+      if (useFake || apiFailed) {
+        const claim = makeClaimCode();
+  
+        addFakeOrder({
+          order_id: Date.now(),              // fake unique id
+          claim_code: claim,
+          status: "RESERVED",
+          created_at: new Date().toISOString(),
+  
+          // store full bundle info so Orders page can render it
+          ...bundle,
+        });
+  
+        alert(`(FAKE) Order created!\nCode: ${claim}`);
+        return;
+      }
+  
+      // REAL MODE (backend)
+      const res = await fetch("/api/marketplace/orders/redeem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          bundle_id: bundleId,
+        }),
+      });
+  
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
+  
+      const data = await res.json();
+      alert(`Redeemed successfully! Order ID: ${data.order_id ?? "OK"}`);
+    } catch (err) {
+      alert(`Redeem failed: ${err.message}`);
+    }
+  }
+
+  //detirmines if a bundles info is on display or not and toggles between the close and the info button
+  function toggleInfo(bundleId) {
+    setSelectedBundleId((current) => (current === bundleId ? null : bundleId));
+  }
+
+  // return orders back to stock 
+  async function returnOrderToStock(order) {
+    try{
+      if(!order) return;
+
+      if(useFake || apiFailed){
+        if(order.order_id== null){
+          alert("Can't remove fake order: missing order_id");
+          return;
+        }
+        removeFakeOrder(order.order_id);
+        setFakeOrdersVersion((v) => v + 1);
+        alert("(FAKE) Returned to stock (removed from fake orders).");
+        return;
+      }
+    
+      // REAL MODE
+    const res = await fetch("/api/marketplace/orders/return",{
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        order_id: order.order_id,   
+        bundle_id: order.id,       
+      }),
+  });
+
+  if (!res.ok){
+    const text = await res.text();
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+
+  alert("Returned to stock.");
+
+  setBundles((prev) => prev.filter((o) => o.order_id !== order.order_id));
+  setOrdersVersion((v) => v + 1);
+  
+  } catch (err){
+    alert(`Return failed: ${err.message}`);
+  }
+}
+
+
 
   return (
-    <div>
-      <h2>Available Bundles</h2>
+    <div style={{ padding: 16, maxWidth: 600 }}>
+      <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
 
-      {fakeBundles.map(bundle => (
-        <div key={bundle.id}>
-          <h3>{bundle.name}</h3>
-          <p>£{bundle.price}</p>
-          <button onClick={() => alert("Add link to info page")}>
-            Info
-          </button>
+      {/* toggle: allows you to compare real and fake data */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input
+            type="checkbox"
+            checked={useFake}
+            onChange={(e) => setUseFake(e.target.checked)}
+          />
+          Use fake bundles
+        </label>
 
-          <button onClick={() => alert("Add link to info page") }>
-            Add to Cart
-          </button>
+        {loading && <span>Loading…</span>}
+
+        {!loading && apiFailed && !useFake && (
+          <span style={{ fontSize: 12 }}>
+            API unavailable/empty → showing fake bundles
+          </span>
+        )}
+
+        {!loading && !apiFailed && !useFake && (
+          <span style={{ fontSize: 12 }}>
+            Showing API bundles
+          </span>
+        )}
+      </div>
+
+      {/*info dropdown panel */}
+      {selectedBundle && (
+        <div
+          style={{
+            border: "1px solid #ddd",
+            borderRadius: 8,
+            padding: 12,
+            marginBottom: 12,
+          }}
+        >
+          <div style={{display: "flex", justifyContent: "space-between", gap: 12}}>
+            <div>
+              <h3 style={{margin: 0}}>{selectedBundle.name}</h3>
+              <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
+            </div>
+
+          <button type="button" onClick={() => setSelectedBundleId(null)}>Close</button>
+          </div>
+
+          <p style={{ margin: "8px 0" }}>
+            <strong>Company:</strong> {selectedBundle.company ?? "—"}
+          </p>
+          <p style={{ margin: "8px 0" }}>
+            <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "—"}
+          </p>
+          <p style={{ margin: "8px 0" }}>
+            <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "—"}
+          </p>
+          <p style={{ margin: "8px 0" }}>
+            <strong>Allergens:</strong>{" "}
+            {Array.isArray(selectedBundle.allergens) && selectedBundle.allergens.length > 0
+              ? selectedBundle.allergens.join(", ")
+              : "None listed"}
+          </p>
+
+          {selectedBundle.description && (
+            <p style={{ margin: "8px 0" }}>
+              <strong>Description:</strong> {selectedBundle.description}
+            </p>
+          )}
         </div>
-      ))}
+      )}
+
+
+      {/* Scrollable list container */}
+      <div
+        style={{
+          maxHeight: 320,          // controls how tall before scrolling
+          overflowY: "auto",       // enables scrolling
+          border: "1px solid #ddd",
+          borderRadius: 8,
+          padding: 12,
+        }}
+      >
+        {bundlesToShow.map((bundle) => (
+          <div
+            key={bundle.id}
+            style={{
+              borderBottom: "1px solid #eee",
+              padding: "12px 0",
+            }}
+          >
+            <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name}</h3>
+            <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
+
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap"}}>
+              <button
+                type="button"
+                onClick={() => toggleInfo(bundle.id)}
+              >
+                {selectedBundleId === bundle.id ? "Hide info" : "Info"}
+              </button>
+            {isOrders ? (
+              <div style={{display: "flex",gap: 8, alignItems: "center", flexWrap: "wrap",}}>
+              <span style={{ margin: "0 0 10px 0" }}>
+                <strong>Code:</strong> {bundle.claim_code ?? "—"}
+              </span>
+
+              <button onClick={() => returnOrderToStock(bundle)}>
+              Return to stock
+              </button>
+              </div>
+            ) : (
+              <button onClick={() => redeemBundleCode(bundle.id)}>
+                  Redeem code
+              </button>
+            )}
+
+            </div>
+          </div>
+        ))}
+
+        {bundlesToShow.length === 0 && !loading && (
+          <p style={{ margin: 0 }}>
+            {isOrders ? "No orders yet." : "No bundles available."}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
