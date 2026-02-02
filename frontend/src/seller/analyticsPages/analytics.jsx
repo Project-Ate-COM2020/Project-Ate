@@ -1,6 +1,6 @@
 // importing api functions to fetch data
 import FetchData from "./fetchData";
-import NavBar from "../reusableComponents/navBar";
+import NavBar from "../../reusableComponents/navBar";
 
 // defining main function of component
 function Analytics() {
