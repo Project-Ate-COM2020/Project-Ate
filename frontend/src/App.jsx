@@ -25,6 +25,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/user" element={<UserHomePage />} />
+        <Route path="/seller" element={<userHomePage />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
