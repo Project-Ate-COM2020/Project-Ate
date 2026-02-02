@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import pandas as pd
 import numpy as np
+from core.models import Reservation
+from django.db.models import F, Sum, DecimalField
 
 # Here I will decide what analytics i WANT TO BE AVAILABLE TO THE USER
 # For now:
@@ -19,10 +21,26 @@ def get_number_of_listings_by_seller(df, seller_id):
     return len(subset)
 
 def get_total_reservations_by_seller(df, seller_id):
-    return df[df["seller_id"] == seller_id]["quantity"].sum()
+    return Reservation.objects.filter(
+        posting__seller__seller_id=seller_id
+    ).count()
 
 def get_total_revenue_by_seller(df, seller_id):
-    return df[df["seller_id"] == seller_id]["price"].sum()
+    result = (
+        Reservation.objects
+        .filter(
+            posting__seller__seller_id=seller_id,
+            status__in=["reserved", "collected"]
+        )
+        .aggregate(
+            total_revenue=Sum(
+                F("posting__price"),
+                output_field=DecimalField(max_digits=12, decimal_places=2)
+            )
+        )
+    )
+
+    return result["total_revenue"] or 0
 
 def get_reduction_in_food_waste_by_seller(df, seller_id):
     seller_df = df[df["seller_id"] == seller_id]
@@ -31,3 +49,9 @@ def get_reduction_in_food_waste_by_seller(df, seller_id):
         return 0.0
     collected = seller_df[seller_df['status'] == 'collected']
     return len(collected) / total_listings * 100.0
+
+def get_total_no_shows_by_seller(seller_id):
+    return Reservation.objects.filter(
+        posting__seller__seller_id=seller_id,
+        status="no-show",
+    ).count()
