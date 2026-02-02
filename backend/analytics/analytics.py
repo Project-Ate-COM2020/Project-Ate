@@ -11,7 +11,14 @@ import numpy as np
 
 
 def get_number_of_listings_by_seller(df, seller_id):
-    return len(df[df["seller_id"] == seller_id])
+    #print(df)
+    #print(seller_id)
+    seller_id = int(seller_id)
+    subset = df[
+        (df["seller_id"] == seller_id)
+    ]
+    print(subset)
+    return subset
 
 def get_total_reservations_by_seller(df, seller_id):
     return df[df["seller_id"] == seller_id]["quantity"].sum()
