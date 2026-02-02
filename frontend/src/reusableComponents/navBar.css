@@ -3,7 +3,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #dce1deff;
+  background-color: var(--accent2);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -11,13 +11,14 @@ nav > a {
   font-size: 1.5rem;
   font-weight: bold;
   text-decoration: none;
-  color: #1f2421ff;
+  color: var(--accent1);
 }
 
-nav > a:hover {
-  color: #216869ff;
+nav a:hover {
+  color: var(--accent4);
 }
 
+/* the buttons normally */
 nav ul {
   display: flex;
   list-style: none;
@@ -28,11 +29,11 @@ nav ul {
 
 nav li a {
   text-decoration: none;
-  color: #1f2421ff;
+  color: var(--accent1);
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 nav li a:hover {
-  color: #216869ff;
+  color: var(--accent4);
 }
