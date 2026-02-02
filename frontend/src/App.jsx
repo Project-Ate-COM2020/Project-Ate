@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import the files for each URL endpoint
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
 import BuyerSignupPage from "./authorisationPages/buyerSignUpPage.jsx";
+import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
 import ForecastPage from "./forecastPages/forecast.jsx";
@@ -13,6 +14,8 @@ import GamePage from "./gamePages/game";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
+//import Basket from "./Basket/basket.jsx";
+import Orders from "./orders/orders.jsx"
 import SellerHomePage from "./homePage/sellerHomePage.jsx";
 import SellerMarketplace from "./marketplacePages/sellerMarketplace.jsx";
 
@@ -22,6 +25,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/user" element={<UserHomePage />} />
+        <Route path="/seller" element={<userHomePage />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
@@ -34,6 +39,8 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
+        {/*<Route path="/basket" element={<Basket />} />*/}
+        <Route path="/orders" element={<Orders />}/>
       </Routes>
     </Router>
   );
