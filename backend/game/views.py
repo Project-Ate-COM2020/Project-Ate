@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import isAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
 from .models import Consumer, Reservation
 from .serializers import ReservationSerializer
@@ -11,7 +11,7 @@ from .serializers import ReservationSerializer
 # Create your views here.
 
 class GameSummaryView(APIView):
-    permission_classes = isAuthenticated
+    permission_classes = IsAuthenticated
 
     def get(self, request):
 
@@ -27,7 +27,7 @@ class GameSummaryView(APIView):
             })
     
 class RecentRescuesView(ListAPIView):
-    permission_classes = isAuthenticated
+    permission_classes = IsAuthenticated
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
@@ -42,3 +42,6 @@ class RecentRescuesView(ListAPIView):
 class TestView(APIView):
     def get(self, request):
         return Response({"ok": True})
+    
+
+    
