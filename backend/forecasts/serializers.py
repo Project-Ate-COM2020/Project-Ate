@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ForecastInput, ForecastOutput
+from .models import ForecastInput, ForecastOutput # type: ignore
 
 
 class ForecastInputSerializer(serializers.ModelSerializer):
