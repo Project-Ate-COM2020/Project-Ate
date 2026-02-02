@@ -1,5 +1,9 @@
 import React from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
+import Analytics from "./analytics.jsx"
+import SellerInfo from "./sellerInfo.jsx"
+import ReservedBundles from "./reservedBundles.jsx"
+import ForecastNewBundles from "./forecastNewBundles.jsx"
 
 
 // This will now be the profile the seller sees
@@ -39,7 +43,7 @@ function SellerHomePage(){
         <SellerInfo />
         <Analytics />
         <ReservedBundles />
-        <ForecastsNewBundles />
+        <ForecastNewBundles />
     </div>
     </div>
     );
