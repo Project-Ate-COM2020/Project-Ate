@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../reusableComponents/navBar.jsx";
+import NavBar from "../../reusableComponents/navBar.jsx";
 
 function ForecastPage(){
     const [forecasts, setForecasts] = useState(null);
