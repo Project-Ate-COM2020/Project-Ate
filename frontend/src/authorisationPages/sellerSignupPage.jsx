@@ -1,13 +1,13 @@
-// jsx for the buyer sign up page (matches LoginPage styling)
+// jsx for the seller sign up page ( matches LoginPage + BuyerSignupPage styling )
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupBuyer } from "../api/authorisation";
+import { signupSeller } from "../api/authorisation";
 
-export default function BuyerSignupPage() {
+export default function SellerSignupPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
-  const [displayName, setDisplayName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
@@ -35,10 +35,14 @@ export default function BuyerSignupPage() {
     setIsLoading(true);
 
     try {
-      // create buyer account
-      await signupBuyer({ email, password: password1, displayName });
+      // create seller account
+      await signupSeller({
+        email,
+        password: password1,
+        businessName,
+      });
 
-      setSuccess("Account successfully created. You can now log in.");
+      setSuccess("Seller account successfully created. You can now log in.");
       navigate("/login");
     } catch (err) {
       // make error messages user friendly
@@ -51,7 +55,7 @@ export default function BuyerSignupPage() {
           "Unable to connect to the server, please check your internet connection";
       }
 
-      // requestJson throws Error(...) with message 
+      // requestJson throws Error(...) with message
       if (typeof err?.message === "string" && err.message.trim()) {
         message = err.message;
       }
@@ -63,11 +67,10 @@ export default function BuyerSignupPage() {
   };
 
   return (
-
     <div style={styles.page}>
       <div style={styles.card}>
         <h1 style={styles.title}>Project-Ate</h1>
-        <p style={styles.subtitle}>Buyer sign up</p>
+        <p style={styles.subtitle}>Seller sign up</p>
 
         {/* Error or success feedback */}
         {error && <div style={styles.error}>{error}</div>}
@@ -75,13 +78,13 @@ export default function BuyerSignupPage() {
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <label style={styles.label}>
-            Display name
+            Business name
             <input
               style={styles.input}
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="e.g. Will Brown"
-              autoComplete="name"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="e.g. Green Street Bakery"
+              autoComplete="organization"
               required
             />
           </label>
@@ -93,7 +96,7 @@ export default function BuyerSignupPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. WillBrown@example.com"
+              placeholder="e.g. bakery@example.com"
               autoComplete="email"
               required
             />
@@ -127,7 +130,7 @@ export default function BuyerSignupPage() {
 
           {/* disable button while request is ongoing */}
           <button style={styles.primaryBtn} disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create account"}
+            {isLoading ? "Creating account..." : "Create seller account"}
           </button>
         </form>
 
@@ -146,9 +149,9 @@ export default function BuyerSignupPage() {
   );
 }
 
-
-// same base as login page ( developed after)
+// same base as login + buyer signup page
 const styles = {
+
   page: {
     minHeight: "100vh",
     display: "grid",
@@ -171,7 +174,7 @@ const styles = {
   title: {
     margin: 0,
     fontSize: 24,
-    user_select: "none",
+    userSelect: "none",
     cursor: "default",
   },
 
