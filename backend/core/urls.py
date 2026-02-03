@@ -10,6 +10,7 @@ router = DefaultRouter()
 router.register("forecast-input", ForecastInputViewSet, basename='forecast-input')
 router.register("forecast-output", ForecastOutputViewSet, basename='forecast-output')
 router.register("analytics", AnalyticView, basename='analytics')
+router.register("seller", SellerAddressView, basename='seller-address')
 
 urlpatterns = [
     path('', include(router.urls)),
