@@ -28,6 +28,9 @@ function App() {
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
+        <Route path="/seller/marketplace" element={<SellerMarketplace />} />
+        <Route path="/seller/analytics" element={<AnalyticsPage />} />
+        <Route path="/seller/forecast" element={<ForecastPage />} />
         <Route path="*" element={<PageNotFound />} />
         {/*<Route path="/basket" element={<Basket />} />*/}
         <Route path="/orders" element={<Orders />}/>
