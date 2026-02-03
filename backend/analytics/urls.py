@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import TotalListingsView, TotalRevenueView, TotalReservationsView, FoodWasteReductionView
+from .views import TotalListingsView, TotalRevenueView, TotalReservationsView, FoodWasteReductionView, TotalNoShowsView
 
 router = DefaultRouter()
 # router.register("forecast-input", ForecastInputViewSet, basename='forecast-input')
@@ -12,4 +12,6 @@ urlpatterns = [
     path('total-revenue/', TotalRevenueView.as_view(), name='total-revenue'),
     path('total-reservations/', TotalReservationsView.as_view(), name='total-reservations'),
     path('food-waste-reduction/', FoodWasteReductionView.as_view(), name='food-waste-reduction'),
+    path('total-no-shows/', TotalNoShowsView.as_view(), name='total_no_shows')
+    
 ]

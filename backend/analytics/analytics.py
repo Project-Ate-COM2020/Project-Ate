@@ -20,7 +20,8 @@ def get_number_of_listings_by_seller(df, seller_id):
     print(subset)
     return len(subset)
 
-def get_total_reservations_by_seller(df, seller_id):
+def get_total_reservations_by_seller(seller_id):
+    """Get total reservations for a seller by joining Reservation -> Posting -> Seller"""
     return Reservation.objects.filter(
         posting__seller__seller_id=seller_id
     ).count()
@@ -51,6 +52,7 @@ def get_reduction_in_food_waste_by_seller(df, seller_id):
     return len(collected) / total_listings * 100.0
 
 def get_total_no_shows_by_seller(seller_id):
+    """Get total no-shows for a seller by joining Reservation -> Posting -> Seller"""
     return Reservation.objects.filter(
         posting__seller__seller_id=seller_id,
         status="no-show",

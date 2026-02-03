@@ -11,10 +11,16 @@ import useLoadData from '../loadDataHook.jsx';
 import './analytics.css';
 
 function Analytics() {
-    const { data: totalListings, loading: loadingListings } = useLoadData('analytics/totalListings', { sellerID: 1 });
-    const { data: totalReservations, loading: loadingReservations } = useLoadData('analytics/totalReservations', { sellerID: 1 });
-    const { data: totalNoShows, loading: loadingNoShows } = useLoadData('analytics/totalNoshows', { sellerID: 1 });
-    const { data: totalRevenue, loading: loadingRevenue } = useLoadData('analytics/totalRevenue', { sellerID: 1 });
+    const { data: listingsData, loading: loadingListings } = useLoadData('analytics/total-listings', { seller_id: 1 });
+    const { data: reservationsData, loading: loadingReservations } = useLoadData('analytics/total-reservations', { seller_id: 1 });
+    const { data: noShowsData, loading: loadingNoShows } = useLoadData('analytics/total-no-shows', { seller_id: 1 });
+    const { data: revenueData, loading: loadingRevenue } = useLoadData('analytics/total-revenue', { seller_id: 1 });
+
+    // Extract values from response objects (handle both nested and plain responses)
+    const totalListings = typeof listingsData === 'number' ? listingsData : (listingsData?.total_listings ?? 0);
+    const totalReservations = typeof reservationsData === 'number' ? reservationsData : (reservationsData?.total_reservations ?? 0);
+    const totalNoShows = typeof noShowsData === 'number' ? noShowsData : (noShowsData?.total_no_shows ?? 0);
+    const totalRevenue = typeof revenueData === 'number' ? revenueData : (revenueData?.total_revenue ?? 0);
 
     // now define the values for every statistic we will display
 
@@ -45,23 +51,30 @@ function Analytics() {
     if (loadingListings || loadingReservations || loadingNoShows) {
         percentageListingsCollected = "Loading..."
     } else {
-        let totalUnreserved = totalListings - totalReservations;
-        let totalUncollected = totalUnreserved + totalNoShows;
-        percentageListingsCollected = 100 * (totalUncollected / totalListings)
+        const denominator = totalListings || 0;
+        if (denominator === 0) {
+            percentageListingsCollected = 0;
+        } else {
+            const totalUnreserved = totalListings - totalReservations;
+            const totalUncollected = totalUnreserved + totalNoShows;
+            percentageListingsCollected = ((totalListings - totalUncollected) / denominator * 100).toFixed(2);
+        }
     }
 
     // no show rate
     if (loadingReservations || loadingNoShows) {
         noShowRate = "Loading..."
     } else {
-        noShowRate = 100 * (totalNoShows/totalReservations)
+        const denominator = totalReservations || 0;
+        noShowRate = denominator === 0 ? 0 : (totalNoShows / denominator * 100).toFixed(2);
     }
 
     // avg revenue per listing
     if (loadingListings || loadingRevenue) {
         avgRevenuePerListing = "Loading...";
     } else {
-        avgRevenuePerListing = 100 * (totalRevenue / totalListings)
+        const denominator = totalListings || 0;
+        avgRevenuePerListing = denominator === 0 ? 0 : (totalRevenue / denominator).toFixed(2);
     }
 
     return (
