@@ -16,10 +16,10 @@ function SellerInfo({sellerID, location, setLocation}) {
                 </select>
             </div>
             <div className="seller-name-container">
-                <LoadData endpoint="sellerInfo/name" queryParams={{sellerID: sellerID}} />
+                <LoadData endpoint="seller/getsellername" queryParams={{seller_id: sellerID}} />
             </div>
             <div className="seller-address-container">
-                <LoadData endpoint="sellerInfo/address" queryParams={{sellerID: sellerID, sellerLocation: location}} />
+                <LoadData endpoint="sellerInfo/address" queryParams={{seller_id: sellerID, sellerLocation: location}} />
             </div>
         </div>
     )

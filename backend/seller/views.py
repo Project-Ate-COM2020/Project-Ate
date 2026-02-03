@@ -9,8 +9,16 @@ from core.models import Reservation, Seller
 
 # Create your views here.
 class SellerNameView(APIView):
-    def get(self, request, seller_id):
+    def get(self, request):
         """Gets seller id and returns the seller name."""
+        seller_id = request.query_params.get("seller_id")
+        
+        if not seller_id:
+            return Response(
+                {"error": "seller_id query parameter is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         try:
             seller = Seller.objects.get(seller_id=seller_id)
             return Response({"seller_name": seller.name}, status=status.HTTP_200_OK)
@@ -18,8 +26,16 @@ class SellerNameView(APIView):
             return Response({"error": "Seller not found"}, status=status.HTTP_404_NOT_FOUND)
         
 class SellerAddressView(APIView):
-    def get(self, request, seller_id):
+    def get(self, request):
         """Gets seller id and returns the seller address."""
+        seller_id = request.query_params.get("seller_id")
+        
+        if not seller_id:
+            return Response(
+                {"error": "seller_id query parameter is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         try:
             seller = Seller.objects.get(seller_id=seller_id)
             return Response({"seller_address": seller.location}, status=status.HTTP_200_OK)

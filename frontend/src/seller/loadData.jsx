@@ -45,9 +45,7 @@ function LoadTextDataGetRequest( {endpoint, queryParams}) {
         } catch (e) {
             setData(null);
         } finally {
-            if (data != null) {
-                setLoading(false);
-            }
+            setLoading(false);
         }
     };
 
