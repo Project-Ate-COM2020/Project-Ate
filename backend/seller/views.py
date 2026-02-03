@@ -21,7 +21,7 @@ class SellerNameView(APIView):
         
         try:
             seller = Seller.objects.get(seller_id=seller_id)
-            return Response({"seller_name": seller.name}, status=status.HTTP_200_OK)
+            return Response(seller.name, status=status.HTTP_200_OK)
         except Seller.DoesNotExist:
             return Response({"error": "Seller not found"}, status=status.HTTP_404_NOT_FOUND)
         
