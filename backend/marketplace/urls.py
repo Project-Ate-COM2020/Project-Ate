@@ -1,5 +1,10 @@
 from django.urls import path
 from . import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 urlpatterns = [
     #
@@ -132,4 +137,8 @@ urlpatterns = [
         views.CreateReservationView.as_view(),
         name=views.CreateReservationView.name,
     ),
+    # Authentication
+    path("auth/token", TokenObtainPairView.as_view(), name="token-obtain-pair"),
+    path("auth/token/refresh", TokenRefreshView.as_view(), name="token-refresh"),
+    path("auth/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
 ]
