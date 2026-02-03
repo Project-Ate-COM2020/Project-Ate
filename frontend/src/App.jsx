@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // import the files for each URL endpoint
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
-import BuyerSignupPage from "./authorisationPages/buyerSignUpPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import AnalyticsPage from "./analyticsPages/analytics";
 import ForecastPage from "./forecastPages/forecast.jsx";
