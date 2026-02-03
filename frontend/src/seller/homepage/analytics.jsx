@@ -8,6 +8,7 @@
 // Average revenue per reservation
 
 import useLoadData from '../loadDataHook.jsx';
+import './analytics.css';
 
 function Analytics() {
     const { data: totalListings, loading: loadingListings } = useLoadData('analytics/totalListings', { sellerID: 1 });
@@ -64,7 +65,7 @@ function Analytics() {
     }
 
     return (
-        <div>
+        <div className="analytics-panel">
             <h2>All time Analytics</h2>
 
             <h3>Total number of listings posted</h3>
@@ -80,7 +81,7 @@ function Analytics() {
             <p>{percentageListingsCollected}%</p>
 
             <h3>Percentage of noshows for reserved listings</h3>
-            <p>{noShowRate}</p>
+            <p>{noShowRate}%</p>
 
             <h3>Average amount of revenue generated per listing</h3>
             <p>{avgRevenuePerListing}</p>
