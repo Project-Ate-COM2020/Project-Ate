@@ -137,8 +137,36 @@ urlpatterns = [
         views.CreateReservationView.as_view(),
         name=views.CreateReservationView.name,
     ),
-    # Authentication
-    path("auth/token", TokenObtainPairView.as_view(), name="token-obtain-pair"),
-    path("auth/token/refresh", TokenRefreshView.as_view(), name="token-refresh"),
-    path("auth/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
+    # Seller Authentication
+    path(
+        "marketplace/seller/auth/token",
+        TokenObtainPairView.as_view(),
+        name="seller-token-obtain-pair",
+    ),
+    path(
+        "marketplace/seller/auth/token/refresh",
+        TokenRefreshView.as_view(),
+        name="seller-token-refresh",
+    ),
+    path(
+        "marketplace/seller/auth/token/verify/",
+        TokenVerifyView.as_view(),
+        name="seller-token-verify",
+    ),
+    # Consumer Authentication
+    path(
+        "marketplace/consumer/auth/token",
+        TokenObtainPairView.as_view(),
+        name="consumer-token-obtain-pair",
+    ),
+    path(
+        "marketplace/consumer/auth/token/refresh",
+        TokenRefreshView.as_view(),
+        name="consumer-token-refresh",
+    ),
+    path(
+        "marketplace/consumer/auth/token/verify/",
+        TokenVerifyView.as_view(),
+        name="consumer-token-verify",
+    ),
 ]
