@@ -54,6 +54,7 @@ $gradient-radial: radial-gradient(#242331ff, #23f0c7ff, #938ba1ff, #e4572eff, #f
     --accent2: #938ba1ff;
     --accent3: #e4572eff;
     --accent4: #ffc914ff;
+    --accent1: var(--accent);
 }
 
 /* This is background colours for every page - ensures consistency */

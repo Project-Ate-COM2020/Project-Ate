@@ -5,3 +5,4 @@ django-debug-toolbar==6.1.0
 pandas
 numpy
 matplotlib
+argon2-cffi
