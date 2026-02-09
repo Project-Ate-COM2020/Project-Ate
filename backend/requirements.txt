@@ -7,3 +7,4 @@ argon2-cffi
 pandas
 numpy
 matplotlib
+argon2-cffi
