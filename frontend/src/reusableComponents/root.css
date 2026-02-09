@@ -63,4 +63,7 @@ html, body {
     color: var(--accent); /* normal text colour - will need to be specifically applied to divs*/
     margin: 0;
     padding: 0;
+    /* global font for the entire site */
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Arial, sans-serif;
 }
