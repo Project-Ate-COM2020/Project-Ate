@@ -9,6 +9,5 @@ urlpatterns = [
 =======
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
-    path('', include('game.urls'))
->>>>>>> f47709d (made a test view that doesnt work, problem with django i believe)
+    path('game/', include('game.urls'))
 ]
