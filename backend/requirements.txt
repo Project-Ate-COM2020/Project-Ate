@@ -2,3 +2,7 @@ Django==5.2
 djangorestframework==3.16.1
 django-cors-headers==4.9.0
 django-debug-toolbar==6.1.0
+pandas
+numpy
+matplotlib
+argon2-cffi

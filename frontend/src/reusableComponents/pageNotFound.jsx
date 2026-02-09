@@ -1,8 +1,14 @@
 import React from "react";
+import NavBar from "./navBar";
+import "./root.css";
+import "./pageNotFound.css";
 
 function Pagenotfound() {
     return (
-        <p>Page not found</p>
+        <div>
+        <NavBar />
+        <p>Page not found ):</p>
+        </div>
     )
 }
 

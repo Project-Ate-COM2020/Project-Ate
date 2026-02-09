@@ -1,0 +1,188 @@
+/* page takes full viewport height */
+.game-page {
+  min-height: 100vh;
+}
+
+/* Shared page container sizing */
+.game-wrap,
+.game-state {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 18px 64px;
+}
+
+/* header spacing */
+.game-header {
+  margin: 10px 0 18px;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 0.2px;
+  line-height: 1.15;
+}
+
+.game-subtitle {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  opacity: 0.82;
+  max-width: 62ch;
+}
+
+/* Small status pill */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  background: rgba(35, 240, 199, 0.12);
+  border: 1px solid rgba(35, 240, 199, 0.26);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+/* Dot indicator on the pill */
+.pill::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(35, 240, 199, 0.9);
+  box-shadow: 0 0 0 4px rgba(35, 240, 199, 0.12);
+}
+
+/* responsive grid */
+.game-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (min-width: 860px) {
+  .game-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  /* make recent card span full width on desktop */
+  .game-card.recent {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Card styling  */
+.game-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
+  padding: 18px;
+
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+
+  /* lift + tint on hover */
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 240, 199, 0.25);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.game-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  letter-spacing: 0.2px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* little accent square before card headings */
+.game-card h3::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(35, 240, 199, 0.9);
+  box-shadow: 0 0 0 4px rgba(35, 240, 199, 0.12);
+}
+
+/* stat rows: label left, value right */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+/* Border only between rows  */
+.stat-row + .stat-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.stat-label {
+  opacity: 0.88;
+}
+
+.stat-value {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* recent list  */
+.recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-item {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Divider */
+.recent-item + .recent-item {
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.recent-item .stat-value {
+  font-size: 1rem;
+}
+
+.recent-item .stat-label {
+  font-size: 0.95rem;
+  opacity: 0.75;
+}
+
+/* error state card */
+.game-error {
+  border: 1px solid rgba(228, 87, 46, 0.5);
+  background: rgba(228, 87, 46, 0.10);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+/* button styling*/
+.game-button {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+}
+
+.game-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}

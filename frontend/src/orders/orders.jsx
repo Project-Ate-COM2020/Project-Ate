@@ -1,15 +1,14 @@
+//order page 
+
 import NavBar from "../reusableComponents/navBar.jsx";
 import Listings from "../reusableComponents/listings.jsx";
 
-function UserHomePage(){
-    return(
-    <>
+export default function Orders() {
+    return (
+      <>
         <NavBar />
-        <Listings/>
-        <div>Home page works</div>
-    </>
+        <Listings mode="orders" />
+      </>
     );
+  }
 
-}
-
-export default UserHomePage;
