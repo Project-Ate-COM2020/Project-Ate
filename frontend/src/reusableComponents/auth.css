@@ -1,0 +1,125 @@
+/* page background for auth screens */
+.auth-page {
+  min-height: 100vh;
+  background: var(--main);
+}
+
+/* centers card underneath navbar */
+.auth-container {
+  min-height: calc(100vh - 64px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+/* white card that holds form */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid #e6e8ee;
+  border-radius: 12px;
+  padding: 22px;
+}
+
+/* app title */
+.auth-brand {
+  margin: 0;
+  font-size: 24px;
+  color: var(--accent); 
+  user-select: none;
+  cursor: default;
+}
+
+.auth-title {
+  margin-top: 10px;
+  margin-bottom: 16px;
+  color: #555;
+  font-size: 16px;
+ }
+
+/* form layout */
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+/* label + input stacked */
+.auth-label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+/* text inputs */
+.auth-input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cfd6e4;
+  outline: none;
+  font-size: 14px;
+}
+
+/* main submit button */
+.auth-primaryBtn {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  background: #f0f0f0;
+}
+
+/* thin divider line */
+.auth-divider {
+  height: 1px;
+  background: #eef0f5;
+  margin: 16px 0;
+}
+
+/* container for links under form */
+.auth-links {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* horizontal row for multiple button */
+.auth-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* link buttons */
+.auth-linkBtn {
+  display: inline-block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cfd6e4;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+}
+
+/* error message box */
+.auth-error {
+  background: #ffe8e8;
+  border: 1px solid #ffb3b3;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: #7a0000;
+  font-size: 14px;
+}
+
+/* success message box */
+.auth-success {
+  background: #e9ffe8;
+  border: 1px solid #b6f0b3;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  color: #0b5f00;
+  font-size: 14px;
+}
