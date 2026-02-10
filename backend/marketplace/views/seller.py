@@ -6,39 +6,32 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.response import Response
 from argon2 import PasswordHasher
 
-from ..models import Seller, SellerSerializer, BundleSerializer
+from ..models import (
+    Seller,
+    SellerSerializer,
+    BundleSerializer,
+    SellerWithPasswordSerializer,
+)
 from ..models import Bundle
 
 
 class CreateSellerView(CreateAPIView):
     name = "seller-create"
     queryset = Seller
-    serializer_class = SellerSerializer
-    authentication_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        password = request.data.get("password")
-
-        ph = PasswordHasher()
-
-        hashed_password = ph.hash(password)
-
-        request.data["password"] = hashed_password
-
-        return super().post(request, *args, **kwargs)
+    serializer_class = SellerWithPasswordSerializer
 
 
 class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 # get all bundles by a seller
 class SellerBundlesView(APIView):
     name: str = "seller-bundles"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         try:
@@ -56,7 +49,7 @@ class SellerBundlesView(APIView):
 # get newest bundles
 class SellerBundleNewestView(APIView):
     name = "seller-bundles-newest"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         count = request.GET.get("count", 20)
@@ -65,7 +58,7 @@ class SellerBundleNewestView(APIView):
 # get oldest bundles
 class SellerBundleOldestView(APIView):
     name = "seller-bundles-oldest"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         count = request.GET.get("count", 20)
@@ -74,7 +67,7 @@ class SellerBundleOldestView(APIView):
 # get bundles made between date range bundles
 class SellerBundleBetweenView(APIView):
     name = "seller-bundles-between"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date_from = request.GET.get("from")
@@ -84,7 +77,7 @@ class SellerBundleBetweenView(APIView):
 # get bundles made between date range bundles
 class SellerBundleOlderView(APIView):
     name = "seller-bundles-older"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date = request.GET.get("date")
@@ -93,7 +86,7 @@ class SellerBundleOlderView(APIView):
 # get bundles newer than a specified date
 class SellerBundleNewerView(APIView):
     name = "seller-bundles-newer"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date = request.GET.get("date")

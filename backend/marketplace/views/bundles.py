@@ -13,13 +13,13 @@ class CreateBundleView(CreateAPIView):
     name = "bundle-create"
     serializer_class = BundleSerializer
     queryset = Bundle
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 # get all bundles
 class BundlesView(APIView):
     name: str = "bundles"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         bundles = Bundle.objects.all()
@@ -32,7 +32,7 @@ class BundlesView(APIView):
 # get a specific bundle
 class BundleView(APIView):
     name: str = "bundle"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         try:
@@ -48,7 +48,7 @@ class BundleView(APIView):
 # get newest bundles
 class BundleNewestView(APIView):
     name = "bundles-newest"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         count = request.GET.get("count", 20)
@@ -57,7 +57,7 @@ class BundleNewestView(APIView):
 # get oldest bundles
 class BundleOldestView(APIView):
     name = "bundles-oldest"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         count = request.GET.get("count", 20)
@@ -66,7 +66,7 @@ class BundleOldestView(APIView):
 # get bundles made between date range bundles
 class BundleBetweenView(APIView):
     name = "bundles-between"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         date_from = request.GET.get("from")
@@ -76,7 +76,7 @@ class BundleBetweenView(APIView):
 # get bundles made between date range bundles
 class BundleOlderView(APIView):
     name = "bundles-older"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         date = request.GET.get("date")
@@ -85,7 +85,7 @@ class BundleOlderView(APIView):
 # get bundles newer than a specified date
 class BundleNewerView(APIView):
     name = "bundles-newer"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         date = request.GET.get("date")
@@ -94,7 +94,7 @@ class BundleNewerView(APIView):
 # get bundles with open businesses
 class BundleOpenView(APIView):
     name = "bundles-open"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         pass
@@ -103,7 +103,7 @@ class BundleOpenView(APIView):
 # get bundles made between date range bundles
 class BundleCollectionView(APIView):
     name = "bundles-collection"
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, bundle_id):
         pass

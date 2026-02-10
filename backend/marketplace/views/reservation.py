@@ -13,4 +13,4 @@ class CreateReservationView(CreateAPIView):
     name = "reservations-create"
     serializer_class = ReservationSerializer
     queryset = Reservation
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]

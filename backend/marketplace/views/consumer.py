@@ -6,28 +6,17 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 
-from ..models import Consumer, ConsumerSerializer
+from ..models import Consumer, ConsumerSerializer, ConsumerWithPasswordSerializer
 
 
 class CreateConsumerView(CreateAPIView):
     name = "consumer-create"
     queryset = Consumer
-    serializer_class = ConsumerSerializer
-
-    def post(self, request, *args, **kwargs):
-        password = request.data.get("password")
-
-        ph = PasswordHasher()
-
-        hashed_password = ph.hash(password)
-
-        request.data["password"] = hashed_password
-
-        return super().post(request, *args, **kwargs)
+    serializer_class = ConsumerWithPasswordSerializer
 
 
 class ConsumerView(RetrieveUpdateDestroyAPIView):
     name = "consumer"
     queryset = Consumer.objects.all()
     serializer_class = ConsumerSerializer
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
