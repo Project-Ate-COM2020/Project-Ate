@@ -6,5 +6,4 @@ urlpatterns = [
     path('api-auth', include('rest_framework.urls')),
     path('game/', include('game.urls')),
     path('forecast/', include('forecasts.urls')),
-    path('api-auth', include('rest_framework.urls'))
 ]
