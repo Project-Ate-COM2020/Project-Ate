@@ -1,10 +1,9 @@
 from django.urls import path
 from . import views
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
+
+from .consumer_token import ConsumerTokenObtainPairView
+from .seller_token import SellerTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     #
@@ -146,7 +145,7 @@ urlpatterns = [
     # Seller Authentication
     path(
         "marketplace/seller/auth/token",
-        TokenObtainPairView.as_view(),
+        SellerTokenObtainPairView.as_view(),
         name="seller-token-obtain-pair",
     ),
     path(
@@ -162,7 +161,7 @@ urlpatterns = [
     # Consumer Authentication
     path(
         "marketplace/consumer/auth/token",
-        TokenObtainPairView.as_view(),
+        ConsumerTokenObtainPairView.as_view(),
         name="consumer-token-obtain-pair",
     ),
     path(
