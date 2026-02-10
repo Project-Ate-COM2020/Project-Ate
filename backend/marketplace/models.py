@@ -7,6 +7,8 @@ class Seller(models.Model):
     name = models.CharField(max_length=20)
     # just do post code for now
     location = models.CharField(max_length=6)
+    # argon2id hashed
+    password = models.CharField(max_length=150)
     opening_hours = models.CharField(max_length=20)
     contact_stub = models.CharField(max_length=20)
 
@@ -44,6 +46,8 @@ class BundleSerializer(serializers.ModelSerializer):
 
 class Consumer(models.Model):
     display_name = models.CharField(max_length=20)
+    # argon2id hashed
+    password = models.CharField(max_length=150)
     streak = models.IntegerField()
     badges = models.TextField()
 
