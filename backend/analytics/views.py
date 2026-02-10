@@ -46,6 +46,7 @@ class TotalRevenueView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+        
 class TotalReservationsView(APIView):
     def get(self, request):
         try:

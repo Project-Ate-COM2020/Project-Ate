@@ -5,6 +5,7 @@ from rest_framework import status
 import pandas as pd
 from core.models import ForecastInput
 from .forecasting import (
+    calculate_recommended_price,
     get_expected_no_show_count,
     get_expected_reservations,
     get_similar_listings,
@@ -55,6 +56,7 @@ class ForecastPredictionView(APIView):
             return Response({
                 "expected_no_show_count": get_expected_no_show_count(subset, inp),
                 "expected_reservations": get_expected_reservations(subset, inp),
+                "recommended_price": calculate_recommended_price(subset, inp),
             })
 
         except Exception as e:
