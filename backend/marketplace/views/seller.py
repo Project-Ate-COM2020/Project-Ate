@@ -4,6 +4,7 @@ from rest_framework.settings import APISettings
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.response import Response
+from argon2 import PasswordHasher
 
 from ..models import Seller, SellerSerializer, BundleSerializer
 from ..models import Bundle
@@ -14,6 +15,17 @@ class CreateSellerView(CreateAPIView):
     queryset = Seller
     serializer_class = SellerSerializer
     authentication_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        password = request.data.get("password")
+
+        ph = PasswordHasher()
+
+        hashed_password = ph.hash(password)
+
+        request.data["password"] = hashed_password
+
+        return super().post(request, *args, **kwargs)
 
 
 class SellerView(RetrieveUpdateDestroyAPIView):
