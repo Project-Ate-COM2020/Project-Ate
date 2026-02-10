@@ -3,7 +3,7 @@ from rest_framework_simplejwt.serializers import (
     ValidationError,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
-from models import Consumer
+from .models import Consumer
 from argon2 import PasswordHasher
 
 

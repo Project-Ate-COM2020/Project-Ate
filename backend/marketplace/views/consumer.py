@@ -5,7 +5,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 
-from backend.marketplace.models import Consumer, ConsumerSerializer
+from ..models import Consumer, ConsumerSerializer
 
 
 class CreateConsumerView(CreateAPIView):
