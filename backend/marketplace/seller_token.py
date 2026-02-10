@@ -2,6 +2,7 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     ValidationError,
 )
+from rest_framework_simplejwt.views import TokenObtainPairView
 from models import Seller
 from argon2 import PasswordHasher
 
@@ -19,3 +20,7 @@ class SellerTokenObtainPairSerializer(TokenObtainPairSerializer):
             raise ValidationError({"invalid": "password"})
 
         return super().validate(attrs)
+
+
+class SellerTokenObtainPairView(TokenObtainPairView):
+    serializer_class = SellerTokenObtainPairSerializer
