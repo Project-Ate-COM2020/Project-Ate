@@ -1,12 +1,22 @@
 from django.urls import path
 from . import views
 
+from .consumer_token import ConsumerTokenObtainPairView
+from .seller_token import SellerTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+
 urlpatterns = [
     #
     #
     #   GLOBAL OPERATIONS ON RETRIEVAL OF BUNDLES
     #
     #
+    # create bundles
+    path(
+        "marketplace/bundle/",
+        views.CreateBundleView.as_view(),
+        name=views.CreateBundleView.name,
+    ),
     path("marketplace/bundles/", views.BundlesView.as_view(), name="bundles"),
     # get newest n bundles
     # GET ... /marketplace/bundles/between?from=2009?to=20019?exclusive=false
@@ -131,5 +141,37 @@ urlpatterns = [
         "marketplace/reservations",
         views.CreateReservationView.as_view(),
         name=views.CreateReservationView.name,
+    ),
+    # Seller Authentication
+    path(
+        "marketplace/seller/auth/token",
+        SellerTokenObtainPairView.as_view(),
+        name="seller-token-obtain-pair",
+    ),
+    path(
+        "marketplace/seller/auth/token/refresh",
+        TokenRefreshView.as_view(),
+        name="seller-token-refresh",
+    ),
+    path(
+        "marketplace/seller/auth/token/verify/",
+        TokenVerifyView.as_view(),
+        name="seller-token-verify",
+    ),
+    # Consumer Authentication
+    path(
+        "marketplace/consumer/auth/token",
+        ConsumerTokenObtainPairView.as_view(),
+        name="consumer-token-obtain-pair",
+    ),
+    path(
+        "marketplace/consumer/auth/token/refresh",
+        TokenRefreshView.as_view(),
+        name="consumer-token-refresh",
+    ),
+    path(
+        "marketplace/consumer/auth/token/verify/",
+        TokenVerifyView.as_view(),
+        name="consumer-token-verify",
     ),
 ]
