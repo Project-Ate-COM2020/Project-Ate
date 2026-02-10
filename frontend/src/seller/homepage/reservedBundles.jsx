@@ -1,18 +1,21 @@
 import useLoadData from '../loadDataHook.jsx';
+import { useState } from "react";
 
 function ReservedBundles() {
-
-    const {bundles, loadingBundles} = useLoadData("seller/reservedBundles", {sellerID: 1});
+    try{
+        const {data, loading} = useLoadData("seller/reservedBundles", {sellerID: 1});
+    }
     // returns a json object containin all bundles reserved, for each bundle:
     // name of buyer, pickup time, bundle name, bundle code
     
-    let render_bundles;
+    let render_bundles = false;
 
-    if (loadingBundles) {
+    if (loading) {
         render_bundles = <p>Loading...</p>
     } else {
+        render_bundles =
         <div>
-            {bundles.map(bundle => (
+            {data.map(bundle => (
                 <div key={bundle.id}>
                     <p>Buyer: {bundle.buyer}</p>
                     <p>Pickup time: {bundle.time}</p>

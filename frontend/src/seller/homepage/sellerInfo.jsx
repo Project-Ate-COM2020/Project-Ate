@@ -1,6 +1,5 @@
 // I have no API endpoints yet as this sort of sits outside any backend tasks we have set so far - hopefully will make Lucas do this when possible
 import LoadData from "../loadData.jsx"
-import { useState } from "react";
 import "./sellerInfo.css"
 
 
