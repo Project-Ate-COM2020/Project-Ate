@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login, fetchMe } from "../api/authorisation";
+import AuthLayout from "../reusableComponents/authLayout";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ export default function LoginPage() {
     try {
       // authenticate user
       await login({ identifier, password });
-      // fetch profile info to decide if buyer or seller 
+
+      // fetch profile info to decide if buyer or seller
       try {
         const me = await fetchMe();
 
@@ -61,160 +63,56 @@ export default function LoginPage() {
   };
 
   return (
+    <AuthLayout title="Log in">
+      {/* Error feedback */}
+      {error && <div className="auth-error">{error}</div>}
 
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Project-Ate</h1>
-        <p style={styles.subtitle}>Log in</p>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <label className="auth-label">
+          Email / Username
+          <input
+            className="auth-input"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder="e.g. WillBrown@example.com"
+            autoComplete="username"
+            required
+          />
+        </label>
 
-        {/* Error feedback */}
-        {error && <div style={styles.error}>{error}</div>}
+        <label className="auth-label">
+          Password
+          <input
+            className="auth-input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Your password"
+            autoComplete="current-password"
+            required
+          />
+        </label>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <label style={styles.label}>
-            Email / Username
-            <input
-              style={styles.input}
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="e.g. WillBrown@example.com"
-              autoComplete="username"
-              required
-            />
-          </label>
-          <label style={styles.label}>
-            Password
-            <input
-              style={styles.input}
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          {/* disable button while request is ongoing */}
-          <button style={styles.primaryBtn} disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Log in"}
-          </button>
-        </form>
+        {/* disable button while request is ongoing */}
+        <button className="auth-primaryBtn" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Log in"}
+        </button>
+      </form>
 
-        <div style={styles.divider} />
+      <div className="auth-divider" />
 
-        {/* sign up options, for buyer and seller */}
-        <div style={styles.links}>
-          <span>New here?</span>
-          <div style={styles.signupRow}>
-            <Link to="/signup/buyer" style={styles.linkBtn}>
-              Buyer sign up
-            </Link>
-            <Link to="/signup/seller" style={styles.linkBtn}>
-              Seller sign up
-            </Link>
-
-          </div>
+      {/* sign up options, for buyer and seller */}
+      <div className="auth-links">
+        <span>New here?</span>
+        <div className="auth-row">
+          <Link to="/signup/buyer" className="auth-linkBtn">
+            Buyer sign up
+          </Link>
+          <Link to="/signup/seller" className="auth-linkBtn">
+            Seller sign up
+          </Link>
         </div>
       </div>
-    </div>
-
+    </AuthLayout>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    display: "grid",
-    placeItems: "center",
-    padding: 20,
-    background: "#f6f7f9",
-    fontFamily:  "system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial, sans-serif",
-  },
-
-  card: {
-    width: "100%",
-    maxWidth: 400,
-    background: "white",
-    border: "1px solid #e6e8ee",
-    borderRadius: 12,
-    padding: 20,
-  },
-  
-  title: {
-    margin: 0,
-    fontSize: 24,
-    user_select: "none",
-    cursor: "default",
-  },
-  
-  subtitle: {
-    marginTop: 10,
-    marginBottom: 16,
-    color: "#555",
-  },
-
-  error: {
-    background: "#ffe8e8",
-    border: "1px solid #ffb3b3",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 12,
-    color: "#7a0000",
-    fontSize: 14,
-  },
-
-  form: {
-    display: "grid",
-    gap: 12,
-  },
-
-  label: {
-    display: "grid",
-    gap: 6,
-    fontSize: 14,
-  },
-
-  input: {
-    padding: "10px 12px",
-    borderRadius: 8,
-    border: "1px solid #cfd6e4",
-    outline: "none",
-    fontSize: 14, 
-  },
-
-  primaryBtn: {
-    padding: "10px 12px",
-    borderRadius: 8,
-    border: "none",
-    cursor: "pointer",
-    fontSize: 14,
-  },
-
-  divider: {
-    height: 1,
-    background: "#eef0f5",
-    margin: "16px 0",
-  },
-
-  links: {
-    display: "grid",
-    gap: 8,
-    fontSize: 14,
-  },
-
-  signupRow: {
-    display: "flex",
-    gap: 10,
-    flexWrap: "wrap",
-  },
-  
-  linkBtn: {
-    display: "inline-block",
-    padding: "8px 10px",
-    borderRadius: 8,
-    border: "1px solid #cfd6e4",
-    textDecoration: "none",
-    color: "black",
-    fontSize: 14,
-  },
-};
