@@ -25,7 +25,7 @@ class ForecastPredictionView(APIView):
             # Optional inputs
             weather = data.get("weather")
             no_bundles = data.get("no_bundles", 0)
-            seller_id = 1
+            seller_id = data.get("seller_id")
 
             if not category or not day_of_week or not time_window:
                 return Response(
