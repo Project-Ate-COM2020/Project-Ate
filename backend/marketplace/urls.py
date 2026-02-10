@@ -61,6 +61,17 @@ urlpatterns = [
         name=views.BundleView.name,
     ),
     #
+    path(
+        "marketplace/consumer",
+        views.CreateConsumerView.as_view(),
+        name=views.CreateConsumerView.name,
+    ),
+    path(
+        "marketplace/consumer/<int:consumer_id>/",
+        views.ConsumerView.as_view(),
+        name=views.ConsumerView.name,
+    ),
+    #
     #
     #    USAGE SAME AS ABOVE ONLY DIFFERENCE IS THAT IT ONLY OPERATES ON SELLERS BUNDLES INSTEAD OF GLOBALLY
     #
