@@ -1,0 +1,1 @@
+// This is a shared file where the common UI layout is held - things like the navigation bar at the top and the profile picture
