@@ -142,6 +142,11 @@ urlpatterns = [
         views.CreateReservationView.as_view(),
         name=views.CreateReservationView.name,
     ),
+    path(
+        "marketplace/reservations/<int:reservation_id>/",
+        views.ReservationView.as_view(),
+        name=views.ReservationView.name,
+    ),
     # Seller Authentication
     path(
         "marketplace/seller/auth/token",
