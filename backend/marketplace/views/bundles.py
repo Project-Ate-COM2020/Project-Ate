@@ -1,10 +1,19 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from ..models import Bundle, BundleSerializer
+
+
+class CreateBundleView(CreateAPIView):
+    name = "bundle-create"
+    serializer_class = BundleSerializer
+    queryset = Bundle
+    authentication_classes = [IsAuthenticated]
 
 
 # get all bundles

@@ -12,6 +12,12 @@ urlpatterns = [
     #   GLOBAL OPERATIONS ON RETRIEVAL OF BUNDLES
     #
     #
+    # create bundles
+    path(
+        "marketplace/bundle/",
+        views.CreateBundleView.as_view(),
+        name=views.CreateBundleView.name,
+    ),
     path("marketplace/bundles/", views.BundlesView.as_view(), name="bundles"),
     # get newest n bundles
     # GET ... /marketplace/bundles/between?from=2009?to=20019?exclusive=false

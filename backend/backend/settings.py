@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # For specific API development
     "rest_framework",
-    "marketplace",
+    "rest_framework_simplejwt" "marketplace",
 ]
 
 MIDDLEWARE = [
