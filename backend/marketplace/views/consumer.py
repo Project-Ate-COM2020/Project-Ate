@@ -3,6 +3,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     RetrieveUpdateDestroyAPIView,
 )
+from rest_framework.permissions import IsAuthenticated
 
 from backend.marketplace.models import Consumer, ConsumerSerializer
 
@@ -17,3 +18,4 @@ class ConsumerView(RetrieveUpdateDestroyAPIView):
     name = "consumer"
     queryset = Consumer.objects.all()
     serializer_class = ConsumerSerializer
+    authentication_classes = [IsAuthenticated]
