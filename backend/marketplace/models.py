@@ -1,3 +1,4 @@
+from argon2 import PasswordHasher
 from django.db import models
 
 from rest_framework import serializers
@@ -17,6 +18,19 @@ class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = ["name", "location", "opening_hours", "contact_stub"]
+
+
+class SellerWithPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seller
+        fields = ["name", "password", "location", "opening_hours", "contact_stub"]
+
+    def create(self, validated_data):
+        ph = PasswordHasher()
+
+        validated_data["password"] = ph.hash(validated_data["password"])
+
+        return super().create(validated_data)
 
 
 class Bundle(models.Model):
@@ -56,6 +70,19 @@ class ConsumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
         fields = ["display_name", "streak", "badges"]
+
+
+class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = ["display_name", "password", "streak", "badges"]
+
+    def create(self, validated_data):
+        ph = PasswordHasher()
+
+        validated_data["password"] = ph.hash(validated_data["password"])
+
+        return super().create(validated_data)
 
 
 class Reservation(models.Model):
