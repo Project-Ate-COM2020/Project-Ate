@@ -1,14 +1,14 @@
-// jsx for the buyer sign up page (matches LoginPage styling)
+// jsx for the seller sign up page ( matches LoginPage + BuyerSignupPage styling )
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupBuyer } from "../api/authorisation";
+import { signupSeller } from "../api/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 
-export default function BuyerSignupPage() {
+export default function SellerSignupPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
-  const [displayName, setDisplayName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
@@ -36,10 +36,14 @@ export default function BuyerSignupPage() {
     setIsLoading(true);
 
     try {
-      // create buyer account
-      await signupBuyer({ email, password: password1, displayName });
+      // create seller account
+      await signupSeller({
+        email,
+        password: password1,
+        businessName,
+      });
 
-      setSuccess("Account successfully created. You can now log in.");
+      setSuccess("Seller account successfully created. You can now log in.");
       navigate("/login");
     } catch (err) {
       // make error messages user friendly
@@ -64,20 +68,20 @@ export default function BuyerSignupPage() {
   };
 
   return (
-    <AuthLayout title="Buyer sign up">
+    <AuthLayout title="Seller sign up">
       {/* Error or success feedback */}
       {error && <div className="auth-error">{error}</div>}
       {success && <div className="auth-success">{success}</div>}
 
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
-          Display name
+          Business name
           <input
             className="auth-input"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="e.g. Will Brown"
-            autoComplete="name"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+            placeholder="e.g. Green Street Bakery"
+            autoComplete="organization"
             required
           />
         </label>
@@ -89,7 +93,7 @@ export default function BuyerSignupPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="e.g. WillBrown@example.com"
+            placeholder="e.g. bakery@example.com"
             autoComplete="email"
             required
           />
@@ -123,7 +127,7 @@ export default function BuyerSignupPage() {
 
         {/* disable button while request is ongoing */}
         <button className="auth-primaryBtn" disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? "Creating account..." : "Create seller account"}
         </button>
       </form>
 
