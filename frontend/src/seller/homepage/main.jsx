@@ -4,6 +4,7 @@ import Analytics from "./analytics.jsx"
 import SellerInfo from "./sellerInfo.jsx"
 import ReservedBundles from "./reservedBundles.jsx"
 import ForecastNewBundles from "./forecastNewBundles.jsx"
+import Forecast from './forecast.jsx'
 
 import { useState } from "react"
 
@@ -34,6 +35,8 @@ AS OF 02/02/2026 I am going to create a design template with some software,
 then implement MVP, then first sprint before pull requesting this branch hopefully today
 */
 
+import './main.css';
+
 
 function SellerHomePage(){
     const [location, setLocation] = useState("Exeter");
@@ -41,12 +44,12 @@ function SellerHomePage(){
     <div>
     <div>
         <NavBar />
-    </div>
-    <div>
         <SellerInfo sellerID = {1} location = {location} setLocation = {setLocation}/>
+    </div>
+    <div className = "root">
         <Analytics />
         <ReservedBundles />
-        <ForecastNewBundles />
+        <Forecast />
     </div>
     </div>
     );

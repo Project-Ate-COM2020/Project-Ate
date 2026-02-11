@@ -1,12 +1,11 @@
 
-.analytics-panel {
+.reservedBundles-panel {
 	width: 33.3333%;
 	max-width: 420px;
 	padding: 1.5rem;
-	margin: 1.5rem 0 0 1.5rem;
+	margin: 1.5rem auto;
 	text-align: center;
 	box-sizing: border-box;
+	display: block;
 }
-
-
 
