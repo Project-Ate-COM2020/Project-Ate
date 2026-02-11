@@ -114,6 +114,7 @@ class AddNewListingView(APIView):
         Expects seller_id, category, contents, allergens, quantity, price, pickup_window in the request body.
         """
         data = request.data
+        print(data)
         seller_id = data.get("seller_id")
         category = data.get("category")
         contents = data.get("contents")
@@ -121,11 +122,12 @@ class AddNewListingView(APIView):
         quantity = data.get("quantity")
         price = data.get("price")
         pickup_window = data.get("pickup_window")
-        """if not seller_id or not category or not contents or not quantity or not price or not pickup_window:
+        print(seller_id, category, contents, allergens, price, pickup_window)
+        if not seller_id or not category or not contents or not quantity or not price or not pickup_window:
             return Response(
                 {"error": "seller_id, category, contents, quantity, price, and pickup_window are required in the request body"},
                 status=status.HTTP_400_BAD_REQUEST
-            )"""
+            )
         try:
             seller = Seller.objects.get(seller_id=seller_id)
             new_listing = BundlePosting.objects.create(

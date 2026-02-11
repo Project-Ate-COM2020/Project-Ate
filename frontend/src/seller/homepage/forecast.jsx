@@ -80,8 +80,8 @@ const createBundle = async () => {
       throw new Error(`HTTP ${response.status}: ${text}`);
     }
 
-    const data = await response.json();
-    setForecasts(data);
+    alert("Bundle Created!");
+
   } catch (e) {
     console.error(e);
     setError("Failed to load forecast. Check console.");
