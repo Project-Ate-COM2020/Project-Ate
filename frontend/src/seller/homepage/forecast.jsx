@@ -25,7 +25,7 @@ function ForecastPage(){
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        sellerID,
+        seller_id : sellerID,
         category,
         time_window,
         weather: Number(weather),
