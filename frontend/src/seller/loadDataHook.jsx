@@ -22,8 +22,8 @@ function useLoadData(endpoint, queryParams = {}) {
 
                 // fetch the data
                 const url = queryString 
-                    ? `http://127.0.0.1:8000/${endpoint}?${queryString}`
-                    : `http://127.0.0.1:8000/${endpoint}`;
+                    ? `http://127.0.0.1:8000/${endpoint}/?${queryString}`
+                    : `http://127.0.0.1:8000/${endpoint}/`;
                 
                 const response = await fetch(url);
 

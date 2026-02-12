@@ -28,7 +28,7 @@ function LoadTextDataGetRequest( {endpoint, queryParams}) {
             
             // fetch the data itself
             if (queryString !== null) {
-                response = await fetch(`http://127.0.0.1:8000/${endpoint}?${queryString}`);
+                response = await fetch(`http://127.0.0.1:8000/${endpoint}/?${queryString}`);
             } else {
                 response = await fetch(`http://127.0.0.1:8000/${endpoint}`);
             }
