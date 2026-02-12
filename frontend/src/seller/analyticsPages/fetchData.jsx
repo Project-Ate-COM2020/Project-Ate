@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchSalesData, fetchRevenueData, fetchNoShowData } from "../api/analytics";
+import { fetchSalesData, fetchRevenueData, fetchNoShowData } from "../../api/analytics";
 
 // good example of reusable code, I would add it to a reUsable components Dir, but I think other people would prefer different methods for invoking API calls
 

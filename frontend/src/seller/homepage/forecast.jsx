@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../reusableComponents/navBar.jsx";
+import "./forecast.css";
 
 function ForecastPage(){
     const [forecasts, setForecasts] = useState(null);
@@ -9,8 +9,9 @@ function ForecastPage(){
     const [time_window, setTimeWindow] = useState("00:00-01:00");
     const [weather, setWeather] = useState(0);
     const [day_of_week, setDayOfWeek] = useState(1);
-    const [sellerID, setSellerID] = useState("");
+    const [sellerID, setSellerID] = useState(1);
     const [no_bundles, setNoBundles] = useState(0);
+    const [price, setPrice] = useState(0);
 
     // get API data using api/.js helpers
 
@@ -24,7 +25,7 @@ function ForecastPage(){
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        sellerID,
+        seller_id : sellerID,
         category,
         time_window,
         weather: Number(weather),
@@ -49,17 +50,53 @@ function ForecastPage(){
   }
 };
 
+const createBundle = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+
+    let contents = "surplus bundle";
+    const pickup_window = time_window;
+    let allergens = "peanuts";
+
+    const response = await fetch("http://127.0.0.1:8000/seller/createlisting/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        seller_id: Number(sellerID),
+        category,
+        pickup_window,
+        weather: Number(weather),
+        day_of_week: Number(day_of_week),
+        quantity: Number(no_bundles),
+        contents,
+        price,
+        allergens,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+
+    alert("Bundle Created!");
+
+  } catch (e) {
+    console.error(e);
+    setError("Failed to load forecast. Check console.");
+    setForecasts(null);
+  } finally {
+    setLoading(false);
+  }
+};
 
     // now forecasts will contain the fetched data from /forecasts endpoint THIS IS NOT NEARLY FINISHED ONLY FOR OWN DEV
 
     
 
     return(
-        <div>
-            <div>
-                <NavBar />
-            </div>
-            <div>
+            <div className = "bundleForecast-panel">
                 <h1>Sales Forecasts for: {sellerID}</h1>
                 <hr />
                 <div>
@@ -129,21 +166,21 @@ function ForecastPage(){
                 </div>
                 <hr />
                 <div>
-                <h2>Number of expected reservations</h2>
+                <h2>Suggested price</h2>
                 <p>
-                    {loading ? "Loading..." : (forecasts?.expected_reservations ?? "-")}
+                    {loading ? "Loading..." : (forecasts?.recommended_price ?? "-")}
                 </p>
 
-                <h2>Number of expected no shows</h2>
-                <p>
-                    {loading ? "Loading..." : (forecasts?.expected_no_show_count ?? "-")}
-                </p>
+                <p>Set Price</p>
+                <input 
+                type = "number"
+                onChange={(e) => setPrice(Number(e.target.value))}></input>
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
+                <p>Post Bundle listing</p>
+                <button onClick={createBundle}>Post Listing</button>
                 </div>
 
             </div>
-        </div>
     );
 }
 

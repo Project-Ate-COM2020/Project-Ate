@@ -94,3 +94,24 @@ def get_expected_reservations(subset, inp):
 
     reservation_rate = total_reservations / total_stock
     return reservation_rate * inp["no_bundles"]
+
+def calculate_recommended_price(subset, inp):
+    """
+    Simple pricing strategy:
+    recommended_price = base_price * (1 - no_show_probability) * (1 + demand_factor)
+    where:
+    - base_price is the average price in the subset
+    - no_show_probability is calculated from the subset
+    - demand_factor is a multiplier based on how many similar listings there are (e.g. more listings -> more competition -> lower price)
+    """
+    if len(subset) == 0:
+        return 0.0
+
+    base_price = subset["price"].mean()
+    no_show_prob = get_no_show_probability(subset)
+    
+    # Simple demand factor: more similar listings -> higher demand factor
+    demand_factor = min(len(subset) / 10, 1)  # cap at 1 for simplicity
+
+    recommended_price = base_price * (1 - no_show_prob) * (1 + demand_factor)
+    return round(recommended_price, 2)
