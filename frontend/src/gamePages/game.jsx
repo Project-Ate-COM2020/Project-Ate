@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { fetchGameSummary, fetchRecentRescues } from "../api/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
 
 // toggle to false when endpoints are ready
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // local mock data
 const MOCK_SUMMARY = {
@@ -34,7 +34,7 @@ export default function Game() {
   const [recentRescues, setRecentRescues] = useState([]);
   const [error, setError] = useState(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     setError(null);
 
     try {
@@ -44,19 +44,30 @@ export default function Game() {
         return;
       }
 
-      const summaryResponse = await fetchGameSummary();
-      const recentResponse = await fetchRecentRescues(10);
+      // If you ever get 401, check this in console after logging in:
+      // console.log("access token:", localStorage.getItem("access"));
+
+      const [summaryResponse, recentResponse] = await Promise.all([
+        fetchGameSummary(),
+        fetchRecentRescues(10),
+      ]);
 
       setSummary(summaryResponse);
       setRecentRescues(Array.isArray(recentResponse) ? recentResponse : []);
     } catch (e) {
-      setError(e instanceof Error ? e : new Error("Failed to load game data"));
+      // Make errors readable (fetch() errors, thrown API errors, etc.)
+      const message =
+        e && typeof e === "object" && "message" in e
+          ? e.message
+          : "Failed to load game data";
+
+      setError(new Error(message));
     }
-  }
+  }, []);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   if (error) {
     return (
@@ -69,7 +80,9 @@ export default function Game() {
             <button className="game-button" type="button" onClick={load}>
               Try again
             </button>
-            {USE_MOCK_DATA && <p className="game-subtitle">(Dev mode: mock data)</p>}
+            {USE_MOCK_DATA && (
+              <p className="game-subtitle">(Dev mode: mock data)</p>
+            )}
           </div>
         </div>
       </div>
@@ -83,7 +96,9 @@ export default function Game() {
         <div className="game-state">
           <h2 className="game-title">Rescue Streaks</h2>
           <p className="game-subtitle">Loading…</p>
-          {USE_MOCK_DATA && <p className="game-subtitle">(Dev mode: mock data)</p>}
+          {USE_MOCK_DATA && (
+            <p className="game-subtitle">(Dev mode: mock data)</p>
+          )}
         </div>
       </div>
     );
@@ -103,7 +118,9 @@ export default function Game() {
 
         <div style={{ marginBottom: 14 }}>
           <span className="pill">
-            {summary.has_rescued_this_week ? "✅ Rescued this week" : "⏳ Not yet this week"}
+            {summary.has_rescued_this_week
+              ? "✅ Rescued this week"
+              : "⏳ Not yet this week"}
             {USE_MOCK_DATA ? " • Mock data" : ""}
           </span>
         </div>
@@ -114,7 +131,9 @@ export default function Game() {
 
             <div className="stat-row">
               <span className="stat-label">Current streak</span>
-              <span className="stat-value">{summary.current_streak_weeks} week(s)</span>
+              <span className="stat-value">
+                {summary.current_streak_weeks} week(s)
+              </span>
             </div>
 
             <div className="stat-row">
@@ -135,7 +154,9 @@ export default function Game() {
 
             <div className="stat-row">
               <span className="stat-label">Estimated CO₂ saved</span>
-              <span className="stat-value">{summary.estimated_co2e_saved_kg} kg</span>
+              <span className="stat-value">
+                {summary.estimated_co2e_saved_kg} kg
+              </span>
             </div>
           </section>
 
