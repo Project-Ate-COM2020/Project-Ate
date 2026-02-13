@@ -1,7 +1,10 @@
 /* Lists all the available bundle postings to the user */
+import "./Listings.css";
 import fakeBundles from "./fakeBundles";
 import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore"
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
+import { fetchMarketplaceBundles, fetchMarketplaceOrders } from "../api/marketplace";
+
 
 
 // Automatically assumes the state is listings unless metioned elsewhere 
@@ -33,38 +36,27 @@ export default function Listings({ mode = "listings" }) {
         setLoading(true);
         setApiFailed(false);
 
-        // **************************************************
-        const url = isOrders
-          ? "/api/marketplace/orders"
-          : "/api/marketplace/bundles";
+        const data = isOrders
+          ? await fetchMarketplaceOrders()
+          : await fetchMarketplaceBundles();
 
-        const res = await fetch(url, { credentials: "include" });
-        //*************************************************** -> need update to cnnect to the backend 
+        console.log("isOrders:", isOrders);
+        console.log("raw API data:", data);
 
-
-        // allows you to debug if there is any issues connecting to django backend 
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        // converts data into json 
-        const data = await res.json(); 
 
         // normalizes orders and bundles 
         const normalised = isOrders
-          ? data.map((order)=>{
-            const collection = order.collection; /*Need to edit to connect to the backend */
-            return {
-              id: posting.id,
-              name: posting.name,
-              price: posting.price,
-              company: posting.company,
-              collectionLocation: posting.collectionLocation,
-              expiryDate: posting.expiryDate,
-              allergens: posting.allergens,
-              description: posting.description,
-              claim_code: order.claim_code,
-            };
-          })
-        : data;
+          ? data 
+          : data.map((p) => ({
+              id: p.posting_id,
+              name: `${p.category} bundle`,
+              price: p.price,
+              company: "—",
+              collectionLocation: "—",
+              expiryDate: p.pickup_window,
+              allergens: p.allergens,
+              description: p.contents,
+            }));
 
         // If backend returns empty list return error message and use fake bundles 
         if (!Array.isArray(normalised) || normalised.length === 0) {
@@ -208,132 +200,128 @@ export default function Listings({ mode = "listings" }) {
 
 
   return (
-    <div style={{ padding: 16, maxWidth: 600 }}>
-      <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
+    <div className="listings-page">
+      <div className="listings-panel" >
+        <h2>{isOrders ? "Orders" : "Available Bundles"}</h2>
 
-      {/* toggle: allows you to compare real and fake data */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <input
-            type="checkbox"
-            checked={useFake}
-            onChange={(e) => setUseFake(e.target.checked)}
-          />
-          Use fake bundles
-        </label>
+        {/* toggle: allows you to compare real and fake data */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <input
+              type="checkbox"
+              checked={useFake}
+              onChange={(e) => setUseFake(e.target.checked)}
+            />
+            Use fake bundles
+          </label>
 
-        {loading && <span>Loading…</span>}
+          {loading && <span>Loading…</span>}
 
-        {!loading && apiFailed && !useFake && (
-          <span style={{ fontSize: 12 }}>
-            API unavailable/empty → showing fake bundles
-          </span>
+          {!loading && apiFailed && !useFake && (
+            <span style={{ fontSize: 12 }}>
+              API unavailable/empty → showing fake bundles
+            </span>
+          )}
+
+          {!loading && !apiFailed && !useFake && (
+            <span style={{ fontSize: 12 }}>
+              Showing API bundles
+            </span>
+          )}
+        </div>
+        
+
+        {/*info dropdown panel */}
+        {selectedBundle && (
+          <div className="info-panel">
+            <div style={{display: "flex", justifyContent: "space-between", gap: 12}}>
+              <div>
+                <h3 style={{margin: 0}}>{selectedBundle.name}</h3>
+                <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
+              </div>
+
+            <button type="button" onClick={() => setSelectedBundleId(null)}>Close</button>
+            </div>
+
+            <p style={{ margin: "8px 0" }}>
+              <strong>Company:</strong> {selectedBundle.company ?? "—"}
+            </p>
+            <p style={{ margin: "8px 0" }}>
+              <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "—"}
+            </p>
+            <p style={{ margin: "8px 0" }}>
+              <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "—"}
+            </p>
+            <p style={{ margin: "8px 0" }}>
+              <strong>Allergens:</strong>{" "}
+              {Array.isArray(selectedBundle.allergens) && selectedBundle.allergens.length > 0
+                ? selectedBundle.allergens.join(", ")
+                : "None listed"}
+            </p>
+
+            {selectedBundle.description && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Description:</strong> {selectedBundle.description}
+              </p>
+            )}
+          </div>
         )}
 
-        {!loading && !apiFailed && !useFake && (
-          <span style={{ fontSize: 12 }}>
-            Showing API bundles
-          </span>
-        )}
-      </div>
 
-      {/*info dropdown panel */}
-      {selectedBundle && (
+        {/* Scrollable list container */}
         <div
           style={{
+            maxHeight: 320,          // controls how tall before scrolling
+            overflowY: "auto",       // enables scrolling
             border: "1px solid #ddd",
             borderRadius: 8,
             padding: 12,
-            marginBottom: 12,
           }}
         >
-          <div style={{display: "flex", justifyContent: "space-between", gap: 12}}>
-            <div>
-              <h3 style={{margin: 0}}>{selectedBundle.name}</h3>
-              <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
+          {bundlesToShow.slice(0,20).map((bundle) => (
+            <div
+              key={bundle.id}
+              style={{
+                borderBottom: "1px solid #eee",
+                padding: "12px 0",
+              }}
+            >
+              <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name}</h3>
+              <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
+
+              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap"}}>
+                <button
+                  type="button"
+                  onClick={() => toggleInfo(bundle.id)}
+                >
+                  {selectedBundleId === bundle.id ? "Hide info" : "Info"}
+                </button>
+              {isOrders ? (
+                <div style={{display: "flex",gap: 8, alignItems: "center", flexWrap: "wrap",}}>
+                <span style={{ margin: "0 0 10px 0" }}>
+                  <strong>Code:</strong> {bundle.claim_code ?? "—"}
+                </span>
+
+                <button onClick={() => returnOrderToStock(bundle)}>
+                Return to stock
+                </button>
+                </div>
+              ) : (
+                <button onClick={() => redeemBundleCode(bundle.id)}>
+                    Redeem code
+                </button>
+              )}
+
+              </div>
             </div>
+          ))}
 
-          <button type="button" onClick={() => setSelectedBundleId(null)}>Close</button>
-          </div>
-
-          <p style={{ margin: "8px 0" }}>
-            <strong>Company:</strong> {selectedBundle.company ?? "—"}
-          </p>
-          <p style={{ margin: "8px 0" }}>
-            <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "—"}
-          </p>
-          <p style={{ margin: "8px 0" }}>
-            <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "—"}
-          </p>
-          <p style={{ margin: "8px 0" }}>
-            <strong>Allergens:</strong>{" "}
-            {Array.isArray(selectedBundle.allergens) && selectedBundle.allergens.length > 0
-              ? selectedBundle.allergens.join(", ")
-              : "None listed"}
-          </p>
-
-          {selectedBundle.description && (
-            <p style={{ margin: "8px 0" }}>
-              <strong>Description:</strong> {selectedBundle.description}
+          {bundlesToShow.length === 0 && !loading && (
+            <p style={{ margin: 0 }}>
+              {isOrders ? "No orders yet." : "No bundles available."}
             </p>
           )}
         </div>
-      )}
-
-
-      {/* Scrollable list container */}
-      <div
-        style={{
-          maxHeight: 320,          // controls how tall before scrolling
-          overflowY: "auto",       // enables scrolling
-          border: "1px solid #ddd",
-          borderRadius: 8,
-          padding: 12,
-        }}
-      >
-        {bundlesToShow.map((bundle) => (
-          <div
-            key={bundle.id}
-            style={{
-              borderBottom: "1px solid #eee",
-              padding: "12px 0",
-            }}
-          >
-            <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name}</h3>
-            <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
-
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap"}}>
-              <button
-                type="button"
-                onClick={() => toggleInfo(bundle.id)}
-              >
-                {selectedBundleId === bundle.id ? "Hide info" : "Info"}
-              </button>
-            {isOrders ? (
-              <div style={{display: "flex",gap: 8, alignItems: "center", flexWrap: "wrap",}}>
-              <span style={{ margin: "0 0 10px 0" }}>
-                <strong>Code:</strong> {bundle.claim_code ?? "—"}
-              </span>
-
-              <button onClick={() => returnOrderToStock(bundle)}>
-              Return to stock
-              </button>
-              </div>
-            ) : (
-              <button onClick={() => redeemBundleCode(bundle.id)}>
-                  Redeem code
-              </button>
-            )}
-
-            </div>
-          </div>
-        ))}
-
-        {bundlesToShow.length === 0 && !loading && (
-          <p style={{ margin: 0 }}>
-            {isOrders ? "No orders yet." : "No bundles available."}
-          </p>
-        )}
       </div>
     </div>
   );

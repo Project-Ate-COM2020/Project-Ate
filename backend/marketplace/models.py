@@ -96,3 +96,24 @@ class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
         fields = ["bundle", "consumer", "claim_code", "status"]
+
+class BundlePosting(models.Model):
+    # change this if your PK column name is different
+    posting_id = models.IntegerField(primary_key=True)
+
+    category = models.CharField(max_length=20)
+    contents = models.TextField()
+    allergens = models.TextField(null=True, blank=True)
+    quantity = models.IntegerField()
+    price = models.FloatField()
+    pickup_window = models.CharField(max_length=20)
+
+    class Meta:
+        managed = False          # IMPORTANT: don't migrate
+        db_table = "bundle_posting"
+        
+class BundlePostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BundlePosting
+        fields = "__all__"
+
