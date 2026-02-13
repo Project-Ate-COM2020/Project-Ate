@@ -6,7 +6,7 @@ function HomePage(){
     <>
         <NavBar />
         <Listings/>
-        <div>Home page works</div>
+        {/*<div>Home page works</div>*/}
     </>
     );
 
