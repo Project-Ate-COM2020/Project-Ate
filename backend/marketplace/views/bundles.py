@@ -12,19 +12,19 @@ from ..models import Bundle, BundleSerializer, BundlePosting, BundlePostingSeria
 class CreateBundleView(CreateAPIView):
     name = "bundle-create"
     serializer_class = BundleSerializer
-    queryset = Bundle
-    permission_classes = [AllowAny]
+    queryset = Bundle.objects.all() # Allows an autheticated viewer to create a bundle
+    permission_classes = [IsAuthenticated]
 
 
 # get all bundles
 class BundlesView(APIView):
     name = "bundles"
-    permission_classes = [AllowAny]
-
+    permission_classes = [IsAuthenticated]
+    # returns all the bundle data instead of just the ID of the bundle 
     def get(self, request):
         bundles = BundlePosting.objects.all()
         serializer = BundlePostingSerializer(bundles, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data) 
 
 
 
