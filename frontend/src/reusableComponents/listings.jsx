@@ -1,5 +1,6 @@
 /* Lists all the available bundle postings to the user */
 import "./Listings.css";
+import { login, getAccessToken } from "../api/auth";
 import fakeBundles from "./fakeBundles";
 import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore"
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
@@ -27,55 +28,71 @@ export default function Listings({ mode = "listings" }) {
   // version counters forcing react to upadate when the remove button is pressed 
   const [fakeOrdersVersion, setFakeOrdersVersion] = useState(0);
   const [ordersVersion, setOrdersVersion] = useState(0)
- 
 
-  // This a an async function that loads the bundles whilst the rest of the page loads 
-  useEffect(() => {
-    async function loadBundles() {
-      try {
-        setLoading(true);
-        setApiFailed(false);
+// This a an async function that loads the bundles whilst the rest of the page loads 
+// and loads the bundles whilst the rest of the page loads
+useEffect(() => {
 
-        const data = isOrders
-          ? await fetchMarketplaceOrders()
-          : await fetchMarketplaceBundles();
+  async function loadBundles() {
+    try {
+      setLoading(true);          // shows loading message on screen
+      setApiFailed(false);       // resets API failure state
 
-        console.log("isOrders:", isOrders);
-        console.log("raw API data:", data);
+      // **************************************************
+      // First logs in as a test user so the backend
+      // recognises the request as authenticated
+      if (!getAccessToken()) {
+        await login("will", "will");
+      }
+
+      // **************************************************
+      // Fetches either the orders or bundles depending
+      // on which mode the component is currently in
+      const data = isOrders
+        ? await fetchMarketplaceOrders()
+        : await fetchMarketplaceBundles();
+
+      console.log("raw API data:", data);  // allows debugging in browser console
 
 
-        // normalizes orders and bundles 
-        const normalised = isOrders
-          ? data 
-          : data.map((p) => ({
-              id: p.posting_id,
-              name: `${p.category} bundle`,
-              price: p.price,
-              company: "—",
-              collectionLocation: "—",
-              expiryDate: p.pickup_window,
-              allergens: p.allergens,
-              description: p.contents,
-            }));
+      // **************************************************
+      // Normalises backend data so it matches the format
+      // expected by the frontend UI
+      const normalised = isOrders
+        ? data
+        : data.map((p) => ({
+            id: p.posting_id,                   // unique id for React key
+            name: `${p.category} bundle`,       // creates display name
+            price: p.price,
+            company: "—",                       // placeholder until backend expanded
+            collectionLocation: "—",
+            expiryDate: p.pickup_window,
+            allergens: p.allergens,
+            description: p.contents,
+          }));
 
-        // If backend returns empty list return error message and use fake bundles 
-        if (!Array.isArray(normalised) || normalised.length === 0) {
-          setApiFailed(true);
-          setBundles([]);
-        } else {
-          setBundles(normalised);
-        }
-      } catch (err) {
-        console.error("Failed to load bundles:", err);
+
+      // If backend returns empty list return error message 
+      // and fall back to fake bundles
+      if (!Array.isArray(normalised) || normalised.length === 0) {
         setApiFailed(true);
         setBundles([]);
-      } finally {
-        setLoading(false);
+      } else {
+        setBundles(normalised);   // stores real backend data
       }
-    }
 
-    loadBundles();
-  }, [isOrders, ordersVersion]);
+    } catch (err) {
+      console.error("Failed to load bundles:", err);
+      setApiFailed(true);         // triggers fallback mode
+      setBundles([]);
+    } finally {
+      setLoading(false);          // removes loading message
+    }
+  }
+
+  loadBundles();   // runs the async function when component loads
+
+}, [isOrders, ordersVersion]);  // re-runs when mode or orders change
 
 
   // updates the react components when the variables in the [] change on the webpage 
