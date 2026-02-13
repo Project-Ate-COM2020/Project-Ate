@@ -6,27 +6,26 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from ..models import Bundle, BundleSerializer
+from ..models import Bundle, BundleSerializer, BundlePosting, BundlePostingSerializer
 
 
 class CreateBundleView(CreateAPIView):
     name = "bundle-create"
     serializer_class = BundleSerializer
     queryset = Bundle
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 # get all bundles
 class BundlesView(APIView):
-    name: str = "bundles"
-    permission_classes = [IsAuthenticated]
+    name = "bundles"
+    permission_classes = [AllowAny]
 
     def get(self, request):
-        bundles = Bundle.objects.all()
+        bundles = BundlePosting.objects.all()
+        serializer = BundlePostingSerializer(bundles, many=True)
+        return Response(serializer.data)
 
-        ids = [bundle_id for bundle_id in bundles.values_list("pk", flat=True)]
-
-        return Response(ids)
 
 
 # get a specific bundle
