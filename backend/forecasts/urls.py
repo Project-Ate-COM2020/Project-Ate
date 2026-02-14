@@ -9,4 +9,5 @@ router = DefaultRouter()
 urlpatterns = [
     path('', include(router.urls)),
     path('prediction/', ForecastPredictionView.as_view(), name='forecast-prediction'),
+    
 ]

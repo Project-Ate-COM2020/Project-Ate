@@ -132,7 +132,7 @@ class BundlePosting(models.Model):
     contents = models.TextField(null=True, blank=True)
     allergens = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
-    quantity_remaining = models.IntegerField()
+    quantity_remaining = models.IntegerField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     pickup_window = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)

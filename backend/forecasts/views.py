@@ -5,6 +5,7 @@ from rest_framework import status
 import pandas as pd
 from core.models import ForecastInput
 from .forecasting import (
+    calculate_recommended_price,
     get_expected_no_show_count,
     get_expected_reservations,
     get_similar_listings,
@@ -24,7 +25,7 @@ class ForecastPredictionView(APIView):
             # Optional inputs
             weather = data.get("weather")
             no_bundles = data.get("no_bundles", 0)
-            seller_id = 1
+            seller_id = data.get("seller_id")
 
             if not category or not day_of_week or not time_window:
                 return Response(
@@ -55,6 +56,7 @@ class ForecastPredictionView(APIView):
             return Response({
                 "expected_no_show_count": get_expected_no_show_count(subset, inp),
                 "expected_reservations": get_expected_reservations(subset, inp),
+                "recommended_price": calculate_recommended_price(subset, inp),
             })
 
         except Exception as e:

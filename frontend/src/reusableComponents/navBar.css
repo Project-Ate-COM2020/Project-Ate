@@ -7,7 +7,8 @@ nav {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-nav > a {
+/* main text */
+nav a {
   font-size: 1.5rem;
   font-weight: bold;
   text-decoration: none;
@@ -18,7 +19,7 @@ nav a:hover {
   color: var(--accent4);
 }
 
-/* the buttons normally */
+/* spacing and stuff */
 nav ul {
   display: flex;
   list-style: none;
@@ -27,6 +28,7 @@ nav ul {
   padding: 0;
 }
 
+/* links in navbar */
 nav li a {
   text-decoration: none;
   color: var(--accent1);
