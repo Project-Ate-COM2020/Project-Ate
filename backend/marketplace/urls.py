@@ -13,36 +13,36 @@ urlpatterns = [
     #
     # create bundles
     path(
-        "marketplace/bundle/",
+        "bundle/",
         views.CreateBundleView.as_view(),
         name=views.CreateBundleView.name,
     ),
-    path("marketplace/bundles/", views.BundlesView.as_view(), name="bundles"),
+    path("bundles/", views.BundlesView.as_view(), name="bundles"),
     # get newest n bundles
     # GET ... /marketplace/bundles/between?from=2009?to=20019?exclusive=false
     path(
-        "marketplace/bundles/between",
+        "bundles/between/",
         views.BundlesView.as_view(),
         name=views.BundlesView.name,
     ),
     # get oldest n bundles
     # GET ... /marketplace/bundles/oldest?count=20
     path(
-        "marketplace/bundles/oldest",
+        "bundles/oldest/",
         views.BundleOldestView.as_view(),
         name=views.BundleOldestView.name,
     ),
     # get bundles older than a specified date
     # GET ... /marketplace/bundles/older?date=YYYY-MM-DD
     path(
-        r"marketplace/bundles/older/",
+        r"bundles/older/",
         views.BundleOlderView.as_view(),
         name=views.BundleOlderView.name,
     ),
     # get bundles younger than a specified date
     # GET ... /marketplace/bundles/newer?date=YYYY-MM-DD
     path(
-        "marketplace/bundles/newer/",
+        "bundles/newer/",
         views.BundleNewerView.as_view(),
         name=views.BundleNewerView.name,
     ),
@@ -52,7 +52,7 @@ urlpatterns = [
     # {TZD} can be plus or minus then hours minutes ahead / behind e.g +01:50 or -02:00
     # either to or from can be omitted
     path(
-        "marketplace/bundles/open/",
+        "bundles/open/",
         views.BundleOpenView.as_view(),
         name=views.BundleOpenView.name,
     ),
@@ -61,23 +61,23 @@ urlpatterns = [
     # {TZD} can be plus or minus then hours minutes ahead / behind e.g +01:50 or -02:00
     # either to or from can be omitted
     path(
-        r"marketplace/bundles/collection/",
+        r"bundles/collection/",
         views.BundleCollectionView.as_view(),
         name=views.BundleCollectionView.name,
     ),
     path(
-        "marketplace/bundle/<int:bundle_id>/",
+        "bundle/<int:bundle_id>/",
         views.BundleView.as_view(),
         name=views.BundleView.name,
     ),
     #
     path(
-        "marketplace/consumer",
+        "consumer/",
         views.CreateConsumerView.as_view(),
         name=views.CreateConsumerView.name,
     ),
     path(
-        "marketplace/consumer/<int:consumer_id>/",
+        "consumer/<int:consumer_id>/",
         views.ConsumerView.as_view(),
         name=views.ConsumerView.name,
     ),
@@ -88,49 +88,49 @@ urlpatterns = [
     #
     # create seller
     path(
-        "marketplace/seller",
+        "seller/",
         views.CreateSellerView.as_view(),
         name=views.CreateSellerView.name,
     ),
     # get seller data
     path(
-        "marketplace/seller/<int:seller_id>/",
+        "seller/<int:seller_id>/",
         views.SellerView.as_view(),
         name=views.SellerView.name,
     ),
     # get bundles for a seller
     path(
-        "marketplace/seller/<int:seller_id>/bundles",
+        "seller/<int:seller_id>/bundles/",
         views.SellerBundlesView.as_view(),
         name=views.SellerBundlesView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/between",
+        "seller/<int:seller_id>/bundles/between/",
         views.SellerBundleBetweenView.as_view(),
         name=views.SellerBundleBetweenView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/newest",
+        "seller/<int:seller_id>/bundles/newest/",
         views.SellerBundleNewestView.as_view(),
         name=views.SellerBundleNewestView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/oldest",
+        "seller/<int:seller_id>/bundles/oldest/",
         views.SellerBundleOldestView.as_view(),
         name=views.SellerBundleOldestView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/older/",
+        "seller/<int:seller_id>/bundles/older/",
         views.SellerBundleOlderView.as_view(),
         name=views.SellerBundleOlderView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/younger/",
+        "seller/<int:seller_id>/bundles/younger/",
         views.BundleNewerView.as_view(),
         name=views.BundleNewerView.name,
     ),
     path(
-        "marketplace/seller/<int:seller_id>/bundles/collection/",
+        "seller/<int:seller_id>/bundles/collection/",
         views.BundleCollectionView.as_view(),
         name=views.BundleCollectionView.name,
     ),
@@ -138,44 +138,45 @@ urlpatterns = [
     # Reservation end points
     #
     path(
-        "marketplace/reservations",
-        views.CreateReservationView.as_view(),
-        name=views.CreateReservationView.name,
+    "reservations/",
+    views.ReservationsView.as_view(),
+    name="reservations",
     ),
+
     path(
-        "marketplace/reservations/<int:reservation_id>/",
-        views.ReservationView.as_view(),
-        name=views.ReservationView.name,
+        "reservations/<int:pk>/",
+        views.ReservationDetailView.as_view(),
+        name="reservation-detail",
     ),
     # Seller Authentication
     path(
-        "marketplace/seller/auth/token",
+        "seller/auth/token/",
         SellerTokenObtainPairView.as_view(),
         name="seller-token-obtain-pair",
     ),
     path(
-        "marketplace/seller/auth/token/refresh",
+        "seller/auth/token/refresh/",
         TokenRefreshView.as_view(),
         name="seller-token-refresh",
     ),
     path(
-        "marketplace/seller/auth/token/verify/",
+        "seller/auth/token/verify/",
         TokenVerifyView.as_view(),
         name="seller-token-verify",
     ),
     # Consumer Authentication
     path(
-        "marketplace/consumer/auth/token",
+        "consumer/auth/token/",
         ConsumerTokenObtainPairView.as_view(),
         name="consumer-token-obtain-pair",
     ),
     path(
-        "marketplace/consumer/auth/token/refresh",
+        "consumer/auth/token/refresh/",
         TokenRefreshView.as_view(),
         name="consumer-token-refresh",
     ),
     path(
-        "marketplace/consumer/auth/token/verify/",
+        "consumer/auth/token/verify/",
         TokenVerifyView.as_view(),
         name="consumer-token-verify",
     ),
