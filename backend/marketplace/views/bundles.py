@@ -6,7 +6,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from ..models import Bundle, BundleSerializer, BundlePosting, BundlePostingSerializer
+from ..models import Bundle, BundlePosting
+from ..serializers import BundleSerializer, BundlePostingSerializer
+
 
 
 class CreateBundleView(CreateAPIView):

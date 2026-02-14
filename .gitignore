@@ -6,7 +6,6 @@ __pycache__/
 
 # Django
 # db.sqlite3 - UNTIL NEXT MEETING WILL CONVERT TO MYSQL
-
 # Logs
 logs
 *.log

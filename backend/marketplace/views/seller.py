@@ -6,13 +6,14 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.response import Response
 from argon2 import PasswordHasher
 
-from ..models import (
-    Seller,
+from ..models import Seller
+from ..models import Bundle
+
+from .. serializers import (
     SellerSerializer,
     BundleSerializer,
-    SellerWithPasswordSerializer,
-)
-from ..models import Bundle
+    SellerWithPasswordSerializer)
+
 
 
 class CreateSellerView(CreateAPIView):

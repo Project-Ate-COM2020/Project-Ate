@@ -1,23 +1,16 @@
-from django.http import HttpResponseNotFound
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from ..models import ReservationSerializer, Reservation
+from ..models import Reservation
+from ..serializers import ReservationSerializer
 
 
-class CreateReservationView(CreateAPIView):
-    name = "reservations-create"
+class ReservationsView(ListCreateAPIView):
     serializer_class = ReservationSerializer
-    queryset = Reservation
+    queryset = Reservation.objects.all()
     permission_classes = [IsAuthenticated]
 
 
-class ReservationView(RetrieveUpdateDestroyAPIView):
-    name = "reservations"
+class ReservationDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
     queryset = Reservation.objects.all()
     permission_classes = [IsAuthenticated]
