@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "core",
     "forecasts",
     "marketplace",
+    "game",
     
     
     # For specific API development
