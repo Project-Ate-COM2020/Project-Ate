@@ -6,7 +6,7 @@ function UserHomePage(){
     <>
         <NavBar />
         <Listings/>
-        <div>Home page works</div>
+        {/*<div>Home page works</div>*/}
     </>
     );
 
