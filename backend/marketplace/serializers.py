@@ -62,7 +62,7 @@ class BundlePostingSerializer(serializers.ModelSerializer):
         fields = (
             "posting_id",
             "category",
-            "contents",
+            "contents", 
             "allergens",
             "quantity",
             "price",

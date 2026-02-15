@@ -1,15 +1,16 @@
 /* Lists all the available bundle postings to the user */
-import "./Listings.css";
-import { login, getAccessToken } from "../api/auth";
-import fakeBundles from "./fakeBundles";
-import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore"
-import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
+
+import "./Listings.css";                               /*css link */
+import { login, getAccessToken } from "../api/auth";   /*Allows authentication on the website to be stored locally*/
+import fakeBundles from "./fakeBundles";               /*faked data for frontend testing without the backend*/
+import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore" /* more fake utilies for the backend*/
+import { useEffect, useMemo, useState } from "react";  /* It imports the different react hooks  */
 import {
   fetchMarketplaceBundles,
   fetchMarketplaceOrders,
   createReservationForPosting,
   API_BASE
-} from "../api/marketplace";
+} from "../api/marketplace"; /* imports all the key API functions the listing and order page needs*/
 
 
 
@@ -19,8 +20,8 @@ export default function Listings({ mode = "listings" }) {
 
   const isOrders = mode === "orders"; /*changes the mode when on the /orders page*/
 
-  const [bundles, setBundles] = useState([]); /* It is a hook that stores the bundles and the function to load bundles from memory */ 
-  const [loading, setLoading] = useState(true);/* It stores a true or false value depending on which toggle to use*/ 
+  const [bundles, setBundles] = useState([]);        /* Stores the real data from the backend*/ 
+  const [loading, setLoading] = useState(true);      /* It accounts for Loading while the async function runs*/ 
 
   // manual toggle for fake and real data for testing purposes 
   const [useFake, setUseFake] = useState(false); 
@@ -50,7 +51,7 @@ useEffect(() => {
       // First logs in as a test user so the backend
       // recognises the request as authenticated
       if (!getAccessToken()) {
-        await login("will", "will");
+        await login("will", "will"); // can change to any known login for testing
       }
 
       // **************************************************
@@ -61,7 +62,7 @@ useEffect(() => {
       
       if (isOrders) {
         data = await fetchMarketplaceOrders();        // reservations
-        bundlesList = await fetchMarketplaceBundles(); // postings (for lookup)
+        bundlesList = await fetchMarketplaceBundles(); // postings to be able to look them up
       } else {
         data = await fetchMarketplaceBundles();       // postings
       }
@@ -73,49 +74,48 @@ useEffect(() => {
       // Normalises backend data so it matches the format
       // expected by the frontend UI
       const normalised = isOrders
-      ? data.map((r) => {
-          // reservation points at a bundle/posting id
+      ? data.map((r) => {  //reservations on the order page getting normilised 
+
           const postingIdRaw =
-            r.bundle ?? r.posting ?? r.bundle_id ?? r.posting_id;
+            r.bundle ?? r.posting ?? r.bundle_id ?? r.posting_id;    
 
           const postingId = postingIdRaw != null ? Number(postingIdRaw) : null;
 
-          const realReservationId = r.id ?? r.reservation_id ?? null; // ✅ int or null
-          const reactKey =
+          const realReservationId = r.id ?? r.reservation_id ?? null; 
+
+          // creates 3 fall back keys to make sure there is a Unique / stable key for each item in the list
+          const reactKey = 
             realReservationId ?? `${postingIdRaw}-${r.claim_code ?? Math.random()}`;
 
-          // find the posting details
+          // manually joins the 2 different DB together so all the information can be dsiplayed  
           const posting = Array.isArray(bundlesList)
             ? bundlesList.find((p) => Number(p.posting_id) === postingId)
             : null;
-
+            // all the information that can be displayed on the orders page 
             return {
               key: reactKey,
-              id: realReservationId,   // ✅ reservation id
+              id: realReservationId,  
               claim_code: r.claim_code,
               status: r.status,
               created_at: r.created_at,
-              posting_id: postingId,   // ✅ posting reference (whatever backend sends)
+              posting_id: postingId,  
               name: posting ? `${posting.category} bundle` : `Bundle ${postingId ?? "—"}`,
-              price: posting?.price ?? "—",
+              price: posting?.price ?? "—", // "-" keeps the UI readable if no data is there 
               company: "—",
               collectionLocation: "—",
-              expiryDate: posting?.pickup_window ?? "—",
+              expiryDate: posting?.pickup_window ?? "—", 
               allergens: posting?.allergens ?? [],
               description: posting?.contents ?? "",
             };
         })
-      : data.map((p) => {
-          // ✅ correct place to log p
+      : data.map((p) => { //posting  the avablie bundles to the user on the order page 
+          
           console.log("RAW POSTING OBJECT:", p);
 
           return {
             id: p.posting_id,
             posting_id: p.posting_id,
-
-            // ✅ IMPORTANT: store the real Bundle PK here
             bundle_id: p.bundle_id ?? p.bundle ?? null,
-
             name: `${p.category} bundle`,
             price: p.price,
             company: "—",
@@ -125,12 +125,9 @@ useEffect(() => {
             description: p.contents,
           };
         });
-
-          
-        // ✅ If backend returns non-array, that's an API failure.
-        // ✅ Empty array is valid (means "no orders yet")  
-
-        if (!Array.isArray(normalised)) {
+        
+        // decided whether the API failed or sucseeded based off if the info was nomilised 
+        if (!Array.isArray(normalised)) { 
           setApiFailed(true);
           setBundles([]);
         } else {
@@ -198,19 +195,19 @@ useEffect(() => {
       }
   
       // REAL MODE (backend)
-      const consumerId = 1; // TODO: replace with real logged-in consumer id
+      const consumerId = 1; // ********************* change to the customer once the login system works 
 
-      const postingPk = bundle.id; // ✅ BundlePosting PK from backend
+      const postingPk = bundle.id; // extracts the ID of the posing selected 
       if (!postingPk) {
         alert("Backend did not provide the posting PK (id).");
         return;
       }
 
-      const postingId = bundle.posting_id ?? bundle.id; // should be posting_id from backend
-      const created = await createReservationForPosting(postingId, consumerId);
+      const postingId = bundle.posting_id ?? bundle.id; // connects the correct ID as it handles real and fake data 
 
-
-
+      // sends the nessary info to the backend for the backend to return the bundle code and status change 
+      const created = await createReservationForPosting(postingId, consumerId); 
+      
       alert(`Reserved! Code: ${created.claim_code}`);
       setOrdersVersion((v) => v + 1);
     } catch (err) {
@@ -244,7 +241,7 @@ async function returnOrderToStock(order) {
     // REAL MODE (backend) — delete reservation
     const token = getAccessToken();
 
-    const reservationId = order.id; // ✅ ONLY real backend id
+    const reservationId = order.id; 
 
     if (!reservationId) {
       alert("Can't return to stock: backend didn't send reservation id.");
@@ -276,20 +273,6 @@ async function returnOrderToStock(order) {
     alert(`Return failed: ${err.message}`);
   }
 }
-
-/* 
-async function getReservationById(id) {
-  const token = getAccessToken();
-    const res = await fetch(`${API_BASE}/api/marketplace/reservations/${id}/`, {
-    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-    credentials: "omit",
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
-*/
-
-
 
 return (
     <div className="listings-page">
@@ -369,7 +352,7 @@ return (
                   )}
                 </div>
 
-                {/* ✅ INLINE info panel (no overlap) */}
+                {/* INFO PANNEL inside the scrollable list  */}
                 {isOpen && (
                   <div className="info-panel" style={{ marginTop: 10 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>

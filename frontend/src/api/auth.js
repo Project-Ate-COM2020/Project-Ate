@@ -1,9 +1,10 @@
-// api.js (or auth.js)
+// authentication Manual 
 
+// allow portablity due to VITE
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
-// ----- Token helpers -----
+// local storage for access tokens and the abitlity to clear them 
 export function getAccessToken() {
   return localStorage.getItem("access_token");
 }
@@ -17,10 +18,11 @@ export function clearTokens() {
   localStorage.removeItem("refresh_token");
 }
 
-// ----- Auth: login -----
+//login / get the tokens 
 export async function login(username, password) {
   const url = new URL("/marketplace/consumer/auth/token/", API_BASE).toString();
 
+  // sending a post request to the backend to get the tockens 
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -30,14 +32,14 @@ export async function login(username, password) {
 
   if (!res.ok) throw new Error(await res.text());
 
-  const data = await res.json();
+  const data = await res.json(); // tokens recived 
 
-  // Expecting SimpleJWT shape: { access: "...", refresh: "..." }
+  // check the bankend returend what I expected 
   if (!data?.access) throw new Error("Login failed: no access token returned.");
 
   localStorage.setItem("access_token", data.access);
 
-  // Store refresh too (useful for debugging / later auto-refresh)
+  // IDK if we use a refesh token or no so either stored or don't store it 
   if (data.refresh) {
     localStorage.setItem("refresh_token", data.refresh);
   } else {
@@ -47,7 +49,7 @@ export async function login(username, password) {
   return data;
 }
 
-// ----- Generic JSON request helper (adds Authorization correctly) -----
+// Automatically looks up access tokens so you can test the side without beign logged in 
 export async function apiJson(path, options = {}) {
   const token = getAccessToken();
   const url = new URL(path, API_BASE).toString();
@@ -64,7 +66,7 @@ export async function apiJson(path, options = {}) {
     credentials: "omit",
   });
 
-  // If token is invalid/expired, clear it so you don't keep failing forever
+  // If token is invalid/expired it clears them to stop you from failing 
   if (res.status === 401) {
     clearTokens();
   }
@@ -74,7 +76,7 @@ export async function apiJson(path, options = {}) {
     throw new Error(text || `HTTP ${res.status}`);
   }
 
-  // Handle empty responses safely
+  // Handle empty responses 
   const contentType = res.headers.get("content-type") || "";
   return contentType.includes("application/json") ? res.json() : null;
 }
