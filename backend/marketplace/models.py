@@ -55,14 +55,14 @@ class BundlePosting(models.Model):
 class Reservation(models.Model):
     posting = models.ForeignKey(
         BundlePosting,
-        db_column="posting_id",     # ✅ IMPORTANT: maps to posting_id in DB
+        db_column="posting_id",     
         on_delete=models.CASCADE,
         related_name="reservations",
     )
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     claim_code = models.CharField(max_length=20)
     status = models.IntegerField()
-
+ 
          
 
       

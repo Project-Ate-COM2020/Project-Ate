@@ -1,14 +1,17 @@
 const API_BASE =
+  // portablitity 
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
-import { getAccessToken } from "./auth";
+// getting the access token 
+import { getAccessToken } from "./auth"; 
 
-/* ----------------- Helpers ----------------- */
-
+// helper fucntions 
+// generating with no backend 
 function makeClaimCode() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
+// Makes the fetch reques and reads the responce safely 
 async function getJson(path) {
   const token = getAccessToken();
 
@@ -35,6 +38,7 @@ async function getJson(path) {
   return data;
 }
 
+// makes post requests  
 async function postJson(path, body) {
   const token = getAccessToken();
 
@@ -63,7 +67,7 @@ async function postJson(path, body) {
   return data;
 }
 
-/* ----------------- API Calls ----------------- */
+//API Calls 
 
 export const fetchMarketplaceBundles = () =>
   getJson("/marketplace/bundles/");

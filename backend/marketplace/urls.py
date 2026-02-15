@@ -147,7 +147,7 @@ urlpatterns = [
         "reservations/<int:pk>/",
         views.ReservationDetailView.as_view(),
         name="reservation-detail",
-    ),
+    ), 
     # Seller Authentication
     path(
         "seller/auth/token/",
