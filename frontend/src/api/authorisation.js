@@ -75,7 +75,7 @@ export const AUTH_ENDPOINTS = {
   me: "/api/auth/me/",
 
   // pick ONE signup approach
-  signupBuyer: "/api/auth/signup/buyer/",
+  signupBuyer: "/marketplace/consumer",
   signupSeller: "/api/auth/signup/seller/",
 };
 
@@ -95,14 +95,14 @@ export async function fetchMe() {
 
 
 // sign up functions, align payload field names with backend
-export async function signupBuyer({ email, password, displayName }) {
+export async function signupBuyer({ displayName, password }) {
   return requestJson(AUTH_ENDPOINTS.signupBuyer, {
     method: "POST",
     body: {
-      email,
-      password,
       display_name: displayName,
-      role: "buyer", //  can ignore if unused
+      password,
+      streak: 0,
+      badges: "none", // or use "[]" if you plan to store as JSON
     },
   });
 }
