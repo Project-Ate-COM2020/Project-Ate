@@ -17,6 +17,7 @@ class BaseAuthenticatedTest(APITestCase):
         self.user = User.objects.create_user(username="testuser")
 
         self.consumer = Consumer.objects.create(
+            id=1,
             display_name="Test User",
             streak=5
         )
@@ -69,9 +70,9 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
         # Hot Meals: 2.5 * 2 = 5
         # Fresh Produce: 0.5 * 4 = 2
         # Total = 7
-        self.assertEqual(response.data["current_streak"], 5)
-        self.assertEqual(response.data["total_rescues"], 2)
-        self.assertEqual(response.data["co2_estimate"], 7.0)
+        self.assertEqual(response.data["current_streak_weeks"], 5)
+        self.assertEqual(response.data["total_rescued_bundles"], 2)
+        self.assertEqual(response.data["estimated_co2e_saved_kg"], 7.0)
 
     def test_ignores_non_collected(self):
         posting = self.create_posting("Hot Meals", 2)
@@ -79,8 +80,8 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
 
         response = self.client.get(reverse("game-summary"))
 
-        self.assertEqual(response.data["total_rescues"], 0)
-        self.assertEqual(response.data["co2_estimate"], 0)
+        self.assertEqual(response.data["total_rescued_bundles"], 0)
+        self.assertEqual(response.data["estimated_co2e_saved_kg"], 0)
 
 
 class RecentRescuesViewTests(BaseAuthenticatedTest):
@@ -125,7 +126,7 @@ class RecentRescuesViewTests(BaseAuthenticatedTest):
         for code in claim_codes:
             self.create_reservation(posting, code)
 
-        response = self.client.get(reverse("recent-rescues"))
+        response = self.client.get(reverse("game-recent"))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 10)
