@@ -20,8 +20,8 @@ async function getJson(path) {
 
 // Marketplace endpoints (match your curl URL)
 export const fetchMarketplaceBundles = () =>
-  getJson("/marketplace/marketplace/bundles/");
+  getJson("/marketplace/bundles/");
 
 // (optional) if you have this endpoint
 export const fetchMarketplaceOrders = () =>
-  getJson("/marketplace/marketplace/orders/");
+  getJson("/marketplace/orders/");
