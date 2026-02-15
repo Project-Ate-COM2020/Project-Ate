@@ -31,5 +31,8 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?backend/db.sqlite3
+*.sw?
+
+# Django local database
 backend/db.sqlite3
+
