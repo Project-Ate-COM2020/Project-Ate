@@ -1,10 +1,11 @@
 # Python
+.venv/
 venv/
 __pycache__/
 *.pyc
 
 # Django
-db.sqlite3
+# db.sqlite3 - UNTIL NEXT MEETING WILL CONVERT TO MYSQL
 
 # Logs
 logs

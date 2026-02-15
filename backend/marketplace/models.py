@@ -1,8 +1,7 @@
+from argon2 import PasswordHasher
 from django.db import models
 
-<<<<<<< HEAD
 # Create your models here.
-=======
 from rest_framework import serializers
 
 
@@ -119,4 +118,3 @@ class BundlePostingSerializer(serializers.ModelSerializer):
         model = BundlePosting
         fields = "__all__"
 
->>>>>>> f0acf40 (Works_with_no_security)

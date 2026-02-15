@@ -6,12 +6,21 @@
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
+// Helper to read the stored JWT access token.
+// IMPORTANT: keep the key name aligned with your login implementation.
+function getAccessToken() {
+  // If your login stores it under a different name (e.g. "accessToken"),
+  // change ONLY this line.
+  return localStorage.getItem("access");
+}
+
 // Helper function for GET requests that return JSON
 async function getJson(path) {
   const url = API_BASE + path;
 
+  // Do NOT send Authorization header for game endpoints (public, hardcoded user)
   const res = await fetch(url, {
-    credentials: "include", // allows cookies to be sent with the request
+    // No headers needed
   });
 
   if (!res.ok) {
@@ -33,14 +42,11 @@ async function getJson(path) {
  *  - CO2e estimate
  *  - badges
  */
-export const fetchGameSummary = () =>
-  getJson("/api/game/summary/");
 
-/**
- * Fetches recent rescued bundles for activity display
- *
- * limit prevents too many results being returned
- */
+export const fetchGameSummary = () =>
+  getJson("/game/api/game/summary/");
+
 export function fetchRecentRescues(limit = 10) {
-  return getJson(`/api/game/recent/?limit=${encodeURIComponent(limit)}`);
+  return getJson(`/game/api/game/recent/?limit=${encodeURIComponent(limit)}`);
 }
+
