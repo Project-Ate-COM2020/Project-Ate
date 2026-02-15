@@ -32,3 +32,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?backend/db.sqlite3
+backend/db.sqlite3
