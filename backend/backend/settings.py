@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     
     # For specific API development
     'rest_framework',
+    "marketplace",
 ]
 
 MIDDLEWARE = [
