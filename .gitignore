@@ -31,4 +31,4 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.sw?backend/db.sqlite3
