@@ -44,6 +44,7 @@ def get_total_revenue_by_seller(df, seller_id):
     return result["total_revenue"] or 0
 
 def get_reduction_in_food_waste_by_seller(df, seller_id):
+    seller_id = int(seller_id)
     seller_df = df[df["seller_id"] == seller_id]
     total_listings = len(seller_df)
     if total_listings == 0:
