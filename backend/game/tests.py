@@ -17,7 +17,7 @@ class BaseAuthenticatedTest(APITestCase):
         self.user = User.objects.create_user(username="testuser")
 
         self.consumer = Consumer.objects.create(
-            id=1,
+            consumer_id=1,
             display_name="Test User",
             streak=5
         )
