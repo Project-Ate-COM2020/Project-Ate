@@ -8,13 +8,13 @@ function ReservedBundles(seller_id,bundle_id) {
     // name of buyer, pickup time, bundle name, bundle code
     
 
-        const collectBundle = async (bundleId) => {
+        const collectBundle = async (reservation_id) => {
     const response = await fetch("http://127.0.0.1:8000/seller/collectbundle/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         seller_id: 1,
-                bundle_id: bundleId
+                reservation_id
       }),
     });
     } 
@@ -35,7 +35,7 @@ function ReservedBundles(seller_id,bundle_id) {
                     <p>Pickup time: {bundle.reservation_time}</p>
                     <p>Bundle: {bundle.posting_id}</p>
                     <p>Code: {bundle.reservation_code}</p>
-                    <button onClick={() => collectBundle(bundle.posting_id)}>Mark Collected</button>
+                    <button onClick={() => collectBundle(bundle.reservation_id)}>Mark Collected</button>
                     <hr />
                 </div>
             ))}
