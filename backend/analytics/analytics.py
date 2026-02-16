@@ -62,3 +62,11 @@ def get_total_no_shows_by_seller(seller_id):
         posting__seller__seller_id=seller_id,
         status="no-show",
     ).count()
+    
+def get_collected_reservations_by_seller(seller_id):
+    """Get total collected reservations for a seller by joining Reservation -> Posting -> Seller"""
+    seller_id = int(seller_id)
+    return Reservation.objects.filter(
+        posting__seller__seller_id=seller_id,
+        status="collected",
+    ).count()
