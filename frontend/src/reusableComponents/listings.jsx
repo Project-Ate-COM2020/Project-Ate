@@ -100,6 +100,8 @@ export default function Listings({ mode = "listings" }) {
 
   async function redeemBundleCode(bundleId) {
     try {
+      console.log("HELLOOO");
+      console.log(bundleId);
       // Find the bundle object (needed for fake orders)
       const bundle = bundlesToShow.find((b) => b.id === bundleId);
       if (!bundle) {
@@ -126,10 +128,11 @@ export default function Listings({ mode = "listings" }) {
       }
   
       // REAL MODE (backend)
-      const data = await requestJson("/marketplace/reservations", {
+      const data = await requestJson("/buyer/reservebundle/", {
         method: "POST",
         body: {
-          bundle_id: bundleId,
+          posting_id: bundleId,
+          consumer_id: 1,
         },
       });
 
