@@ -9,7 +9,7 @@ function ReservedBundles(seller_id,bundle_id) {
     
 
         const collectBundle = async (bundleId) => {
-    const response = await fetch("http://127.0.0.1:8000/seller/collectBundle", {
+    const response = await fetch("http://127.0.0.1:8000/seller/collectbundle/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
