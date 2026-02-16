@@ -7,6 +7,7 @@ from rest_framework.generics import ListAPIView
 from core.models import Consumer, Reservation, BundlePosting
 from django.utils import timezone
 from .serializers import ReservationSerializer
+from .game import real_streak_weeks
 
 # Create your views here.
 
@@ -22,7 +23,11 @@ CO2_PER_ITEM = {
 class GameSummaryView(APIView):
 
     def get(self, request):
-        consumer = Consumer.objects.get(consumer_id=1)
+        #requested_consumer_id = request.query_params.get("consumer_id")
+        #if not requested_consumer_id:
+            #return Response({"error": "consumer_id query parameter is required"}, status=400)
+        #consumer = get_object_or_404(Consumer, consumer_id=requested_consumer_id)
+        consumer = 1
         collected = Reservation.objects.filter(consumer=consumer, status="collected").select_related("posting")
         total_co2 = 0
         for reservation in collected:
@@ -40,7 +45,7 @@ class GameSummaryView(APIView):
         ).exists()
 
         return Response({
-            "current_streak_weeks": consumer.streak,
+            "current_streak_weeks": real_streak_weeks(consumer),
             "has_rescued_this_week": has_rescued_this_week,
             "total_rescued_bundles": collected.count(),
             "estimated_co2e_saved_kg": total_co2
