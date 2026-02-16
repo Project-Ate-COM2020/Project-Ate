@@ -1,5 +1,5 @@
 from django.urls import path, include
-from backend import forecasts, analytics, seller
+from backend import buyer, forecasts, analytics, seller
 from rest_framework.routers import DefaultRouter
 from .views import ForecastInputViewSet, ForecastOutputViewSet, ForecastPredictionView, AnalyticView # ignore type: ignore
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path('forecast/', include(forecasts.urls)),
     path('analytics/', include(analytics.urls)),
     path('seller/', include(seller.urls)),
+    path('buyer/', include(buyer.urls)),
 ]
