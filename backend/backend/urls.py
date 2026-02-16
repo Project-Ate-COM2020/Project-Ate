@@ -9,5 +9,4 @@ urlpatterns = [
     path("game/", include('game.urls')),
     path("forecast/", include('forecasts.urls')),
     path("analytics/", include('analytics.urls')),
-    path("buyer/", include("buyer.urls")),
 ]

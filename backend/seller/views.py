@@ -122,7 +122,6 @@ class AddNewListingView(APIView):
         quantity = data.get("quantity")
         price = data.get("price")
         pickup_window = data.get("pickup_window")
-        quantity_remaining = data.get("quantity")
         print(seller_id, category, contents, allergens, price, pickup_window)
         if not seller_id or not category or not contents or not quantity or not price or not pickup_window:
             return Response(
@@ -139,7 +138,6 @@ class AddNewListingView(APIView):
                 quantity=quantity,
                 price=price,
                 pickup_window=pickup_window,
-                quantity_remaining=quantity
             )
             # add new listing to the database
             return Response(
