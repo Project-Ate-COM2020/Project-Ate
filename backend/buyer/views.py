@@ -5,7 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
 from core.models import BundlePosting, Reservation, Seller
-from claimcodegeneration import generate_claim_code
+import random
+
+def generate_claim_code(length=8):
+    """Generates a random alphanumeric claim code of the specified length."""
+    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    claim_code = ''.join(random.choice(characters) for _ in range(length))
+    return claim_code
 
 class MarkReservationAsReserveredView(APIView):
     def post(self, request):
