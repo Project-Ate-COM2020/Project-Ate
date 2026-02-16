@@ -24,4 +24,4 @@ export const fetchMarketplaceBundles = () =>
 
 // (optional) if you have this endpoint
 export const fetchMarketplaceOrders = () =>
-  getJson("/marketplace/orders/");
+  getJson("/buyer/getreservations/1");

@@ -78,15 +78,26 @@ class GetBuyerReservationsView(APIView):
         """
         Retrieves all reservations for a given consumer.
         Expects consumer_id as a URL parameter.
+        Returns full bundle details for display.
         """
         reservations = Reservation.objects.filter(consumer_id=consumer_id)
         reservation_data = []
         for reservation in reservations:
+            posting = reservation.posting
             reservation_data.append({
                 "reservation_id": reservation.reservation_id,
-                "posting_id": reservation.posting.posting_id,
+                "posting_id": posting.posting_id,
                 "claim_code": reservation.claim_code,
                 "status": reservation.status,
-                "created_at": reservation.created_at,
+                "created_at": reservation.timestamp,
+                # Include full bundle details for frontend display
+                "id": posting.posting_id,
+                "name": f"{posting.category} bundle",
+                "price": str(posting.price),
+                "company": "—",
+                "collectionLocation": "—",
+                "expiryDate": posting.pickup_window,
+                "allergens": posting.allergens,
+                "description": posting.contents,
             })
         return Response({"reservations": reservation_data}, status=status.HTTP_200_OK)
