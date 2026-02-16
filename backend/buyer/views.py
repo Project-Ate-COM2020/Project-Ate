@@ -67,3 +67,20 @@ class MarkReservationAsUnreservedView(APIView):
         except Reservation.DoesNotExist:
             return Response({"error": "Reservation not found"}, status=status.HTTP_404_NOT_FOUND)
         
+class GetBuyerReservationsView(APIView):
+    def get(self, request, consumer_id):
+        """
+        Retrieves all reservations for a given consumer.
+        Expects consumer_id as a URL parameter.
+        """
+        reservations = Reservation.objects.filter(consumer_id=consumer_id)
+        reservation_data = []
+        for reservation in reservations:
+            reservation_data.append({
+                "reservation_id": reservation.reservation_id,
+                "posting_id": reservation.posting.posting_id,
+                "claim_code": reservation.claim_code,
+                "status": reservation.status,
+                "created_at": reservation.created_at,
+            })
+        return Response({"reservations": reservation_data}, status=status.HTTP_200_OK)
