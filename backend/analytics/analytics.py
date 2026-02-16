@@ -22,11 +22,13 @@ def get_number_of_listings_by_seller(df, seller_id):
 
 def get_total_reservations_by_seller(seller_id):
     """Get total reservations for a seller by joining Reservation -> Posting -> Seller"""
+    seller_id = int(seller_id)
     return Reservation.objects.filter(
         posting__seller__seller_id=seller_id
     ).count()
 
 def get_total_revenue_by_seller(df, seller_id):
+    seller_id = int(seller_id)
     result = (
         Reservation.objects
         .filter(
@@ -41,7 +43,8 @@ def get_total_revenue_by_seller(df, seller_id):
         )
     )
 
-    return result["total_revenue"] or 0
+    total = result["total_revenue"]
+    return float(total) if total is not None else 0.0
 
 def get_reduction_in_food_waste_by_seller(df, seller_id):
     seller_id = int(seller_id)
@@ -54,6 +57,7 @@ def get_reduction_in_food_waste_by_seller(df, seller_id):
 
 def get_total_no_shows_by_seller(seller_id):
     """Get total no-shows for a seller by joining Reservation -> Posting -> Seller"""
+    seller_id = int(seller_id)
     return Reservation.objects.filter(
         posting__seller__seller_id=seller_id,
         status="no-show",
