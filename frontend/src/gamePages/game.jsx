@@ -119,8 +119,8 @@ export default function Game() {
         <div style={{ marginBottom: 14 }}>
           <span className="pill">
             {summary.has_rescued_this_week
-              ? "✅ Rescued this week"
-              : "⏳ Not yet this week"}
+              ? "Rescued this week"
+              : "Not yet Rescued this week"}
             {USE_MOCK_DATA ? " • Mock data" : ""}
           </span>
         </div>
