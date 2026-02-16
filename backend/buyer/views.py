@@ -5,7 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
 from core.models import BundlePosting, Reservation, Seller
-from claimcodegeneration import generate_claim_code
+import random
+
+def generate_claim_code(length=8):
+    """Generates a random alphanumeric claim code of the specified length."""
+    characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    claim_code = ''.join(random.choice(characters) for _ in range(length))
+    return claim_code
 
 class MarkReservationAsReserveredView(APIView):
     def post(self, request):
@@ -72,15 +78,26 @@ class GetBuyerReservationsView(APIView):
         """
         Retrieves all reservations for a given consumer.
         Expects consumer_id as a URL parameter.
+        Returns full bundle details for display.
         """
         reservations = Reservation.objects.filter(consumer_id=consumer_id)
         reservation_data = []
         for reservation in reservations:
+            posting = reservation.posting
             reservation_data.append({
                 "reservation_id": reservation.reservation_id,
-                "posting_id": reservation.posting.posting_id,
+                "posting_id": posting.posting_id,
                 "claim_code": reservation.claim_code,
                 "status": reservation.status,
-                "created_at": reservation.created_at,
+                "created_at": reservation.timestamp,
+                # Include full bundle details for frontend display
+                "id": posting.posting_id,
+                "name": f"{posting.category} bundle",
+                "price": str(posting.price),
+                "company": "—",
+                "collectionLocation": "—",
+                "expiryDate": posting.pickup_window,
+                "allergens": posting.allergens,
+                "description": posting.contents,
             })
         return Response({"reservations": reservation_data}, status=status.HTTP_200_OK)

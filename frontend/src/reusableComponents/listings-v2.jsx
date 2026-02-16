@@ -9,7 +9,7 @@ import { requestJson } from "../api/authorisation";
 /*lists all the avable bundle postings to the user*/
 
 // Automatically assumes the state is listings unless metioned elsewhere 
-export default function Listings({ mode = "listings" }) {
+export default function Listingsv2({ mode = "listings" }) {
   const isOrders = mode === "orders"; /*changes the mode when on the /orders page*/
 
   const [bundles, setBundles] = useState([]); /* It is a hook that stores the bundles and the function to load bundles from memory */ 
@@ -45,7 +45,7 @@ export default function Listings({ mode = "listings" }) {
 
         // normalizes orders and bundles 
         const normalised = isOrders
-          ? data 
+          ? (data.reservations || data)  // Extract reservations array if wrapped
           : data.map((p) => ({
               id: p.posting_id,
               name: `${p.category} bundle`,
@@ -56,13 +56,17 @@ export default function Listings({ mode = "listings" }) {
               allergens: p.allergens,
               description: p.contents,
             }));
+        
+        console.log("NORMALISED: ");
+        console.log(normalised);
 
-        // If backend returns empty list return error message and use fake bundles 
-        if (!Array.isArray(normalised) || normalised.length === 0) {
+        // Check if response is valid array (empty array is valid - means no orders/bundles)
+        if (!Array.isArray(normalised)) {
           setApiFailed(true);
           setBundles([]);
+          console.log("API response is not an array");
         } else {
-          setBundles(normalised);
+          setBundles(normalised);  // Set bundles even if empty array
         }
       } catch (err) {
         console.error("Failed to load bundles:", err);
@@ -136,7 +140,7 @@ export default function Listings({ mode = "listings" }) {
         },
       });
 
-      alert(`Redeemed successfully! Order ID: ${data.order_id ?? "OK"}`);
+      alert(`Redeemed successfully! Reservation ID: ${data.reservation_id ?? "OK"}`);
     } catch (err) {
       alert(`Redeem failed: ${err.message}`);
     }
@@ -153,28 +157,28 @@ export default function Listings({ mode = "listings" }) {
       if(!order) return;
 
       if(useFake || apiFailed){
-        if(order.order_id == null){
-          alert("Can't remove fake order: missing order_id");
+        const orderId = order.order_id ?? order.reservation_id;
+        if(orderId == null){
+          alert("Can't remove order: missing ID");
           return;
         }
-        removeFakeOrder(order.order_id);
+        removeFakeOrder(orderId);
         setFakeOrdersVersion((v) => v + 1);
         alert("(FAKE) Returned to stock (removed from fake orders).");
         return;
       }
     
       // REAL MODE
-    const data = await requestJson("/api/marketplace/orders/return", {
+    const data = await requestJson("/buyer/unreservebundle/", {
       method: "POST",
       body: {
-        order_id: order.order_id,   
-        bundle_id: order.id,       
+        reservation_id: order.reservation_id,
       },
     });
 
     alert("Returned to stock.");
 
-    setBundles((prev) => prev.filter((o) => o.order_id !== order.order_id));
+    setBundles((prev) => prev.filter((o) => o.reservation_id !== order.reservation_id));
     setOrdersVersion((v) => v + 1);
   
     } catch (err){
@@ -221,32 +225,54 @@ export default function Listings({ mode = "listings" }) {
           <div className="info-panel">
             <div style={{display: "flex", justifyContent: "space-between", gap: 12}}>
               <div>
-                <h3 style={{margin: 0}}>{selectedBundle.name}</h3>
-                <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
+                <h3 style={{margin: 0}}>{selectedBundle.name ?? "Bundle"}</h3>
+                {selectedBundle.price != null && (
+                  <p style={{ margin: "6px 0" }}>£{selectedBundle.price}</p>
+                )}
               </div>
 
             <button type="button" onClick={() => setSelectedBundleId(null)}>Close</button>
             </div>
 
-            <p style={{ margin: "8px 0" }}>
-              <strong>Company:</strong> {selectedBundle.company ?? "—"}
-            </p>
-            <p style={{ margin: "8px 0" }}>
-              <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "—"}
-            </p>
-            <p style={{ margin: "8px 0" }}>
-              <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "—"}
-            </p>
-            <p style={{ margin: "8px 0" }}>
-              <strong>Allergens:</strong>{" "}
-              {Array.isArray(selectedBundle.allergens) && selectedBundle.allergens.length > 0
-                ? selectedBundle.allergens.join(", ")
-                : "None listed"}
-            </p>
+            {selectedBundle.claim_code && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Reservation Code:</strong> {selectedBundle.claim_code}
+              </p>
+            )}
+
+            {selectedBundle.company && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Company:</strong> {selectedBundle.company}
+              </p>
+            )}
+            {selectedBundle.collectionLocation && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Collection location:</strong> {selectedBundle.collectionLocation}
+              </p>
+            )}
+            {selectedBundle.expiryDate && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Expiry date:</strong> {selectedBundle.expiryDate}
+              </p>
+            )}
+            {selectedBundle.allergens && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Allergens:</strong>{" "}
+                {Array.isArray(selectedBundle.allergens) && selectedBundle.allergens.length > 0
+                  ? selectedBundle.allergens.join(", ")
+                  : "None listed"}
+              </p>
+            )}
 
             {selectedBundle.description && (
               <p style={{ margin: "8px 0" }}>
                 <strong>Description:</strong> {selectedBundle.description}
+              </p>
+            )}
+            
+            {selectedBundle.created_at && (
+              <p style={{ margin: "8px 0" }}>
+                <strong>Created:</strong> {new Date(selectedBundle.created_at).toLocaleString()}
               </p>
             )}
           </div>
@@ -271,8 +297,15 @@ export default function Listings({ mode = "listings" }) {
                 padding: "12px 0",
               }}
             >
-              <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name}</h3>
-              <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
+              <h3 style={{ margin: "0 0 6px 0" }}>{bundle.name ?? "Bundle"}</h3>
+              {bundle.price != null && (
+                <p style={{ margin: "0 0 10px 0" }}>£{bundle.price}</p>
+              )}
+              {bundle.claim_code && (
+                <p style={{ margin: "0 0 10px 0" }}>
+                  <strong>Code:</strong> {bundle.claim_code}
+                </p>
+              )}
 
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap"}}>
                 <button
