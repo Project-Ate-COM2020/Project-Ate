@@ -115,3 +115,26 @@ class TotalNoShowsView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+        
+class GetCollectedReservationsView(APIView):
+    def get(self, request):
+        try:
+            # get seller ID from query params
+            seller_id = request.query_params.get("seller_id")
+            
+            if not seller_id:
+                return Response(
+                    {"error": "seller_id query parameter is required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # outsource business logic for readability (analytics.py)
+            response = get_collected_reservations_by_seller(seller_id)
+
+            # return in JSON format
+            return Response({
+                "collected_reservations": response,
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
