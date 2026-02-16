@@ -148,3 +148,29 @@ class AddNewListingView(APIView):
             return Response({"error": "Seller not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class MarkBundleAsCollectedView(APIView):
+    def post(self, request):
+        """Marks a bundle as collected.
+        Expects reservation_id in the request body.
+        """
+        data = request.data
+        reservation_id = data.get("reservation_id")
+        if not reservation_id:
+            return Response(
+                {"error": "reservation_id is required in the request body"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            reservation = Reservation.objects.get(reservation_id=reservation_id)
+            reservation.status = "collected"
+            reservation.collected_at = pd.Timestamp.now()
+            reservation.save()
+            return Response(
+                {"message": "Bundle marked as collected"},
+                status=status.HTTP_200_OK
+            )
+        except Reservation.DoesNotExist:
+            return Response({"error": "Reservation not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
