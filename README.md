@@ -176,9 +176,13 @@ npm run dev
 The frontend runs at http://127.0.0.1:5173/
 
 ### Run tests
+
+To run our testing suite:
+``` bash
 python manage.py test seller.tests
 python manage.py test forecasts.tests
 python manage.py test analytics.tests
+```
 
 API ENDPOINTS
 Seller (/seller/)
