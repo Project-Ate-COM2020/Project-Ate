@@ -4,9 +4,7 @@ A Django + React web application for connecting food sellers with consumers to h
 
 Members: James Clarke, Jacob Evans, Harry Price, Will Brown, Anna Hedley, Lucas Parish, Zac Dowlands
 
-
-
-
+This GitHub Repo is strictly for code, for documentation please see our submission
 
 ## Features
 
