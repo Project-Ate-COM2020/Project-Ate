@@ -12,9 +12,16 @@ A Django + React web application for connecting food sellers with consumers to r
 ## Features
 
 - **Seller Dashboard**: Manage listings, track reservations, and view analytics
+   - **Forecasting**: model based demand prediction for optimal pricing
+   - **Analytics**: Track revenue, food waste reduction, and no-show rates
+   - **Bundle Management**: Mark reservations as collected, Create new bundles to sell
+
 - **Consumer Portal**: Browse available food bundles and make reservations
-- **Forecasting**: AI-driven demand prediction for optimal pricing
-- **Analytics**: Track revenue, food waste reduction, and no-show rates
+
+- **Consumer Orders Page**: View reservations, expiry times and claim codes
+
+- **Consumer Game Page**: View current streaks, statistics and CO2 saved
+
 
 ## Project Structure
 Project-Ate/
@@ -28,28 +35,33 @@ Project-Ate/
 ### Backend
 
 1. Navigate to the backend folder:
-   ```bash
-   cd backend
+```bash
+cd backend
+```
 
-2. Create virtual environment
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-3. Instal dependancies
+2. Instal dependancies
+```bash
 pip install -r requirements.txt
+```
 
-4. Run migrations 
+3. Run migrations  and start development server
+``` bash
 python manage.py migrate
+```
 
-5. Start development server
+4. Start development server
+``` bash
 python manage.py runserver
+```
 
 The server runs at http://127.0.0.1:8000/
 
 ### Frontend
 
 1. Navigate to frontend folder
+``` bash
 cd frontend
+```
 
 2. Install dependancies
 npm install
