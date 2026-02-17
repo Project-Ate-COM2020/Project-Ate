@@ -131,10 +131,7 @@ class GetCollectedReservationsView(APIView):
             # outsource business logic for readability (analytics.py)
             response = get_collected_reservations_by_seller(seller_id)
 
-            # return in JSON format
-            return Response({
-                "collected_reservations": response,
-            })
+            return Response(response)
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
