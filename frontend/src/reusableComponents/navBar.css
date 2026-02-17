@@ -1,0 +1,41 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--accent2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* main text */
+nav a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--accent1);
+}
+
+nav a:hover {
+  color: var(--accent4);
+}
+
+/* spacing and stuff */
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+/* links in navbar */
+nav li a {
+  text-decoration: none;
+  color: var(--accent1);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+nav li a:hover {
+  color: var(--accent4);
+}
