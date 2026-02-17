@@ -200,7 +200,7 @@ POST /seller/createlisting/ - Create a new listing
 (/marketplace/)
 
 #### Global Bundle Operations
-'''
+```
 POST /marketplace/bundle/ - Create bundle
 GET /marketplace/bundles/ - Get all bundles
 GET /marketplace/bundles/between?from=X&to=Y&exclusive=false - Get bundles between dates
@@ -211,16 +211,16 @@ GET /marketplace/bundles/open/ - Get bundles from open shops
 GET /marketplace/bundles/open?from=YYYY-MM-DDTHH:MM:SS±HH:MM&to=... - Get open bundles in time range
 GET /marketplace/bundles/collection/?from=YYYY-MM-DDTHH:MM:SS±HH:MM&to=... - Get bundles with collection in range
 GET /marketplace/bundle/<bundle_id>/ - Get specific bundle
-'''
+```
 
 #### Consumer Operations
-'''
+```
 POST /marketplace/consumer - Create consumer
 GET /marketplace/consumer/<consumer_id>/ - Get consumer data
-'''
+```
 
 #### Seller Operations
-'''
+```
 POST /marketplace/seller - Create seller
 GET /marketplace/seller/<seller_id>/ - Get seller data
 GET /marketplace/seller/<seller_id>/bundles - Get seller's bundles
@@ -230,13 +230,13 @@ GET /marketplace/seller/<seller_id>/bundles/oldest - Get seller's oldest bundles
 GET /marketplace/seller/<seller_id>/bundles/older/ - Get seller bundles older than date
 GET /marketplace/seller/<seller_id>/bundles/younger/ - Get seller bundles younger than date
 GET /marketplace/seller/<seller_id>/bundles/collection/ - Get seller bundles with collection in range
-'''
+```
 
 #### Reservations
-'''
+```
 POST /marketplace/reservations - Create reservation
 GET /marketplace/reservations/<reservation_id>/ - Get reservation data
-'''
+```
 
 #### Authentication
 ```
@@ -251,22 +251,22 @@ POST /marketplace/consumer/auth/token/verify/ - Verify consumer token
 ### Analytics 
 (/analytics/)
 
-'''
+```
 GET /analytics/total-listings/ - Get total listings count
 GET /analytics/total-revenue/ - Get total revenue
 GET /analytics/total-reservations/ - Get total reservations
 GET /analytics/food-waste-reduction/ - Get food waste reduction %
 GET /analytics/total-no-shows/ - Get total no-shows
-'''
+```
 
 ### Game 
 (/game/)
 
-'''
+```
 GET /game/api/game/summary/ - Get game summary
 GET /game/api/game/recent/ - Get recent rescues
 GET /game/api/test/ - Test endpoint
-'''
+```
 
 Technologies
 Backend: Django, Django REST Framework, djangorestframework-simplejwt
