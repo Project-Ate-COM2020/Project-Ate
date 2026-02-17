@@ -1,13 +1,12 @@
-Exeter University  
-Module COM2020 (Team Project)  
-Project 8  
-Tech stack: React + Django + SQLite  
-In essence this is a web app allows a user to send a request  
-that request either updates data in the db, or returns data from the db to the user  
-
 # Project-Ate
 
-A Django + React web application for connecting food sellers with consumers to reduce food waste.
+A Django + React web application for connecting food sellers with consumers to help solve the food waste problem.
+
+Members: James Clarke, Jacob Evans, Harry Price, Will Brown, Anna Hedley, Lucas Parish, Zac Dowlands
+
+
+
+
 
 ## Features
 
@@ -289,12 +288,3 @@ GET /game/api/test/ - Test endpoint
 /signup/user - allows a user to create a consumer account
 ```
 
-Technologies
-Backend: Django, Django REST Framework, djangorestframework-simplejwt
-Frontend: React (if applicable)
-Database: SQLite (dev) / PostgreSQL (prod)
-AI/ML: Forecasting algorithms for demand prediction
-Contributing
-Create a feature branch
-Commit changes
-Push and create a pull request
