@@ -24,80 +24,113 @@ A Django + React web application for connecting food sellers with consumers to r
 
 
 ## Project Structure
+
+```
 Project-Ate/
-    |- /backend                       - this is the 'root' backend folder - the first thing you see when you open the github
-    |
-    |manage.py                     - this is djangos server manager that runs our server for us based on the logic we define
-    |requirements.txt              - this contains the pip packages we need to install on each development environment 
-    |
-    |/backend
-    |   |__init__.py                  - apparently needed to make python interpreter see this directory as a package, file is empty
-    |   |settings.py                  - server settings, where we add any extra modules we install (in this case our rest framework)
-    |   |urls.py                      - defines the url paths of our different services, it will assign each one a path e.g /marketplace or/game
-    |   |wsgi.py                      - for use with a deployment grade server (not needed for development)
-    |
-    |/core                         - this is our first Django app - it will be the one responsible for database management
-    |   |__init__.py                  - same again, empty file
-    |   |models.py                    - this is where our DB creation is, natively uses Djangos ORM, can use raw SQL if preffered
-    |   |managers.py                  - provides a way for the rest of the apps to easily query the database (will be developed in line with the models.py)
-    |   |utils.py                     - because this core directory will be imported by everything, having a shared set of utility functions improves code reusability
-    |
-    |/marketplace                  - every app directory from here has the same structure - as in essence they do the same thing, with different business logic behind them
-    |   |__init__.py                  - as explained
-    |   |urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
-    |   |serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
-    |   |views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
-    |   |/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
-    |   |   |service1.py
-    |   |   |service2.py
-    |   |
-    |   |/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
-    |   |   |test1.py
-    |   |   |test2.py
-    |
-    |/analytics                    
-    |   |__init__.py                  - as explained
-    |   |urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
-    |   |serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
-    |   |views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
-    |   |/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
-    |   |   |service1.py
-    |   |   |service2.py
-    |   |
-    |   |/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
-    |   |   |test1.py
-    |   |   |test2.py
-    |
-    |/forecasting
-    |   |__init__.py                  - as explained
-    |   |urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
-    |   |serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
-    |   |views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
-    |   |/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
-    |   |   |service1.py
-    |   |   |service2.py
-    |   |
-    |   |/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
-    |   |   |test1.py
-    |   |   |test2.py
-    |
-    |/game layer
-    |   |__init__.py                  - as explained
-    |   |urls.py                      - this file continues on from the url points defined in backend/urls.py and defines API endpoints for each view
-    |   |serializers.py               - this file contains functions defining how the marketplace app should convert DB objects to JSON objects
-    |   |views.py                     - this file will define and serve API endpoints, this is configured within the Django framework
-    |   |/services                    - this file contains the actual business logic for the marketplace, will call .core.managers.py for db access
-    |   |   |service1.py
-    |   |   |service2.py
-    |   |
-    |   |/tests                       - this file contains corresonding unit tests for the code in services (Ideal for test driven development)
-    |   |   |test1.py
-    |   |   |test2.py
-
-
-
-├── frontend/ # React app (if applicable)
-└── docs/ # Documentation
+	backend/
+		manage.py                     # Django server manager
+		requirements.txt              # Python dependencies
+		db.sqlite3                    # SQLite database
+		backend/
+			__init__.py
+			settings.py               # Server settings and installed apps
+			urls.py                   # Root URL routing
+			asgi.py
+			wsgi.py                   # WSGI config for deployment
+		core/
+			__init__.py
+			models.py                 # Core database models
+			admin.py
+			apps.py
+			tests.py
+			urls.py
+			migrations/
+		marketplace/
+			__init__.py
+			models.py
+			admin.py
+			apps.py
+			urls.py                   # Marketplace API endpoints
+			serializers.py            # JSON serialization
+			consumer_token.py
+			seller_token.py
+			tests.py
+			views/
+				__init__.py
+				bundles.py
+			migrations/
+		seller/
+			__init__.py
+			admin.py
+			apps.py
+			serializers.py
+			views.py
+			urls.py
+			tests.py
+			migrations/
+		buyer/
+			__init__.py
+			admin.py
+			apps.py
+			models.py
+			serializers.py
+			views.py
+			urls.py
+			migrations/
+		analytics/
+			__init__.py
+			admin.py
+			apps.py
+			models.py
+			serializers.py
+			views.py
+			urls.py
+			analytics.py              # Analytics business logic
+			tests.py
+			migrations/
+		forecasts/
+			__init__.py
+			admin.py
+			apps.py
+			serializers.py
+			views.py
+			urls.py
+			forecasting.py            # Forecasting algorithms
+			tests.py
+			migrations/
+		game/
+			__init__.py
+			admin.py
+			apps.py
+			models.py
+			serializers.py
+			views.py
+			urls.py
+			game.py                   # Game logic
+			tests.py
+			migrations/
+	frontend/
+		src/
+			App.jsx
+			main.jsx
+			api/
+			assets/
+			authorisationPages/
+			Basket/
+			gamePages/
+			homePage/
+			marketplacePages/
+			orders/
+			reusableComponents/
+			seller/
+		public/
+		package.json
+		vite.config.js
+		index.html
+	DevOps/
+	Environment Documentation/
+	Project Documentation/
+```
 
 
 ## Setup Instructions
