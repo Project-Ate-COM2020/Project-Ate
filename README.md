@@ -145,9 +145,8 @@ cd backend
 pip install -r requirements.txt
 ```
 
-3. Run migrations and start development server
+3. Start development server
 ``` bash
-python manage.py migrate
 python manage.py runserver
 ```
 
