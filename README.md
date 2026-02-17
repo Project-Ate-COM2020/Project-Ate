@@ -134,7 +134,7 @@ Project-Ate/
 ```
 
 
-## Setup Instructions
+## Depolyment Guide
 
 ### Backend
 
@@ -148,17 +148,13 @@ cd backend
 pip install -r requirements.txt
 ```
 
-3. Run migrations  and start development server
+3. Run migrations and start development server
 ``` bash
 python manage.py migrate
-```
-
-4. Start development server
-``` bash
 python manage.py runserver
 ```
 
-The server runs at http://127.0.0.1:8000/
+The backend server runs at http://127.0.0.1:8000/
 
 ### Frontend
 
@@ -168,10 +164,16 @@ cd frontend
 ```
 
 2. Install dependancies
+``` bash
 npm install
+```
 
 3. Start development server
-npm start
+``` bash
+npm run dev
+```
+
+The frontend runs at http://127.0.0.1:5173/
 
 ### Run tests
 python manage.py test seller.tests
