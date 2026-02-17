@@ -184,7 +184,7 @@ python manage.py test forecasts.tests
 python manage.py test analytics.tests
 ```
 
-## API ENDPOINTS
+## API Endpoints
 
 ### Seller Endpoints (mostly for demo only, will be encompassed by marketplace in sprint 2)
 (/seller/)
@@ -266,6 +266,27 @@ GET /analytics/total-no-shows/ - Get total no-shows
 GET /game/api/game/summary/ - Get game summary
 GET /game/api/game/recent/ - Get recent rescues
 GET /game/api/test/ - Test endpoint
+```
+
+## Frontend Pages
+
+### Seller
+```
+/seller - Seller dashboard, contains analytics, bundles and forecasting
+```
+
+### Consumer
+```
+/user - User homepage, contains bundles available to reserve
+/orders - contains current reservations for the consumer
+/game - shows CO2 saved, streaks and other stats
+```
+
+### Authentication
+```
+/login - allows a user who has an account to sign in
+/signup/seller - allows a user to create a seller account
+/signup/user - allows a user to create a consumer account
 ```
 
 Technologies
