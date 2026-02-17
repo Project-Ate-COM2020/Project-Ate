@@ -24,7 +24,7 @@ class SellerSerializer(serializers.ModelSerializer):
 class SellerWithPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
-        fields = ["name", "password", "location", "opening_hours", "contact_stub"]
+        fields = ["id", "name", "password", "location", "opening_hours", "contact_stub"]
 
     def create(self, validated_data):
         ph = PasswordHasher()
@@ -56,6 +56,7 @@ class BundleSerializer(serializers.ModelSerializer):
             "quantity",
             "price",
             "pickup_window",
+            'status',
         ]
 
 
