@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Reservation
+from .models import Reservation
 
 
 class ReservationSerializer(serializers.ModelSerializer):
