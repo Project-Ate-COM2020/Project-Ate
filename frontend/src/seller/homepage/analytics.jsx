@@ -15,6 +15,7 @@ function Analytics() {
     const { data: reservationsData, loading: loadingReservations } = useLoadData('analytics/total-reservations', { seller_id: 1 });
     const { data: noShowsData, loading: loadingNoShows } = useLoadData('analytics/total-no-shows', { seller_id: 1 });
     const { data: revenueData, loading: loadingRevenue } = useLoadData('analytics/total-revenue', { seller_id: 1 });
+    const { data: collectedReservationsData, loading: loadingCollectedReservations } = useLoadData('analytics/collected-reservations', { seller_id: 1 });
 
     // Extract values from response objects (handle both nested and plain responses)
     const totalListings = typeof listingsData === 'number' ? listingsData : (listingsData?.total_listings ?? 0);
@@ -48,16 +49,14 @@ function Analytics() {
     } else { amountRevenue = totalRevenue}
 
     // percentage of listings collected
-    if (loadingListings || loadingReservations || loadingNoShows) {
+    if (loadingListings || loadingCollectedReservations) {
         percentageListingsCollected = "Loading..."
     } else {
         const denominator = totalListings || 0;
         if (denominator === 0) {
             percentageListingsCollected = 0;
         } else {
-            const totalUnreserved = totalListings - totalReservations;
-            const totalUncollected = totalUnreserved + totalNoShows;
-            percentageListingsCollected = ((totalListings - totalUncollected) / denominator * 100).toFixed(2);
+            percentageListingsCollected = ((collectedReservationsData) / (collectedReservationsData + totalNoShows) * 100).toFixed(2);
         }
     }
 
@@ -84,13 +83,13 @@ function Analytics() {
             <h3>Total number of listings posted</h3>
             <p>{numListings}</p>
 
-            <h3>Total number of listings reserved by a buyer</h3>
+            <h3>Total number of reservations made</h3>
             <p>{numReservations}</p>
 
             <h3>Total amount of revenue generated</h3>
             <p>{amountRevenue}</p>
 
-            <h3>Percentage of listings collected</h3>
+            <h3>Percentage of postings collected</h3>
             <p>{percentageListingsCollected}%</p>
 
             <h3>Percentage of noshows for reserved listings</h3>
