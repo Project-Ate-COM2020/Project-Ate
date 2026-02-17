@@ -109,7 +109,8 @@ Project-Ate/
 			game.py                   # Game logic
 			tests.py
 			migrations/
-	frontend/
+	
+   frontend/                       # Slightly less well documented the frontend is, this is a general directory structure, there's a lot of cleaning up that needs to be done
 		src/
 			App.jsx
 			main.jsx
