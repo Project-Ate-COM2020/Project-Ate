@@ -49,6 +49,7 @@ class BundleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bundle
         fields = [
+            "id",
             "seller",
             "category",
             "contents",
@@ -56,7 +57,7 @@ class BundleSerializer(serializers.ModelSerializer):
             "quantity",
             "price",
             "pickup_window",
-            'status',
+            "status",
         ]
 
 
@@ -99,6 +100,7 @@ class ReservationSerializer(serializers.ModelSerializer):
         model = Reservation
         fields = ["bundle", "consumer", "claim_code", "status"]
 
+
 class BundlePosting(models.Model):
     # change this if your PK column name is different
     posting_id = models.IntegerField(primary_key=True)
@@ -111,11 +113,11 @@ class BundlePosting(models.Model):
     pickup_window = models.CharField(max_length=20)
 
     class Meta:
-        managed = False          # IMPORTANT: don't migrate
+        managed = False  # IMPORTANT: don't migrate
         db_table = "bundle_posting"
-        
+
+
 class BundlePostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = BundlePosting
         fields = "__all__"
-
