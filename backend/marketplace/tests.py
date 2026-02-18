@@ -1,3 +1,4 @@
+from argon2 import PasswordHasher
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -218,3 +219,50 @@ class CreateConsumerViewTests(APITestCase):
         self.assertEqual(consumer.display_name, "name")
         self.assertEqual(consumer.streak, 7)
         self.assertEqual(consumer.badges, "Badge")
+
+
+class ConsumerPasswordHashingTests(APITestCase):
+    def setUp(self):
+        consumer_url = reverse(CreateConsumerView.name)
+
+        consumer_data = {
+            "display_name": "name",
+            "password": "pass",
+            "streak": 7,
+            "badges": "Badge",
+        }
+
+        self.consumer_creation_response = self.client.post(
+            consumer_url, consumer_data, format="json"
+        )
+
+        self.consumer_id = self.consumer_creation_response.json()["id"]
+
+    def test_password_got_hashed(self):
+        consumer = Consumer.objects.get(id=self.consumer_id)
+
+        self.assertNotEqual(consumer.password, "pass")
+
+
+class SellerPasswordHashingTests(APITestCase):
+    def setUp(self):
+        seller_url = reverse(CreateSellerView.name)
+
+        seller_data = {
+            "name": "lauren",
+            "location": "CF54BB",
+            "password": "pass",
+            "opening_hours": "00:00-24:00",
+            "contact_stub": "9874325655",
+        }
+
+        self.seller_creation_response = self.client.post(
+            seller_url, seller_data, format="json"
+        )
+
+        self.seller_id = self.seller_creation_response.json()["id"]
+
+    def test_password_got_hashed(self):
+        seller = Seller.objects.get(id=self.seller_id)
+
+        self.assertNotEqual(seller.password, "pass")

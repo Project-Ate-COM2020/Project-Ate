@@ -29,7 +29,7 @@ class SellerWithPasswordSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ph = PasswordHasher()
 
-        validated_data["password"] = ph.hash(validated_data["password"])
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
 
         return super().create(validated_data)
 
@@ -83,7 +83,7 @@ class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ph = PasswordHasher()
 
-        validated_data["password"] = ph.hash(validated_data["password"])
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
 
         return super().create(validated_data)
 
