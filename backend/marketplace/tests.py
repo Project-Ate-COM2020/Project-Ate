@@ -87,18 +87,134 @@ class CreateSellerViewTests(APITestCase):
             "contact_stub": "9874325655",
         }
 
-        pass
+        self.creation_response = self.client.post(url, seller_data, format="json")
+
+        self.seller_id = self.creation_response.json()["id"]
+
+    def test_creation_success(self):
+        self.assertEqual(Seller.objects.count(), 1)
+
+        self.assertEqual(self.creation_response.status_code, status.HTTP_201_CREATED)
+
+    def test_data_integrity(self):
+        seller = Seller.objects.get(id=self.seller_id)
+
+        self.assertEqual(seller.name, "lauren")
+        self.assertEqual(seller.location, "CF54BB")
+        self.assertEqual(seller.opening_hours, "00:00-24:00")
+        self.assertEqual(seller.contact_stub, "9874325655")
 
 
 class CreateReservationViewsTests(APITestCase):
     def setUp(self):
-        url = reverse(CreateReservationView.name)
+        seller_url = reverse(CreateSellerView.name)
 
-        pass
+        seller_data = {
+            "name": "lauren",
+            "location": "CF54BB",
+            "password": "pass",
+            "opening_hours": "00:00-24:00",
+            "contact_stub": "9874325655",
+        }
+
+        self.seller_creation_response = self.client.post(
+            seller_url, seller_data, format="json"
+        )
+
+        self.seller_id = self.seller_creation_response.json()["id"]
+
+        bundle_url = reverse(CreateBundleView.name)
+
+        bundle_data = {
+            "seller": int(self.seller_id),
+            "category": "food",
+            "contents": "A bagel",
+            "allergens": "lots",
+            "quantity": 8,
+            "price": 55,
+            "pickup_window": "00:00-24:00",
+            "status": 7,
+        }
+
+        self.bundle_creation_response = self.client.post(
+            bundle_url, bundle_data, format="json"
+        )
+
+        self.bundle_id = self.bundle_creation_response.json()["id"]
+
+        consumer_url = reverse(CreateConsumerView.name)
+
+        consumer_data = {
+            "display_name": "name",
+            "password": "pass",
+            "streak": 7,
+            "badges": "Badge",
+        }
+
+        self.consumer_creation_response = self.client.post(
+            consumer_url, consumer_data, format="json"
+        )
+
+        self.consumer_id = self.consumer_creation_response.json()["id"]
+
+        reservation_url = reverse(CreateReservationView.name)
+
+        reservation_data = {
+            "bundle": int(self.bundle_id),
+            "consumer": int(self.consumer_id),
+            "claim_code": "XXXXXX",
+            "status": 7,
+        }
+
+        self.reservation_creation_response = self.client.post(
+            reservation_url, reservation_data, format="json"
+        )
+
+        self.reservation_id = self.reservation_creation_response.json()["id"]
+
+    def test_creation_success(self):
+        self.assertEqual(Reservation.objects.count(), 1)
+        self.assertEqual(
+            self.reservation_creation_response.status_code, status.HTTP_201_CREATED
+        )
+
+    def test_data_integrity(self):
+        reservation = Reservation.objects.get(id=self.reservation_id)
+
+        self.assertEqual(reservation.bundle.id, self.bundle_id)
+        self.assertEqual(reservation.consumer.id, self.consumer_id)
+        self.assertEqual(reservation.claim_code, "XXXXXX")
+        self.assertEqual(reservation.status, 7)
 
 
 class CreateConsumerViewTests(APITestCase):
     def setUp(self):
-        url = reverse(CreateConsumerView.name)
+        consumer_url = reverse(CreateConsumerView.name)
+
+        consumer_data = {
+            "display_name": "name",
+            "password": "pass",
+            "streak": 7,
+            "badges": "Badge",
+        }
+
+        self.consumer_creation_response = self.client.post(
+            consumer_url, consumer_data, format="json"
+        )
+
+        self.consumer_id = self.consumer_creation_response.json()["id"]
 
         pass
+
+    def test_creation_success(self):
+        self.assertEqual(Consumer.objects.count(), 1)
+        self.assertEqual(
+            self.consumer_creation_response.status_code, status.HTTP_201_CREATED
+        )
+
+    def test_data_integrity(self):
+        consumer = Consumer.objects.get(id=self.consumer_id)
+
+        self.assertEqual(consumer.display_name, "name")
+        self.assertEqual(consumer.streak, 7)
+        self.assertEqual(consumer.badges, "Badge")

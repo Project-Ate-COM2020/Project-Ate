@@ -78,7 +78,7 @@ class ConsumerSerializer(serializers.ModelSerializer):
 class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
-        fields = ["display_name", "password", "streak", "badges"]
+        fields = ["id", "display_name", "password", "streak", "badges"]
 
     def create(self, validated_data):
         ph = PasswordHasher()
@@ -98,7 +98,7 @@ class Reservation(models.Model):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ["bundle", "consumer", "claim_code", "status"]
+        fields = ["id", "bundle", "consumer", "claim_code", "status"]
 
 
 class BundlePosting(models.Model):
