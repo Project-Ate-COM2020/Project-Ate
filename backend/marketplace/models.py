@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 
 class Seller(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     # just do post code for now
     location = models.CharField(max_length=6)
     # argon2id hashed
@@ -30,6 +30,8 @@ class SellerWithPasswordSerializer(serializers.ModelSerializer):
         ph = PasswordHasher()
 
         validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
 
         return super().create(validated_data)
 
@@ -84,6 +86,8 @@ class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
         ph = PasswordHasher()
 
         validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
 
         return super().create(validated_data)
 
