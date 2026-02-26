@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 
 class Seller(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     # just do post code for now
     location = models.CharField(max_length=6)
     # argon2id hashed
@@ -24,12 +24,14 @@ class SellerSerializer(serializers.ModelSerializer):
 class SellerWithPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
-        fields = ["name", "password", "location", "opening_hours", "contact_stub"]
+        fields = ["id", "name", "password", "location", "opening_hours", "contact_stub"]
 
     def create(self, validated_data):
         ph = PasswordHasher()
 
-        validated_data["password"] = ph.hash(validated_data["password"])
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
 
         return super().create(validated_data)
 
@@ -49,6 +51,7 @@ class BundleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bundle
         fields = [
+            "id",
             "seller",
             "category",
             "contents",
@@ -56,6 +59,7 @@ class BundleSerializer(serializers.ModelSerializer):
             "quantity",
             "price",
             "pickup_window",
+            "status",
         ]
 
 
@@ -76,12 +80,14 @@ class ConsumerSerializer(serializers.ModelSerializer):
 class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
-        fields = ["display_name", "password", "streak", "badges"]
+        fields = ["id", "display_name", "password", "streak", "badges"]
 
     def create(self, validated_data):
         ph = PasswordHasher()
 
-        validated_data["password"] = ph.hash(validated_data["password"])
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
 
         return super().create(validated_data)
 
@@ -96,7 +102,8 @@ class Reservation(models.Model):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ["bundle", "consumer", "claim_code", "status"]
+        fields = ["id", "bundle", "consumer", "claim_code", "status"]
+
 
 class BundlePosting(models.Model):
     # change this if your PK column name is different
@@ -110,11 +117,11 @@ class BundlePosting(models.Model):
     pickup_window = models.CharField(max_length=20)
 
     class Meta:
-        managed = False          # IMPORTANT: don't migrate
+        managed = False  # IMPORTANT: don't migrate
         db_table = "bundle_posting"
-        
+
+
 class BundlePostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = BundlePosting
         fields = "__all__"
-

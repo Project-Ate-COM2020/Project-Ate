@@ -67,7 +67,7 @@ export async function requestJson(path, { method = "GET", body } = {}) {
   return data;
 }
 
-//   --------- Auth endpoints (EDIT THESE) ----------
+//   --------- Auth endpoints ----------
 
 export const AUTH_ENDPOINTS = {
   login: "/api/auth/login/",
@@ -102,7 +102,7 @@ export async function signupBuyer({ displayName, password }) {
       display_name: displayName,
       password,
       streak: 0,
-      badges: "none", // or use "[]" if you plan to store as JSON
+      badges: "none",
     },
   });
 }

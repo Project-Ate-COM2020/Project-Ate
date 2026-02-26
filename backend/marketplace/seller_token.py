@@ -12,12 +12,19 @@ class SellerTokenObtainPairSerializer(TokenObtainPairSerializer):
         username = attrs.get("username")
         password = attrs.get("password")
 
+        try:
+            seller = Seller.objects.get(name=username)
+        except Seller.DoesNotExist:
+            raise ValidationError(
+                {"username": ["This field must be a valid sellers username"]}
+            )
+
         ph = PasswordHasher()
 
-        hpassword = ph.hash(password)
-
-        if not (Seller.objects.filter(username=username, password=hpassword).exists()):
-            raise ValidationError({"invalid": "password"})
+        try:
+            ph.verify(seller.password, password)
+        except Exception as e:
+            raise ValidationError({"password": "invalid password"})
 
         return super().validate(attrs)
 

@@ -12,14 +12,19 @@ class ConsumerTokenPairSerializer(TokenObtainPairSerializer):
         username = attrs["username"]
         password = attrs["password"]
 
+        try:
+            consumer = Consumer.objects.get(display_name=username)
+        except Consumer.DoesNotExist:
+            raise ValidationError(
+                {"username": "This field must be a valid consumers username."}
+            )
+
         ph = PasswordHasher()
 
-        hashed_password = ph.hash(password)
-
-        if not Consumer.objects.filter(
-            username=username, password=hashed_password
-        ).exists():
-            raise ValidationError({"username": "Invalid username and/or password."})
+        try:
+            ph.verify(consumer.password, password)
+        except Exception as e:
+            raise ValidationError({"password": "invalid password"})
 
         return super().validate(attrs)
 
