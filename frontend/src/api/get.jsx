@@ -26,15 +26,21 @@ function useGetData(endpoint, queryParams = {}) {
             queryString = queryString.slice(0, -1);
         }
 
-        // Define async function to fetch data
+        /* --- Async Function to Fetch Data --- */
         async function fetchData() {
             try {
                 // Uses HardCoded localhost URL - may need to be changed in production
                 // Includes authorisation
                 const token = localStorage.getItem('access_token');
-                const response = await fetch("http://localhost:8000/" + endpoint + queryString, {
-                    headers: { "Authorization" : "Bearer " + token}
+                let response = null;
+                if (token != null) {
+                    response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                    headers: { "Authorization" : "Bearer " + token} 
                 });
+                }
+                else {
+                    response = await fetch("http://localhost:8000/" + endpoint + queryString); 
+                }
                 const json = await response.json();
                 setData(json);
                 setLoading(false);
