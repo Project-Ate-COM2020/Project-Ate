@@ -30,8 +30,11 @@ function useGetData(endpoint, queryParams = {}) {
         async function fetchData() {
             try {
                 // Uses HardCoded localhost URL - may need to be changed in production
-                const response = await fetch("http://localhost:8000/" + endpoint + queryString);
-                // convert to JSON 
+                // Includes authorisation
+                const token = localStorage.getItem('access_token');
+                const response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                    headers: { "Authorization" : "Bearer " + token}
+                });
                 const json = await response.json();
                 setData(json);
                 setLoading(false);
@@ -41,8 +44,6 @@ function useGetData(endpoint, queryParams = {}) {
                 console.log("ERROR - Could not fetch API Data (check arguments calling get.jsx)");
             }
         }
-
-        // Call function
         fetchData();
     }, [endpoint, queryParams]);
 
