@@ -21,13 +21,16 @@ CO2_PER_ITEM = {
 }
 
 VARIETY_BADGES = [
-    {"name": "Explorer", "min_categories": 3},
-    {"name": "Adventurer", "min_categories": 6},
+    {"name": "Explorer", "min_categories": 2},
+    {"name": "Discoverer", "min_categories": 3},
+    {"name": "Adventurer", "min_categories": 4},
+    {"name": "Master", "min_categories": 6},
 ]
 
 # took a guess here with the co2 badges, might need a revisit
 IMPACT_BADGES = [
     {"name": "Eco Starter", "min_co2": 100},
+    {"name": "Eco Friend", "min_co2": 500},
     {"name": "Climate Hero", "min_co2": 1000},
     {"name": "Planet Saver", "min_co2": 10000},
 ]
