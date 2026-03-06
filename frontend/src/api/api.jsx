@@ -2,12 +2,15 @@
 import { useState, useEffect } from 'react';
 
 /* --- File Description --- */
-/* This will be a universal function that will take a path and arguments then return json data, this 
-is being used so only this library needs to interact with logic such as jwt auth tokens and token refreshing,
-meaning all other code can be abstracted making for easier development */
+/* This will be a universal library - hopefully encompasses all API communication needed for the remainder of the project.
+This is split into hooks - used for statistics, part of webpage like badges and auto updated things relying on backend data; and
+async functions - these can be called on the submission of a form to allow the user to interact with the backend e.g reserving a bundle */
 
 /* --- Current Issues --- */
-// This Hook updates every time the reference changes, to improve performance move to checking value rather than reference
+
+/* Need to finish the refreshToken function and integrate it into the rest of the library to allow the program
+to automatically refresh invalid tokens */
+
 // Need to parse response for return code - for better error handling
 
 /* --- Helper Functions --- */
