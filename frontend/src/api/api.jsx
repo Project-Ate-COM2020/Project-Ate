@@ -26,7 +26,7 @@ function buildQueryString(queryParams = {}) {
     return queryString;
 }
 
-async function refreshToken() {
+async function refreshTokens() {
     response = await fetch("http://localhost:8000/", {
         method : "POST",
         headers: {
@@ -37,7 +37,10 @@ async function refreshToken() {
         }
     });
 
-    // Need to store tokens in response into browser memory in correct format
+    const tokens = await response.json();
+
+    if (tokens.access) localStorage.setItem("access_token", tokens.access);
+    if (tokens.refresh) localStorage.setItem("refresh_token", tokens.refresh);
 }
 
 /* --- Get/Post Functions --- */
