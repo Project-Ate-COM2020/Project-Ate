@@ -44,7 +44,7 @@ async function refreshTokens() {
 }
 
 /* --- Get/Post Functions --- */
-async function getData(endpoint, queryParams = {}, authenticate) {
+async function getData(endpoint, queryParams = {}, authenticate = true) {
     try {
         const queryString = buildQueryString(queryParams);
         const token = localStorage.getItem("access_token");
@@ -73,7 +73,7 @@ async function getData(endpoint, queryParams = {}, authenticate) {
     }
 }
 
-async function postData(endpoint, postData, authenticate) {
+async function postData(endpoint, postData, authenticate = true) {
     try {
         const token = localStorage.getItem('access_token');
         const include_auth = (token != null) && (authenticate == true);
@@ -108,7 +108,7 @@ async function postData(endpoint, postData, authenticate) {
 
 
 /* --- Get/Post Hooks --- */
-function useGetData(endpoint, queryParams = {}, authenticate) {
+function useGetData(endpoint, queryParams = {}, authenticate = true ) {
     // define variables with state
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -160,7 +160,7 @@ function useGetData(endpoint, queryParams = {}, authenticate) {
     return { data, loading };
 }
 
-function usePostData(endpoint, postData, authenticate) {
+function usePostData(endpoint, postData, authenticate = true ) {
     // define variables with state
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
