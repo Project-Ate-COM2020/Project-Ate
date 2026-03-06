@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 // Need to parse response for return code - for better error handling
 
 /* --- Main Function Declaration --- */
-function usePostData(endpoint, postData) {
+function usePostData(endpoint, postData, authenticate) {
     // define variables with state
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -29,7 +29,8 @@ function usePostData(endpoint, postData) {
                 // Includes authorisation
                 const token = localStorage.getItem('access_token');
                 let response = null;
-                if (token != null) {
+                const include_auth = (token != null) && (authenticate == true);
+                if (include_auth) {
                     response = await fetch("http://localhost:8000/" + endpoint + "/", {
                         method: "POST",
                         headers: { 

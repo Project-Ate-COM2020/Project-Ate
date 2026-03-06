@@ -12,22 +12,3 @@ access it with an outdated token is undefined behaviour */
 /* I have realised I will need to change the structure entirely to another hook - I will do this when I get the chance */
 
 /* --- Function Definitions --- */
-function refresh_token_seller() {
-    // Get refresh token 
-    const token = localStorage.getItem('refresh_token');
-
-    let dataToPost = { "refresh" : token}
-
-    const { data : refreshed_tokens, loading : loading} = usePostData("marketplace/authorismarketplace/seller/auth/token/refresh", dataToPost);
-}
-
-function refresh_token_buyer() {
-    // Get refresh token 
-    const token = localStorage.getItem('refresh_token');
-
-    let dataToPost = { "refresh" : token}
-
-    const { data : refreshed_tokens, loading : loading} = usePostData("marketplace/authorismarketplace/buyer/auth/token/refresh", dataToPost);
-}
-
-export default refresh_token_buyer;
