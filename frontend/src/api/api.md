@@ -1,6 +1,6 @@
 # API Module Documentation
 
-This module provides 4 functions for communicating with the backend: 2 async functions for event-driven requests (forms, buttons) and 2 React hooks for automatic data fetching.
+This module provides 4 functions for communicating with the backend: 2 async functions for event-driven requests (forms, buttons) and 2 React hooks for automatic data fetching (badges, ).
 
 ## Async Functions
 
@@ -14,7 +14,7 @@ Fetch data from the backend using GET.
 
 - `endpoint` (string): API path (e.g., `"marketplace/bundle"`)
 - `queryParams` (object): URL query parameters (optional, e.g., `{ id: 123 }`)
-- `authenticate` (boolean): Include authorization header (default: `true`)
+- `authenticate` (boolean): Include authorization header (needed unless user is not logged in) (default: `true`)
 
 **Returns:** Promise resolving to JSON response data
 
@@ -37,7 +37,7 @@ Send data to the backend using POST.
 
 - `endpoint` (string): API path (e.g., `"marketplace/seller"`)
 - `postData` (object): Data to send in request body
-- `authenticate` (boolean): Include authorization header (default: `true`)
+- `authenticate` (boolean): Include authorization header (needed unless user is not logged in) (default: `true`)
 
 **Returns:** Promise resolving to JSON response data
 
@@ -122,14 +122,14 @@ All functions automatically handle expired tokens:
 
 There are a number of notes for the future of this library:
 
-- There is currently no way for me to determine whether the user is a buyer or a seller - so all token refresh requests go to the seller url. To fix this I will add a local cookie that identifies the type of the user, no cookie would indicate a guest - dependant on the incoming changes to backend auth
+- There is currently no way for me to determine whether the user is a buyer or a seller - so all token refresh requests go to the seller refresh url. To fix this I will add a local cookie that identifies the type of the user, no cookie would indicate a guest - dependant on the incoming changes to backend auth
 
 - There is currently no graceful error handling - if a backend endpoint cannot be reached or returns unexpected data then the program immediately crashes - will fix when I get time
 
 ---
 
-### DO NOT TRY TO IMPLEMENT INDIVIDUAL FIXES FOR AUTH - IF THIS LIBRARY CANNOT HANDLE A FUNCTION YOU NEED OR YOU HAVE FOUND A BUG, PLEASE LET ME KNOW.
+### DO NOT TRY TO IMPLEMENT INDIVIDUAL FIXES FOR AUTH - IF THIS LIBRARY CANNOT HANDLE A FUNCTION YOU NEED OR YOU HAVE FOUND A BUG, PLEASE LET ME KNOW
 
 ---
 
-## Authored by Jamie Jamie
+#### Authored by Jamie Jamie
