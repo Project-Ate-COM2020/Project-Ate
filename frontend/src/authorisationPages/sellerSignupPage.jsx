@@ -1,7 +1,9 @@
+/* Updated as of 06/03/2026 by Jamie - needs significant work to make it take proper inputs and clean up the loop*/
+
 // jsx for the seller sign up page ( matches LoginPage + BuyerSignupPage styling )
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupSeller } from "../api/authorisation";
+import { signupSeller } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 
 export default function SellerSignupPage() {
@@ -18,54 +20,9 @@ export default function SellerSignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    // basic password checks ( backend will do futher validation )
-    if (password1 !== password2) {
-      setError("Passwords do not match");
-      return;
-    }
-    if (password1.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // create seller account
-      await signupSeller({
-        email,
-        password: password1,
-        businessName,
-      });
-
-      setSuccess("Seller account successfully created. You can now log in.");
-      navigate("/login");
-    } catch (err) {
-      // make error messages user friendly
-      console.error(err);
-      let message = "Unable to sign up. Please try again.";
-
-      // handle network errors
-      if (err?.message === "Failed to fetch") {
-        message =
-          "Unable to connect to the server, please check your internet connection";
-      }
-
-      // requestJson throws Error(...) with message
-      if (typeof err?.message === "string" && err.message.trim()) {
-        message = err.message;
-      }
-
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  async function handleSubmit() {
+    
+  }
 
   return (
     <AuthLayout title="Seller sign up">
