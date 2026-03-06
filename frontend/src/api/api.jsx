@@ -13,6 +13,10 @@ to automatically refresh invalid tokens */
 
 // Need to parse response for return code - for better error handling
 
+/* Currently, the refreshTokens function has no way to determine whether
+the user is a buyer or a seller, either refresh tokens endpoints need to 
+be merged or more likely I need to store this fact in cookies */
+
 /* --- Helper Functions --- */
 function buildQueryString(queryParams = {}) {
     let queryString = "";
@@ -27,20 +31,23 @@ function buildQueryString(queryParams = {}) {
 }
 
 async function refreshTokens() {
-    response = await fetch("http://localhost:8000/", {
+    const response = await fetch("http://localhost:8000/seller/auth/token/refresh", {
         method : "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body : {
-            "refresh": localStorage.getItem("access_token")
-        }
+        body : JSON.stringify({
+            "refresh": localStorage.getItem("refresh_token")
+        })
+        
     });
 
     const tokens = await response.json();
 
     if (tokens.access) localStorage.setItem("access_token", tokens.access);
     if (tokens.refresh) localStorage.setItem("refresh_token", tokens.refresh);
+
+    return !!tokens.access;
 }
 
 /* --- Get/Post Functions --- */
@@ -52,12 +59,20 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
 
         let response = null;
         if (include_auth) {
-            response = await fetch("http://localhost:8000/" + endpoint + queryString, {
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-            });
+            for (let i = 0; i < 2; i++) {
+                const token = localStorage.getItem("access_token");
+                response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                });
+
+                if (response.status !== 401) break;
+
+                const refreshed = await refreshTokens();
+                if (!refreshed) break;
+            }
         }
         else {
             response = await fetch("http://localhost:8000/" + endpoint + queryString, {
@@ -77,17 +92,26 @@ async function postData(endpoint, postData, authenticate = true) {
     try {
         const token = localStorage.getItem('access_token');
         const include_auth = (token != null) && (authenticate == true);
-
         let response = null;
+
+        // Tries to access data, if tokens invalid then refreshes and tries again
         if (include_auth) {
-            response = await fetch("http://localhost:8000/" + endpoint + "/", {
-                method : "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(postData)
-            });
+            for (let i = 0; i < 2; i++) {
+                const token = localStorage.getItem("access_token");
+                response = await fetch("http://localhost:8000/"  + endpoint + "/", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(postData),
+                });
+
+                if (response.status !== 401) break;
+
+                const refreshed = await refreshTokens();
+                if (!refreshed) break;
+            }
         }
         else {
             response = await fetch("http://localhost:8000/" + endpoint + "/", {
@@ -131,12 +155,20 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
                 let response = null;
                 const include_auth = (token != null) && (authenticate == true);
                 if (include_auth) {
-                    response = await fetch("http://localhost:8000/" + endpoint + queryString, {
-                        headers: { 
-                            "Authorization" : "Bearer " + token,
-                            "Content-Type": "application/json"
-                        },
-                    });
+                    for (let i = 0; i < 2; i++) {
+                        const token = localStorage.getItem('access_token');
+                        response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                            headers: { 
+                                "Authorization" : "Bearer " + token,
+                                "Content-Type": "application/json"
+                            },
+                        });
+
+                        if (response.status !== 401) break;
+
+                        const refreshed = await refreshTokens();
+                        if (!refreshed) break;
+                    }
                 }
                 else {
                     response = await fetch("http://localhost:8000/" + endpoint + queryString, {
@@ -182,15 +214,22 @@ function usePostData(endpoint, postData, authenticate = true ) {
                 let response = null;
                 const include_auth = (token != null) && (authenticate == true);
                 if (include_auth) {
-                    response = await fetch("http://localhost:8000/" + endpoint + "/", {
-                        method: "POST",
-                        headers: { 
-                            "Authorization" : "Bearer " + token,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(postData)
+                    for (let i = 0; i < 2; i++) {
+                        const token = localStorage.getItem('access_token');
+                        response = await fetch("http://localhost:8000/" + endpoint + "/", {
+                            method: "POST",
+                            headers: { 
+                                "Authorization" : "Bearer " + token,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(postData)                           
+                        });
                         
-                    });
+                        if (response.status !== 401) break;
+
+                        const refreshed = await refreshTokens();
+                        if (!refreshed) break;
+                    }
                 }
                 else {
                     response = await fetch("http://localhost:8000/" + endpoint + "/", {
