@@ -31,16 +31,31 @@ function buildQueryString(queryParams = {}) {
 }
 
 async function refreshTokens() {
-    const response = await fetch("http://localhost:8000/seller/auth/token/refresh", {
-        method : "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body : JSON.stringify({
-            "refresh": localStorage.getItem("refresh_token")
-        })
-        
-    });
+    const user_type = localStorage.getItem("user_type");
+    let response = null;
+    if (user_type === "seller") {
+        response = await fetch("http://localhost:8000/marketplace/seller/auth/token/refresh", {
+            method : "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({
+                "refresh": localStorage.getItem("refresh_token")
+            })
+            
+        });
+    } else if (user_type === "buyer") {
+        response = await fetch("http://localhost:8000/marketplace/consumer/auth/token/refresh", {
+            method : "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({
+                "refresh": localStorage.getItem("refresh_token")
+            })
+            
+        });
+    } else {return false;}
 
     const tokens = await response.json();
 

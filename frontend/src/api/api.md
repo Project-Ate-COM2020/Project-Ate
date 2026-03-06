@@ -122,9 +122,9 @@ All functions automatically handle expired tokens:
 
 There are a number of notes for the future of this library:
 
-- There is currently no way for me to determine whether the user is a buyer or a seller - so all token refresh requests go to the seller refresh url. To fix this I will add a local cookie that identifies the type of the user, no cookie would indicate a guest - dependant on the incoming changes to backend auth
-
 - There is currently no graceful error handling - if a backend endpoint cannot be reached or returns unexpected data then the program immediately crashes - will fix when I get time
+
+- Currently relies on a new cookie user_type being introduced, either containing "buyer" or "seller" - this would have to be worked so that this is only introduced after cookies have been accepted e.g: during login
 
 ---
 
