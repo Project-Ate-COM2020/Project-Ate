@@ -10,7 +10,7 @@ meaning all other code can be abstracted making for easier development */
 // This Hook updates every time the reference changes, to improve performance move to checking value rather than reference
 // Need to parse response for return code - for better error handling
 
-/* --- Helper Function --- */
+/* --- Helper Functions --- */
 function buildQueryString(queryParams = {}) {
     let queryString = "";
     if (Object.keys(queryParams).length !== 0) {
@@ -23,11 +23,25 @@ function buildQueryString(queryParams = {}) {
     return queryString;
 }
 
+async function refreshToken() {
+    response = await fetch("http://localhost:8000/", {
+        method : "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body : {
+            "refresh": localStorage.getItem("access_token")
+        }
+    });
+
+    // Need to store tokens in response into browser memory in correct format
+}
+
 /* --- Get/Post Functions --- */
 async function getData(endpoint, queryParams = {}, authenticate) {
     try {
         const queryString = buildQueryString(queryParams);
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem("access_token");
         const include_auth = (token != null) && (authenticate == true);
 
         let response = null;
@@ -195,7 +209,6 @@ function usePostData(endpoint, postData, authenticate) {
 
     return { data, loading };
 }
-
 
 /* --- Final Exports --- */
 export { getData, useGetData, postData, usePostData };
