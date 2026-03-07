@@ -12,6 +12,11 @@ import { useGetData, usePostData, postData } from "../reusableComponents/api.jsx
 import { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
 
+/* --- Helper Functions --- */
+function saveChanges() {
+    // Will use the pstData function imported to submit the form to the backend to change seller details
+}
+
 /* --- Main Page Function --- */
 function ProfilePage() {
     const [editMode, setEditMode] = useState(false);
@@ -54,7 +59,32 @@ function ProfilePage() {
     
     const editInfoContainer = (
         <div className = "Edit info container">
+            
+            <div className = "Info">
+                    <p>Seller Name:</p>
+                    <input type = "text" defaultValue = {sellerName}></input>
+                </div>
+                
+                <div className = "Info">
+                    <p>Account Lifetime:</p>
+                    <input type = "text" defaultValue = {accountLifetime}></input>
+                </div>
 
+                <div className = "Info">
+                    <p>Location:</p>
+                    <input type = "text" defaultValue = {location}></input>
+                </div>
+
+                <div className = "Info">
+                    <p>Opening Hours:</p>
+                    <input type = "text" defaultValue = {openingHours}></input>
+                </div>
+
+                <div className = "Save button">
+                    <button onClick={saveChanges}>
+                        Save Changes
+                    </button>
+                </div>
         </div>
     )
 
@@ -66,6 +96,7 @@ function ProfilePage() {
             </div>
         );
     } else {
+        console.log("Switch SUccessful");
         return (
             <div>
                 <NavBar />
