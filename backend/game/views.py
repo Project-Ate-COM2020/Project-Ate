@@ -21,13 +21,16 @@ CO2_PER_ITEM = {
 }
 
 VARIETY_BADGES = [
-    {"name": "Explorer", "min_categories": 3},
-    {"name": "Adventurer", "min_categories": 6},
+    {"name": "Explorer", "min_categories": 2},
+    {"name": "Discoverer", "min_categories": 3},
+    {"name": "Adventurer", "min_categories": 4},
+    {"name": "Master", "min_categories": 6},
 ]
 
 # took a guess here with the co2 badges, might need a revisit
 IMPACT_BADGES = [
     {"name": "Eco Starter", "min_co2": 100},
+    {"name": "Eco Friend", "min_co2": 500},
     {"name": "Climate Hero", "min_co2": 1000},
     {"name": "Planet Saver", "min_co2": 10000},
 ]
@@ -35,7 +38,7 @@ IMPACT_BADGES = [
 class GameSummaryView(APIView):
 
     def get(self, request):
-        consumer = Consumer.objects.get(consumer_id=1)
+        consumer = request.user.consumer
         collected = Reservation.objects.filter(consumer=consumer, status="collected").select_related("posting")
         total_co2 = 0
         categories = set()
@@ -84,7 +87,7 @@ class RecentRescuesView(ListAPIView):
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
-        consumer = Consumer.objects.get(consumer_id=1)
+        consumer = self.request.user.consumer
         limit = int(self.request.query_params.get("limit", 10))
         # sets the limit at 10 so only the last 10 records are shown
 
