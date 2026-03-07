@@ -13,12 +13,14 @@ import { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
 
 /* --- Helper Functions --- */
+
 function saveChanges() {
     // Will use the pstData function imported to submit the form to the backend to change seller details
 }
 
 /* --- Main Page Function --- */
-function ProfilePage() {
+
+function SellerProfilePage() {
     const [editMode, setEditMode] = useState(false);
 
     // Testing values, these will be replaced with hooks to desired endpoints 
@@ -27,7 +29,7 @@ function ProfilePage() {
     const location = "Frontend Test Location";
     const openingHours = "Frontend Test Opening Hours"
 
-    // This will be a simple page w one container, that varies between 2, I will define both here, and a stateful variable will define which is returned
+    // This will be a simple page w one container, that varies between 2, I will define both here, and the stateful variable 'editMode' will define which is returned
 
     const infoContainer = (
         <div className = "Info container">                
@@ -115,4 +117,4 @@ function ProfilePage() {
 }
 
 // The main page is the only export
-export default ProfilePage;
+export default SellerProfilePage;
