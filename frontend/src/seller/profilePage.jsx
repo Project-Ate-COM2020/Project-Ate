@@ -27,6 +27,8 @@ function ProfilePage() {
     const location = "Frontend Test Location";
     const openingHours = "Frontend Test Opening Hours"
 
+    // This will be a simple page w one container, that varies between 2, I will define both here, and a stateful variable will define which is returned
+
     const infoContainer = (
         <div className = "Info container">                
                 <div className = "Info">
@@ -83,6 +85,12 @@ function ProfilePage() {
                 <div className = "Save button">
                     <button onClick={saveChanges}>
                         Save Changes
+                    </button>
+                </div>
+
+                <div className = "Cancel button">
+                    <button onClick={() => setEditMode(false)}>
+                        Discard Changes
                     </button>
                 </div>
         </div>
