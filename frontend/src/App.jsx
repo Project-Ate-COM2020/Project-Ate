@@ -1,4 +1,4 @@
-// import react and react router
+/* --- General Import Statements --- */
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -13,7 +13,10 @@ import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
 import Orders from "./orders/orders.jsx"
-import SellerHomePage from "./seller/homepage/main.jsx";
+import SellerHomePage from "./seller-legacy/homepage/main.jsx";
+
+/* --- Seller Imports --- */
+import SellerProfilePage from "./seller/profilePage.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -36,6 +39,9 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
         {/*<Route path="/basket" element={<Basket />} />*/}
         <Route path="/orders" element={<Orders />}/>
+
+        {/* Seller paths */}
+        <Route path="/seller/profile" element={<SellerProfilePage />}/>
       </Routes>
     </Router>
   );
