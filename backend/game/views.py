@@ -38,7 +38,7 @@ IMPACT_BADGES = [
 class GameSummaryView(APIView):
 
     def get(self, request):
-        consumer = Consumer.objects.get(user=request.user)
+        consumer = request.user.consumer
         collected = Reservation.objects.filter(consumer=consumer, status="collected").select_related("posting")
         total_co2 = 0
         categories = set()
@@ -87,7 +87,7 @@ class RecentRescuesView(ListAPIView):
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
-        consumer = Consumer.objects.get(user=self.request.user)
+        consumer = self.request.user.consumer
         limit = int(self.request.query_params.get("limit", 10))
         # sets the limit at 10 so only the last 10 records are shown
 

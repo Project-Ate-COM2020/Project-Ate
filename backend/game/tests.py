@@ -155,10 +155,8 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
 
     def test_variety_badges(self):
         # 1 unique categories  should not earn any badges
-        categories = ["Hot Meals"]
-        for i, cat in enumerate(categories):
-            posting = self.create_posting(cat, 1)
-            self.create_reservation(posting, f"CODE{i}")
+        posting = self.create_posting("Hot Meals", 1)
+        self.create_reservation(posting, "HOT100")
 
         response = self.client.get(reverse("game-summary"))
         self.assertNotIn("Explorer", response.data["badges"])
@@ -167,10 +165,8 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         self.assertNotIn("Master", response.data["badges"])
 
         # add 1 more category - should earn Explorer
-        categories = ["Fresh Produce"]
-        for i, cat in enumerate(categories):
-            posting = self.create_posting(cat, 1)
-            self.create_reservation(posting, f"CODE{i}")
+        posting = self.create_posting("Fresh Produce", 1)
+        self.create_reservation(posting, "FRESH100")
 
         response = self.client.get(reverse("game-summary"))
         self.assertIn("Explorer", response.data["badges"])
@@ -179,10 +175,8 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         self.assertNotIn("Master", response.data["badges"])
 
         # add 1 more category - should earn Discoverer
-        categories = ["Bakery"]
-        for i, cat in enumerate(categories):
-            posting = self.create_posting(cat, 1)
-            self.create_reservation(posting, f"CODE{i}")
+        posting = self.create_posting("Bakery", 1)
+        self.create_reservation(posting, "BAKERY10")
 
         response = self.client.get(reverse("game-summary"))
         self.assertIn("Explorer", response.data["badges"])
@@ -191,10 +185,8 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         self.assertNotIn("Master", response.data["badges"])
 
         # add 1 more category - should earn Adventurer
-        categories = ["Dairy"]
-        for i, cat in enumerate(categories):
-            posting = self.create_posting(cat, 1)
-            self.create_reservation(posting, f"CODE{i}")
+        posting = self.create_posting("Dairy", 1)
+        self.create_reservation(posting, "DAIRY100")
 
         response = self.client.get(reverse("game-summary"))
         self.assertIn("Explorer", response.data["badges"])
@@ -244,7 +236,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
 
         # Total CO2 >= 1000 - earns Climate Friend
         posting = self.create_posting("Hot Meals", 201)  # 201 * 2.5 = 502.5
-        self.create_reservation(posting, "IMPACT500")
+        self.create_reservation(posting, "IMPACT502")
         response = self.client.get(reverse("game-summary"))
         self.assertIn("Eco Starter", response.data["badges"])
         self.assertIn("Eco Friend", response.data["badges"])
