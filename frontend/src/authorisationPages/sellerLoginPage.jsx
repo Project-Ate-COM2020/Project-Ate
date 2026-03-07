@@ -5,7 +5,7 @@ import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
-import useGetData from "../api/post";
+import { useGetData } from "../reusableComponents/api";
 
 export default function SellerLoginPage() {
   const navigate = useNavigate();
