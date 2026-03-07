@@ -3,8 +3,8 @@ import "./listings.css";
 import fakeBundles from "./fakeBundles";
 import { addFakeOrder, makeClaimCode, getFakeOrders, removeFakeOrder } from "./fakeOrdersStore";
 import { useEffect, useMemo, useState } from "react"; /* It imports the different react hooks  */
-import { fetchMarketplaceBundles, fetchMarketplaceOrders } from "../api/marketplace";
-import { requestJson } from "../api/authorisation";
+import { fetchMarketplaceBundles, fetchMarketplaceOrders } from "../api-legacy/marketplace";
+import { requestJson } from "../api-legacy/authorisation";
 
 /*lists all the avable bundle postings to the user*/
 

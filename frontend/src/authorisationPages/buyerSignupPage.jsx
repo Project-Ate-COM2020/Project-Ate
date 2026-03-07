@@ -1,7 +1,7 @@
 // jsx for the buyer sign up page (matches LoginPage styling)
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupBuyer } from "../api/authorisation";
+import { signupBuyer } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 
 export default function BuyerSignupPage() {
