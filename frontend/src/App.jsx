@@ -37,6 +37,7 @@ import Analytics from "./seller/analytics.jsx";
 // import BuyerHomePage from "./buyer/homePage";
 import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
 import SellerHomePage from "./seller/homepage/main.jsx";
+import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -75,6 +76,7 @@ function App() {
         <Route path="/seller/login" element={<SellerLoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
+        <Route path="/report-issue" element={<IssueReportingPage />} />
       </Routes>
     </Router>
   );
