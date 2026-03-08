@@ -9,12 +9,12 @@ Includes:
  - Seller Bundle Reservations
  - Seller Bundle Post Creation + Forecasting
  
- each of these will be split up into helper functions for readability and maintainability
- */
+each of these will be split up into helper functions for readability and maintainability
+*/
 
- /* --- Current Issues --- */
+/* --- Current Issues --- */
 
- /* The main issue is the current backend bug preventing from loggin in - this means when the backend is fixed 
+/* The main issue is the current backend bug preventing from loggin in - this means when the backend is fixed 
 and endpoints refactored, the endpoints and maybe the parsing for this file will also need to change */
 
 /* --- Import Statements --- */
