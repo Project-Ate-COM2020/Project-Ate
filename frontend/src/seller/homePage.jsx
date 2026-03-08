@@ -17,12 +17,35 @@ Includes:
  /* The main issue is the current backend bug preventing from loggin in - this means when the backend is fixed 
 and endpoints refactored, the endpoints and maybe the parsing for this file will also need to change */
 
+/* --- Import Statements --- */
+import NavBar from "../reusableComponents/navBar.jsx"
+
+/* --- Test Data Declarations --- */
+const sellerName = "Test Seller Name";
+const location = "Test Seller location";
+
+const numListings = 120;
+const amountRevenue = 2400;
+const percentageListingsCollected = 0.7;
+
 /* --- Helper Functions --- */
 
 function SellerInfo() {
     return (
         <div className = "sellerInfo">
-            <p>Seller Info</p>
+            <h4>Seller Info</h4>
+
+            <div className = "infoContainer">
+                
+                <div className = "info">
+                    <p>Name: {sellerName}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Location: {location}</p>
+                </div>
+
+            </div>
         </div>
     )
 }
@@ -30,12 +53,34 @@ function SellerInfo() {
 function Analytics() {
     return (
         <div className = "analytics">
-            <p>Analytics</p>
+
+            <h4>Analytics</h4>
+
+            <div className = "infoContainer">
+
+                <div className = "info">
+                    <p>Total Number of Listings: {numListings}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Total Revenue: {amountRevenue}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Percentage of Listings Collected by Users: {percentageListingsCollected*100}%</p>
+                </div>
+
+            </div>
         </div>
     )
 }
 
 function BundlePostings() {
+
+    // I am going to make a truly reusable component to replace 'listings.jsx' it will be imported and displayed here
+
+    // It will be quite difficult however, I won't do it now
+
     return (
         <div className = "bundlePostings">
             <p>Bundle Postings</p>
@@ -64,6 +109,7 @@ function BundlePostCreation() {
 function SellerHomePage() {
     return (
         <div>
+            <NavBar />
             <SellerInfo />
             <Analytics />
             <BundlePostings />
@@ -74,4 +120,4 @@ function SellerHomePage() {
 
 }
 
-export default BundleReservations;
+export default SellerHomePage;

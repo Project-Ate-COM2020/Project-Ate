@@ -32,7 +32,7 @@ function SellerProfilePage() {
     // This will be a simple page w one container, that varies between 2, I will define both here, and the stateful variable 'editMode' will define which is returned
 
     const infoContainer = (
-        <div className = "Info container">                
+        <div className = "infoContainer">                
                 <div className = "Info">
                     <p>Seller Name:</p>
                     <p>{sellerName}</p>
@@ -53,7 +53,7 @@ function SellerProfilePage() {
                     <p>{openingHours}</p>
                 </div>
 
-                <div className = "Edit button">
+                <div className = "editButton">
                     <button onClick={() => setEditMode(true)}>
                         Edit Info
                     </button>
@@ -62,7 +62,7 @@ function SellerProfilePage() {
     )
     
     const editInfoContainer = (
-        <div className = "Edit info container">
+        <div className = "infoContainer">
             
             <div className = "Info">
                     <p>Seller Name:</p>
@@ -84,13 +84,13 @@ function SellerProfilePage() {
                     <input type = "text" defaultValue = {openingHours}></input>
                 </div>
 
-                <div className = "Save button">
+                <div className = "saveButton">
                     <button onClick={saveChanges}>
                         Save Changes
                     </button>
                 </div>
 
-                <div className = "Cancel button">
+                <div className = "cancelButton">
                     <button onClick={() => setEditMode(false)}>
                         Discard Changes
                     </button>
