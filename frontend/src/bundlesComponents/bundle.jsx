@@ -22,18 +22,18 @@ hard to add once the backend is ready */
 import "./bundle.css";
 
 /* --- Test Data Declarations --- */
-const bundleName = "Test Bundle Name";
+const bundleName = "Big Cheese Bundle";
 const bundleCategory = "Dairy";
 const imgPath = "/../../Dairy.jpg";
-const pickupTime = "Test Pickup Time";
-const seller = "Test Seller Name";
-const buyer = "Test Buyer Name";
+const pickupTime = "11:00 - 12:00";
+const seller = "Cheesy Goods Incorporated";
+const buyer = "Bobby";
 const collectionCode = "QWERTY";
 const price = 14.50;
-const location = "Test Location";
+const location = "Exeter";
 
 /* --- Helper Functions --- */
-function OptionalContainer( { includedAttributes = ["pickup time"] } ) {
+function OptionalContainer( { includedAttributes } ) {
 
     let pickupTimeDisplayed;
     let bundleCategoryDisplayed;
@@ -42,6 +42,8 @@ function OptionalContainer( { includedAttributes = ["pickup time"] } ) {
     let collectionCodeDisplayed;
     let priceDisplayed;
     let locationDisplayed;
+    let markCollectedButtonDisplayed;
+    let unreserveBundleButton;
 
     for (const i of includedAttributes) {
         if (i == "pickup time") {pickupTimeDisplayed = true;}
@@ -51,6 +53,8 @@ function OptionalContainer( { includedAttributes = ["pickup time"] } ) {
         if (i == "collection code") {collectionCodeDisplayed = true;}
         if (i == "price") {priceDisplayed = true;}
         if (i == "location") {locationDisplayed = true;}
+        if (i == "mark collected button") {markCollectedButtonDisplayed = true;}
+        if (i == "unreserve bundle button") {unreserveBundleButton = true;}
     }
 
     return (
@@ -65,9 +69,13 @@ function OptionalContainer( { includedAttributes = ["pickup time"] } ) {
 
             {collectionCodeDisplayed && <p>Collection Code: {collectionCode}</p>}
 
-            {priceDisplayed && <p>Price: {price}</p>}
+            {priceDisplayed && <p>Price: £{price}</p>}
 
             {locationDisplayed && <p>Location: {location}</p>}
+
+            {markCollectedButtonDisplayed && <button>Mark Bundle as collected</button>}
+
+            {unreserveBundleButton && <button>Unreserve bundle</button>}
 
             
         </div>
@@ -75,16 +83,17 @@ function OptionalContainer( { includedAttributes = ["pickup time"] } ) {
 }
 
 /* --- Main Function --- */
-function Bundle() {
+function Bundle( {includedAttributes = []} ) {
+
     return (
-        <div>
+        <div className = "bundleDisplay">
             <div className = "bundleTitle">
                 <h3>{bundleName}</h3>
             </div>
             <hr />
             <div className = "bundleBody">
                 <img src = {imgPath} />
-                <OptionalContainer />
+                <OptionalContainer includedAttributes={includedAttributes} />
             </div>
             
         </div>
