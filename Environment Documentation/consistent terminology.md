@@ -12,15 +12,17 @@ Therefore when refering to a specific one always use exact the terminology of 'b
 
 ## Bundles
 
-A Bundle refers to a singular bundle of food
+Consistent terminology for bundle related terms
 
-A Posting refers to a collection of bundles on the marketplace - this is what a seller is able to create and post
+ -A Bundle refers to a singular bundle of food
 
-A Listing refers to a single bundle inside a Posting
+ -A Posting refers to a collection of bundles on the marketplace - this is what a seller is able to create and post
 
-A Reservation refers to a single bundle reserved by a buyer
+ -A Listing refers to a single bundle inside a Posting - this is what a buyer is able to reserve
 
-A Collection refers to a single bundle collected by a buyer
+ -A Reservation refers to a single bundle reserved by a buyer
+
+ -A Collection refers to a single bundle collected by a buyer
 
 ## Any more / Problems
 

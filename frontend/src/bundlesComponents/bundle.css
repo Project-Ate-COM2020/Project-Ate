@@ -1,0 +1,16 @@
+.bundleTitle {
+    display: flex;
+    justify-content: center;
+
+}
+
+.bundleBody{
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+}
+
+.infoContainer {
+    display: grid;
+
+}

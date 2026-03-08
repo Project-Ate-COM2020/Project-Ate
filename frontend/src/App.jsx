@@ -26,6 +26,9 @@ import SellerHomePage from "./seller/homePage";
 // import BuyerProfilePage from "./buyer/profilePage.jsx";
 // import BuyerHomePage from "./buyer/homePage";
 
+/* --- Test Imports --- */
+import Bundle from "./bundlesComponents/bundle.jsx";
+
 // simple function defining the element to be returned based on the URL
 function App() {
   return (
@@ -52,6 +55,9 @@ function App() {
         <Route path="/seller/login" element={<SellerLoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
+
+        {/* Test Paths */}
+        <Route path="test/bundle" element={<Bundle />} />
       </Routes>
     </Router>
   );
