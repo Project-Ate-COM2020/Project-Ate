@@ -77,7 +77,7 @@ function Analytics() {
 
 function BundlePostings() {
 
-    // I am going to make a truly reusable component to replace 'listings.jsx' it will be imported and displayed here
+    // I am going to make a truly reusable component 'bundles.jsx' it will be imported and displayed here
 
     // It will be quite difficult however, I won't do it now
 
@@ -89,6 +89,11 @@ function BundlePostings() {
 }
 
 function BundleReservations() {
+
+    // I am going to make a truly reusable component 'postings.jsx' it will be imported and displayed here
+
+    // It will be quite difficult however, I won't do it now
+
     return (
         <div className = "bundleReservations">
             <p>Bundle Reservations</p>
@@ -97,6 +102,12 @@ function BundleReservations() {
 }
 
 function BundlePostCreation() {
+
+    // I am going to make a truly reusable component 'postings.jsx' it will be imported and displayed here
+
+    // It will be quite difficult however, I won't do it now
+    
+
     return (
         <div className = "BundlePostCreation">
             <p>Bundle Post Creation</p>
