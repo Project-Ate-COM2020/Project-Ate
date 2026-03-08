@@ -4,20 +4,27 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 // import the files for each URL endpoint
-import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
-import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
-import SellerLoginPage from "./authorisationPages/sellerLoginPage.jsx";
 import GamePage from "./gamePages/game.jsx";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
 import Orders from "./orders/orders.jsx"
-import SellerHomePage from "./seller-legacy/homepage/main.jsx";
+
+/* --- Auth Imports --- */
+import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
+import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
+
+import SellerLoginPage from "./authorisationPages/sellerLoginPage.jsx";
+// import BuyerLoginPage from "./authorisationPages/buyerLoginPage.jsx"
 
 /* --- Seller Imports --- */
 import SellerProfilePage from "./seller/profilePage.jsx";
+import SellerHomePage from "./seller/homePage";
 
+/* --- Buyer Imports --- */
+// import BuyerProfilePage from "./buyer/profilePage.jsx";
+// import BuyerHomePage from "./buyer/homePage";
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -26,9 +33,6 @@ function App() {
       <Routes>
         <Route path="/user" element={<UserHomePage />} />
         {/* <Route path="/" element={<LoginPage />} /> */}
-        <Route path="/seller/login" element={<SellerLoginPage />} />
-        <Route path="/signup/buyer" element={<BuyerSignupPage />} />
-        <Route path="/signup/seller" element={<SellerSignupPage />} />
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
@@ -42,6 +46,12 @@ function App() {
 
         {/* Seller paths */}
         <Route path="/seller/profile" element={<SellerProfilePage />}/>
+        <Route path ="/seller/home" element={<SellerHomePage />}/>
+
+        {/* Authorisation Paths */}
+        <Route path="/seller/login" element={<SellerLoginPage />} />
+        <Route path="/signup/buyer" element={<BuyerSignupPage />} />
+        <Route path="/signup/seller" element={<SellerSignupPage />} />
       </Routes>
     </Router>
   );
