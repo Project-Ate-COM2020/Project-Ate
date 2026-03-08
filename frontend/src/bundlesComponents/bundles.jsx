@@ -13,6 +13,7 @@ There will probs be more I need to pass */
 /* Same problem with API */
 
 /* --- Import Statements --- */
+import NavBar from "../reusableComponents/navBar.jsx"
 
 /* --- Test Data Declarations --- */
 const bundleName = "Big Cheese Bundle";
@@ -54,14 +55,36 @@ function SingleBundle({includedAttributes}) {
         <div className = "bundleContainer">
             <img src = {imgPath} />
 
+            <h3>{bundleName}</h3>
+
+            {pickupTimeDisplayed && <p>pickup time: {pickupTime}</p>}
+
+            {bundleCategoryDisplayed && <p>Bundle Category: {bundleCategory}</p>}
+
+            {sellerDisplayed && <p>Seller: {seller}</p>}
+
+            {buyerDisplayed && <p>Buyer: {buyer}</p>}
+
+            {collectionCodeDisplayed && <p>Collection Code: {collectionCode}</p>}
+
+            {priceDisplayed && <p>Price: £{price}</p>}
+
+            {locationDisplayed && <p>Location: {location}</p>}
+
+            {markCollectedButtonDisplayed && <button>Mark Bundle as collected</button>}
+
+            {unreserveBundleButton && <button>Unreserve bundle</button>}
+
         </div>
     )
 }
 
 /* --- Main Page Function --- */
-function Bundles() {
+function Bundles({includedAttributes=[]}) {
     return (
         <div className = "bundlesContainer">
+            <NavBar />
+            <SingleBundle includedAttributes/>
 
         </div>
     )

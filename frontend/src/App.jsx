@@ -28,6 +28,7 @@ import SellerHomePage from "./seller/homePage";
 
 /* --- Test Imports --- */
 import Bundle from "./bundlesComponents/bundle.jsx";
+import Bundles from "./bundlesComponents/bundles.jsx"
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -58,6 +59,7 @@ function App() {
 
         {/* Test Paths */}
         <Route path="test/bundle" element={<Bundle />} />
+        <Route path="test/bundles" element={<Bundles />} />
       </Routes>
     </Router>
   );
