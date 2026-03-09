@@ -38,7 +38,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
     let priceDisplayed = false;
     let locationDisplayed = false;
     let stockDisplayed = false;
-    let reserveBundleButtonDisplayed = false;
+    let moreInfoButtonDisplayed = false;
 
     for (const i of includedAttributes) {
         if (i === "pickup time") {pickupTimeDisplayed = true;}
@@ -47,7 +47,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
         if (i === "price") {priceDisplayed = true;}
         if (i === "location") {locationDisplayed = true;}
         if (i === "stock") {stockDisplayed = true;}
-        if (i === "reserve bundle button") {reserveBundleButtonDisplayed = true;}
+        if (i === "more info button") {moreInfoButtonDisplayed = true;}
     }
 
     return (
@@ -68,7 +68,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 
             {stockDisplayed && <p>Stock: {bundleData.stock}</p>}
 
-            {reserveBundleButtonDisplayed && <button>Reserve bundle</button>}
+            {moreInfoButtonDisplayed && <button>More Info</button>}
 
         </div>
     )

@@ -18,7 +18,9 @@ each of these will be split up into helper functions for readability and maintai
 and endpoints refactored, the endpoints and maybe the parsing for this file will also need to change */
 
 /* --- Import Statements --- */
-import NavBar from "../reusableComponents/navBar.jsx"
+import NavBar from "../reusableComponents/navBar.jsx";
+import Postings from "../bundlesComponents/postings.jsx";
+import ReservedBundles from "../bundlesComponents/bundles.jsx";
 
 /* --- Test Data Declarations --- */
 const sellerName = "Test Seller Name";
@@ -27,6 +29,12 @@ const location = "Test Seller location";
 const numListings = 120;
 const amountRevenue = 2400;
 const percentageListingsCollected = 0.7;
+
+let time_window;
+let category;
+let weather;
+let day_of_week;
+let no_bundles;
 
 /* --- Helper Functions --- */
 
@@ -77,40 +85,28 @@ function Analytics() {
 
 function BundlePostings() {
 
-    // I am going to make a truly reusable component 'bundles.jsx' it will be imported and displayed here
-
-    // It will be quite difficult however, I won't do it now
 
     return (
-        <div className = "bundlePostings">
-            <p>Bundle Postings</p>
+        <div>
+            <h4>Bundle Postings</h4>
+            <Postings includedAttributes = {["price", "more info button"]} />
         </div>
     )
 }
 
 function BundleReservations() {
-
-    // I am going to make a truly reusable component 'postings.jsx' it will be imported and displayed here
-
-    // It will be quite difficult however, I won't do it now
-
     return (
-        <div className = "bundleReservations">
-            <p>Bundle Reservations</p>
+        <div>
+            <h4>Customer Reservations</h4>
+            <ReservedBundles includedAttributes = {["buyer", "more info button"]} />
         </div>
     )
 }
 
 function BundlePostCreation() {
-
-    // I am going to make a truly reusable component 'postings.jsx' it will be imported and displayed here
-
-    // It will be quite difficult however, I won't do it now
-    
-
     return (
         <div className = "BundlePostCreation">
-            <p>Bundle Post Creation</p>
+            
         </div>
     )
 }
