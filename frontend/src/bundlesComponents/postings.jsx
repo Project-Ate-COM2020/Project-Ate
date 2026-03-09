@@ -13,10 +13,150 @@ There will probs be more I need to pass */
 /* Same problem with API */
 
 /* --- Import Statements --- */
-import NavBar from "../reusableComponents/navBar.jsx"
+import "./postings.css";
 
 /* --- Test Data Declarations --- */
 const bundles = [
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
+    {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.5,
+    location: "Exeter",
+    stock: 56,
+    },
     {
     bundleName: "Big Cheese Bundle",
     bundleCategory: "Dairy",
@@ -52,9 +192,10 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 
     return (
         <div className = "bundleContainer">
-            <img src = {bundleData.imgPath} alt = {bundleData.bundleName} />
 
             <h3>{bundleData.bundleName}</h3>
+
+            <img src = {bundleData.imgPath} alt = {bundleData.bundleName} />
 
             {pickupTimeDisplayed && <p>pickup time: {bundleData.pickupTime}</p>}
 

@@ -19,7 +19,7 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 hard to add once the backend is ready */
 
 /* --- Import Statements --- */
-// import "./posting.css";
+import "./posting.css";
 
 /* --- Test Data Declarations --- */
 const bundleName = "Big Cheese Bundle";
