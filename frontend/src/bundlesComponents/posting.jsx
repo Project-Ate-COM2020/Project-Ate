@@ -78,12 +78,12 @@ function OptionalContainer( { includedAttributes } ) {
 function Bundle( {includedAttributes = []} ) {
 
     return (
-        <div className = "bundleDisplay">
-            <div className = "bundleTitle">
+        <div className = "postingDisplay">
+            <div className = "postingTitle">
                 <h3>{bundleName}</h3>
             </div>
             <hr />
-            <div className = "bundleBody">
+            <div className = "postingBody">
                 <img src = {imgPath} />
                 <OptionalContainer includedAttributes={includedAttributes} />
             </div>

@@ -77,7 +77,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 /* --- Main Page Function --- */
 function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}}) {
     return (
-        <div className = "bundlesContainer">
+        <div className = "postingsContainer">
             {bundles.slice(0, numberOfBundles).map((bundle, index) => (
                 <SingleBundle
                     key={`${bundle.bundleName}-${index}`}
