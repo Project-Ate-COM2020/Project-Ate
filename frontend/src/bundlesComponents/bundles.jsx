@@ -40,8 +40,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
     let collectionCodeDisplayed = false;
     let priceDisplayed = false;
     let locationDisplayed = false;
-    let markCollectedButtonDisplayed = false;
-    let unreserveBundleButton = false;
+    let moreInfoButtonDisplayed = false;
 
     for (const i of includedAttributes) {
         if (i === "pickup time") {pickupTimeDisplayed = true;}
@@ -51,7 +50,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
         if (i === "collection code") {collectionCodeDisplayed = true;}
         if (i === "price") {priceDisplayed = true;}
         if (i === "location") {locationDisplayed = true;}
-        if (i === "more info button") {moreInfoButton = true;}
+        if (i === "more info button") {moreInfoButtonDisplayed = true;}
     }
 
     return (
@@ -81,7 +80,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 }
 
 /* --- Main Page Function --- */
-function Bundles({includedAttributes=[], numberOfBundles = 0, endPoint = "", postBody = {}}) {
+function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}}) {
     return (
         <div className = "bundlesContainer">
             <NavBar />
