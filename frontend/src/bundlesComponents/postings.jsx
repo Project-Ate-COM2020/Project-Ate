@@ -75,7 +75,7 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 }
 
 /* --- Main Page Function --- */
-function Bundles({includedAttributes=["stock"], numberOfBundles = 1, endPoint = "", postBody = {}}) {
+function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}}) {
     return (
         <div className = "bundlesContainer">
             <NavBar />
