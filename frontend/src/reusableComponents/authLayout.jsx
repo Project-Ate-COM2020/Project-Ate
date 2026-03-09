@@ -9,9 +9,8 @@ export default function authLayout({ title, children }) {
       <NavBar />
       <div className="auth-container">
         <div className="auth-card">
-          <h1 className="auth-brand">Project-Ate</h1>
+          <h1 className="auth-brand">Welcome back! Login here:</h1>
           {/* page title (login / login) */}
-          <p className="auth-title">{title}</p>
           {/* form content goes here*/}
           {children}
         </div>

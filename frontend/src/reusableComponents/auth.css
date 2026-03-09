@@ -15,8 +15,8 @@
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
-  border: 1px solid #e6e8ee;
+  background: #2E7D32;
+  border: 1px solid #2E7D32;
   border-radius: 12px;
   padding: 22px;
 }
@@ -25,17 +25,17 @@
 .auth-brand {
   margin: 0;
   font-size: 24px;
-  color: var(--accent); 
+  color: var(--accent4); 
   user-select: none;
   cursor: default;
-}
+} 
 
-.auth-title {
+/*.auth-title {
   margin-top: 10px;
   margin-bottom: 16px;
-  color: #555;
+  color: #fbf9f9;
   font-size: 16px;
- }
+ } */
 
 /* form layout */
 .auth-form {
@@ -48,7 +48,7 @@
   display: grid;
   gap: 6px;
   font-size: 14px;
-  color: var(--accent);
+  color: var(--accent4);
 }
 
 /* text inputs */
@@ -67,7 +67,7 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  background: #f0f0f0;
+  background: #eef0f5;
 }
 
 /* thin divider line */
@@ -96,7 +96,8 @@
   display: inline-block;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid #cfd6e4;
+  border: 1px solid #eef0f5;
+  background: #eef0f5;
   text-decoration: none;
   color: black;
   font-size: 14px;
