@@ -26,7 +26,8 @@ export default function NavBar( {user_type} ) {
       {/* use NavLink instead of <a href> so react router handles navigation (no page reload) */}
       <NavLink to="/user">Project-Ate</NavLink>
       <ul>
-        <li><NavLink to="/game">Profile</NavLink></li>
+        <li><NavLink to="/game">Game</NavLink></li>
+        <li><NavLink to="/buyer-profile">Profile</NavLink></li>
         {/* <li><NavLink to="/basket">Basket</NavLink></li> */}
         <li><NavLink to="/login">Login</NavLink></li>
         <li><NavLink to="/orders">Orders</NavLink></li>

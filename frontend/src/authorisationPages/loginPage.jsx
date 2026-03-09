@@ -7,7 +7,7 @@ import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 import { useGetData } from "../reusableComponents/api";
 
-export default function SellerLoginPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
