@@ -89,6 +89,7 @@ function BundlePostings() {
     return (
         <div>
             <h4>Bundle Postings</h4>
+            <button>Create New Posting</button>
             <Postings includedAttributes = {["price", "more info button"]} />
         </div>
     )

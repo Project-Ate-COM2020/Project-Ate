@@ -21,16 +21,15 @@ import SellerLoginPage from "./authorisationPages/sellerLoginPage.jsx";
 /* --- Seller Imports --- */
 import SellerProfilePage from "./seller/profilePage.jsx";
 import SellerHomePage from "./seller/homePage";
+import CreatePostPage from "./seller/postCreation.jsx";
+import Reservation from "./seller/reservation.jsx";
+import Reservations from "./seller/reservations.jsx";
+import Posting from "./seller/posting.jsx";
+import Postings from "./seller/postings.jsx";
 
 /* --- Buyer Imports --- */
 // import BuyerProfilePage from "./buyer/profilePage.jsx";
 // import BuyerHomePage from "./buyer/homePage";
-
-/* --- Test Imports --- */
-import Bundle from "./bundlesComponents/bundle.jsx";
-import Bundles from "./bundlesComponents/bundles.jsx";
-import Posting from "./bundlesComponents/posting.jsx";
-import Postings from "./bundlesComponents/postings.jsx";
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -52,18 +51,17 @@ function App() {
 
         {/* Seller paths */}
         <Route path="/seller/profile" element={<SellerProfilePage />}/>
-        <Route path ="/seller/home" element={<SellerHomePage />}/>
+        <Route path="/seller/home" element={<SellerHomePage />}/>
+        <Route path="/seller/createPosting" element={<CreatePostPage />}/>
+        <Route path="/seller/reservation" element={<Reservation />}/>
+        <Route path="/seller/reservations" element={<Reservations />}/>
+        <Route path="seller/posting" element = {<Posting />} />
+        <Route path="seller/postings" element = {<Postings />} />
 
         {/* Authorisation Paths */}
         <Route path="/seller/login" element={<SellerLoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
-
-        {/* Test Paths */}
-        <Route path="test/bundle" element={<Bundle />} />
-        <Route path="test/bundles" element={<Bundles />} />
-        <Route path="test/posting" element={<Posting />} />
-        <Route path="test/postings" element={<Postings />} />
       </Routes>
     </Router>
   );

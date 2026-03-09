@@ -43,7 +43,7 @@ function OptionalContainer( { includedAttributes } ) {
     let priceDisplayed;
     let locationDisplayed;
     let markCollectedButtonDisplayed;
-    let unreserveBundleButton;
+    let unreserveBundleButtonDisplayed;
 
     for (const i of includedAttributes) {
         if (i == "pickup time") {pickupTimeDisplayed = true;}
@@ -54,7 +54,7 @@ function OptionalContainer( { includedAttributes } ) {
         if (i == "price") {priceDisplayed = true;}
         if (i == "location") {locationDisplayed = true;}
         if (i == "mark collected button") {markCollectedButtonDisplayed = true;}
-        if (i == "unreserve bundle button") {unreserveBundleButton = true;}
+        if (i == "unreserve bundle button") {unreserveBundleButtonDisplayed = true;}
     }
 
     return (
@@ -75,7 +75,7 @@ function OptionalContainer( { includedAttributes } ) {
 
             {markCollectedButtonDisplayed && <button>Mark Bundle as collected</button>}
 
-            {unreserveBundleButton && <button>Unreserve bundle</button>}
+            {unreserveBundleButtonDisplayed && <button>Unreserve bundle</button>}
 
             
         </div>

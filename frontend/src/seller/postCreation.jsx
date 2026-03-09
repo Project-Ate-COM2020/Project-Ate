@@ -2,12 +2,21 @@
 /* Blah Blah Blah I got bored of this shit ICL */
 
 /* --- Import Statements --- */
+import NavBar from "../reusableComponents/navBar";
+
+/* --- Test Data Declarations --- */
+let time_window;
+let category;
+let weather;
+let day_of_week;
+let no_bundles;
+
 
 /* --- Main Page Function --- */
 function PostCreation() {
     return (
         <div className = "bundleForecast-panel">
-            <hr />
+            <NavBar />
             <div>
             <select value={time_window}>
                 <option value="00:00-01:00">0-1am</option>

@@ -8,14 +8,14 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 
 /* --- Import Statements --- */
 import NavBar from "../reusableComponents/navBar.jsx";
-import Bundles from "../bundlesComponents/bundles.jsx";
+import Posting from "../bundlesComponents/posting.jsx";
 
 /* --- Main Page Function --- */
 function Reservation() {
     return (
         <div>
             <NavBar />
-            <Bundles />
+            <Posting />
         </div>
     )
 }

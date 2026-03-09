@@ -67,7 +67,7 @@ function OptionalContainer( { includedAttributes } ) {
 
             {stockDisplayed && <p>Stock: {stock}</p>}
 
-            {reserveBundleButton && <button>Reserve bundle</button>}
+            {reserveBundleButtonDisplayed && <button>Reserve bundle</button>}
 
             
         </div>
