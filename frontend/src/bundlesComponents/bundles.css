@@ -1,4 +1,3 @@
-/* Bundles Container - Grid Layout */
 .bundlesContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -10,7 +9,6 @@
   max-width: 65rem;
 }
 
-/* Individual Bundle Card */
 .bundleContainer {
   background: rgba(255, 255, 255, 0.06);
   border: 0.0625rem solid rgba(255, 255, 255, 0.10);
@@ -30,7 +28,6 @@
   background: rgba(255, 255, 255, 0.075);
 }
 
-/* Bundle Image */
 .bundleContainer img {
   width: 100%;
   height: 12.5rem;
@@ -39,17 +36,16 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Bundle Title */
 .bundleContainer h3 {
   margin: 0;
   font-size: 1.1rem;
   letter-spacing: 0.0125rem;
   display: flex;
-  align-items: center;
+  align-self: center;
   gap: 0.5rem;
+  list-style: none;
 }
 
-/* Bundle Info */
 .bundleContainer p {
   margin: 0;
   padding: 0.625rem 0;
@@ -62,7 +58,6 @@
   padding-top: 0.625rem;
 }
 
-/* Bundle Button */
 .bundleContainer button {
   margin-top: 0.75rem;
   padding: 0.625rem 0.875rem;
@@ -72,7 +67,7 @@
   color: inherit;
   cursor: pointer;
   font-size: 0.92rem;
-  transition: background 140ms ease, border-color 140ms ease;
+  transition: 140ms ease, border-color 140ms ease;
 }
 
 .bundleContainer button:hover {

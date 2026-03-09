@@ -13,7 +13,7 @@ There will probs be more I need to pass */
 /* Same problem with API */
 
 /* --- Import Statements --- */
-import "./postings.css";
+import "./bundles.css";
 
 /* --- Test Data Declarations --- */
 const bundles = [
