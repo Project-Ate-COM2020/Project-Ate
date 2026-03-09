@@ -107,7 +107,7 @@ export async function signupBuyer({ displayName, password }) {
   });
 }
 
-export async function signupSeller({ email, password, sellerName, location }) {
+export async function signupSeller({ email, password, sellerName, location, openingHours }) {
   return requestJson(AUTH_ENDPOINTS.signupSeller, {
     method: "POST",
     body: {
@@ -115,8 +115,9 @@ export async function signupSeller({ email, password, sellerName, location }) {
       password,
       seller_name: sellerName,
       location,
+      opening_hours: openingHours,
+      // Removed contact_stub (phone number)
       role: "seller", // can ignore if unused
-
     },
   });
 }

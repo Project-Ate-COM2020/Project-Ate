@@ -14,6 +14,9 @@ export default function SellerSignupPage() {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
+  const [location, setLocation] = useState("");
+  const [openingHours, setOpeningHours] = useState("");
+  
 
   // UI feedback state ( loading + error + success )
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +24,36 @@ export default function SellerSignupPage() {
   const [success, setSuccess] = useState("");
 
   async function handleSubmit() {
-    
+    // Prevent default form submission
+    event.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
+
+    // Basic validation
+    if (password1 !== password2) {
+      setError("Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await signupSeller({
+        email,
+        password: password1,
+        sellerName: businessName,
+        location,
+        openingHours,
+        
+      });
+      setSuccess("Seller account created successfully!");
+      setIsLoading(false);
+      // Optionally redirect or clear form
+      // navigate("/login");
+    } catch (err) {
+      setError("Failed to create seller account.");
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -57,6 +89,31 @@ export default function SellerSignupPage() {
         </label>
 
         <label className="auth-label">
+          Location (postcode)
+          <input
+            className="auth-input"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="e.g. SW1A 1AA"
+            autoComplete="postal-code"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Opening hours
+          <input
+            className="auth-input"
+            value={openingHours}
+            onChange={(e) => setOpeningHours(e.target.value)}
+            placeholder="e.g. Mon-Fri 8am-6pm"
+            autoComplete="off"
+          />
+        </label>
+
+        
+
+        <label className="auth-label">
           Password
           <input
             className="auth-input"
@@ -87,6 +144,7 @@ export default function SellerSignupPage() {
           {isLoading ? "Creating account..." : "Create seller account"}
         </button>
       </form>
+   
 
       <div className="auth-divider" />
 
