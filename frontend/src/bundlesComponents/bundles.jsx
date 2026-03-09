@@ -83,7 +83,6 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}}) {
     return (
         <div className = "bundlesContainer">
-            <NavBar />
             {bundles.slice(0, numberOfBundles).map((bundle) => (
                 <SingleBundle
                     key={bundle.collectionCode}
