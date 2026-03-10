@@ -15,7 +15,7 @@ function Reservation() {
     return (
         <div>
             <NavBar />
-            <Postings includedAttributes={["seller", "more info button"]} numberOfBundles={18}/>
+            <Postings includedAttributes={["stock", "more info button"]} numberOfBundles={18}/>
         </div>
     )
 }

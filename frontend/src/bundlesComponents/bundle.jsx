@@ -83,11 +83,11 @@ function OptionalContainer( { includedAttributes } ) {
 }
 
 /* --- Main Function --- */
-function Bundle( {includedAttributes = []} ) {
+function Bundle( {includedAttributes = [], backfunction} ) {
 
     return (
         <div className = "bundleDisplay">
-            <button>X</button>
+            <button onClick={backfunction}>X</button>
             <div className = "bundleTitle">
                 <h3>{bundleName}</h3>
             </div>

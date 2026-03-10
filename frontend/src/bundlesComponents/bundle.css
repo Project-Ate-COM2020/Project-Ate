@@ -67,7 +67,7 @@
   padding-top: 0.125rem;
 }
 
-.infoContainer button {
+button {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
@@ -78,7 +78,7 @@
   font-size: 0.95rem;
 }
 
-.infoContainer button:hover {
+button:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(35, 240, 199, 0.3);
 }

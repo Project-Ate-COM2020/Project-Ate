@@ -9,13 +9,15 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 /* --- Import Statements --- */
 import NavBar from "../reusableComponents/navBar.jsx";
 import Bundle from "../bundlesComponents/bundle.jsx";
+import { useNavigate } from "react-router-dom";
 
 /* --- Main Page Function --- */
 function Reservation() {
+    const navigate = useNavigate();
     return (
         <div>
             <NavBar />
-            <Bundle includedAttributes={["buyer", "pickup time", "mark collected button", "collection code"]}/>
+            <Bundle includedAttributes={["buyer", "pickup time", "mark collected button", "collection code"]} backfunction={() => navigate("/seller/reservations")}/>
         </div>
     )
 }

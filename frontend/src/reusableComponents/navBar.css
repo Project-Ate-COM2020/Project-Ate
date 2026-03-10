@@ -40,10 +40,8 @@ nav ul {
 
 /* links in navbar */
 nav li a {
-  text-decoration: none;
   color: inherit;
   font-weight: 500;
-  transition: 140ms ease;
   padding: 0.35rem 0.25rem;
   border: none;
   background: transparent;
@@ -58,5 +56,4 @@ nav li a:hover {
 
 nav li a.active {
   color: rgba(35, 240, 199, 0.95);
-  border-bottom: 0.125rem solid rgba(35, 240, 199, 0.7);
 }
