@@ -5,6 +5,7 @@ from .models import (
     Seller,
     BadgeMapping,
     Badges,
+    IssueReport,
 )
 
 from argon2 import PasswordHasher
@@ -82,4 +83,10 @@ class BundlePostingSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
+        fields = "__all__"
+
+
+class IssueReportingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueReport
         fields = "__all__"
