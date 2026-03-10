@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { fetchGameSummary, fetchRecentRescues } from "../api/game";
+import { fetchGameSummary, fetchRecentRescues } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
 

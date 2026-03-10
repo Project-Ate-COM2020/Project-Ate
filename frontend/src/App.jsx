@@ -4,16 +4,19 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 // import the files for each URL endpoint
+import Orders from "./orders/orders.jsx";
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
 import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
-import GamePage from "./gamePages/game";
+import GamePage from "./gamePages/game.jsx";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound";
 import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
-import Orders from "./orders/orders.jsx"
+import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
 import SellerHomePage from "./seller/homepage/main.jsx";
+import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
+import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -21,21 +24,24 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/user" element={<UserHomePage />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/seller/login" element={<LoginPage />} />
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
         <Route path="/user" element={<UserHomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
-        <Route path="/marketplace" element={<MarketplacePage />} />
+        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
+        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
         {/* <Route path="/seller/marketplace" element={<SellerMarketplace />} /> */}
         {/* <Route path="/seller/analytics" element={<AnalyticsPage />} /> */}
         {/* <Route path="/seller/forecast" element={<ForecastPage />} /> */}
         <Route path="*" element={<PageNotFound />} />
         {/*<Route path="/basket" element={<Basket />} />*/}
         <Route path="/orders" element={<Orders />}/>
+        <Route path="/report-issue" element={<IssueReportingPage />} />
+        <Route path="/seller/issues" element={<SellerIssuesPage />} />
       </Routes>
     </Router>
   );

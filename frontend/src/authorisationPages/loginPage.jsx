@@ -1,8 +1,11 @@
+/* Login needs to be changed to allow for seperate login for buyers and sellers */
+
 // jsx for the central login page
-import React, { useState } from "react";
+import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, fetchMe } from "../api/authorisation";
+import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
+import { useGetData } from "../reusableComponents/api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -21,26 +24,12 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // authenticate user
-      await login({ identifier, password });
-
-      // fetch profile info to decide if buyer or seller
-      try {
-        const me = await fetchMe();
-
-        // support backend role shapes
-        const role =
-          me?.role || me?.user_type || me?.account_type || me?.is_seller;
-
-        if (role === "seller") {
-          navigate("/seller");
-        } else {
-          navigate("/user");
-        }
-      } catch {
-        // If profile fetch fails, default to user
-        navigate("/user");
+      the_post_data = {
+        username : identifier,
+        password : password
       }
+      const { data, loading } = useGetData("marketplace/seller/auth/token", the_post_data, false);
+      navigate("/seller");
     } catch (err) {
       // make error messages user friendly
       console.error(err);

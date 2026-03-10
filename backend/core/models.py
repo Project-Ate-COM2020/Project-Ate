@@ -19,7 +19,7 @@ from django.db import models
 );"""
 
 
-#-- reservation definition
+# -- reservation definition
 
 """CREATE TABLE reservation (
   reservation_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,7 +34,7 @@ from django.db import models
   FOREIGN KEY (consumer_id) REFERENCES consumer(consumer_id)
 );"""
 
-#-- consumer definition
+# -- consumer definition
 
 """CREATE TABLE consumer (
   consumer_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +43,7 @@ from django.db import models
   badges TEXT
 );"""
 
-#-- seller definition
+# -- seller definition
 
 """CREATE TABLE seller (
   seller_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +53,7 @@ from django.db import models
   contact_stub TEXT
 );"""
 
-#-- issue_report definition
+# -- issue_report definition
 
 """CREATE TABLE issue_report (
   issue_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +68,7 @@ from django.db import models
   FOREIGN KEY (consumer_id) REFERENCES consumer(consumer_id)
 );"""
 
-#-- bundle_posting definition
+# -- bundle_posting definition
 
 """CREATE TABLE bundle_posting (
   posting_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,7 +86,7 @@ from django.db import models
   FOREIGN KEY (seller_id) REFERENCES seller(seller_id)
 );"""
 
-#-- forecast_output definition
+# -- forecast_output definition
 
 """CREATE TABLE forecast_output (
   output_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -99,33 +99,56 @@ from django.db import models
   FOREIGN KEY (posting_id) REFERENCES bundle_posting(posting_id)
 );"""
 
+from argon2 import PasswordHasher
+
+
 class Seller(models.Model):
     seller_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    password = models.CharField(max_length=150)
     opening_hours = models.TextField(null=True, blank=True)
     contact_stub = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
-        db_table = 'seller'
+        db_table = "seller"
+
+
+class Badges(models.Model):
+    badge_id = models.AutoField(primary_key=True)
+    name = models.TextField(max_length=30)
+    description = models.TextField()
+
+    class Meta:
+        db_table = "badges"
+
 
 class Consumer(models.Model):
     consumer_id = models.AutoField(primary_key=True)
     display_name = models.CharField(max_length=255)
+    password = models.CharField(max_length=150)
     streak = models.IntegerField(default=0)
-    badges = models.TextField(null=True, blank=True)
 
     class Meta:
-        db_table = 'consumer'
+        db_table = "consumer"
+
+
+class BadgeMapping(models.Model):
+    badge_id = models.ForeignKey(Badges, on_delete=models.CASCADE)
+    consumer_id = models.ForeignKey(Consumer, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        unique_together = ("badge_id", "consumer_id")
+
 
 class BundlePosting(models.Model):
     STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('expired', 'Expired'),
-        ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
+        ("active", "Active"),
+        ("expired", "Expired"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
     ]
-    
+
     posting_id = models.AutoField(primary_key=True)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=255)
@@ -133,23 +156,24 @@ class BundlePosting(models.Model):
     allergens = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
     quantity_remaining = models.IntegerField(null=True, blank=True)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     pickup_window = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'bundle_posting'
+        db_table = "bundle_posting"
+
 
 class Reservation(models.Model):
     STATUS_CHOICES = [
-        ('reserved', 'Reserved'),
-        ('collected', 'Collected'),
-        ('no-show', 'No-show'),
-        ('expired', 'Expired'),
+        ("reserved", "Reserved"),
+        ("collected", "Collected"),
+        ("no-show", "No-show"),
+        ("expired", "Expired"),
     ]
-    
+
     reservation_id = models.AutoField(primary_key=True)
     posting = models.ForeignKey(BundlePosting, on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
@@ -160,18 +184,83 @@ class Reservation(models.Model):
     collected_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        db_table = 'reservation'
+        db_table = "reservation"
+
+
+class SellerReview(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    stars = models.IntegerField()
+    title = models.CharField(max_length=50)
+    review = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "seller_review"
+
+
+class ConsumerReview(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    stars = models.IntegerField()
+    title = models.CharField(max_length=50)
+    review = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "consumer_review"
+
+
+# if a seller is reported
+class ConsumerReport(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "consumer_report"
+
+
+# if a seller is reported
+class SellerReport(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "seller_report"
+
+
+class Allergen(models.Model):
+    allergen_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "allergens"
+
+
+class BundleAllergens(models.Model):
+    bundle_id = models.ForeignKey(BundlePosting, on_delete=models.CASCADE)
+    allergen_id = models.ForeignKey(Allergen, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("bundle_id", "allergen_id")
+
 
 class IssueReport(models.Model):
     STATUS_CHOICES = [
-        ('open', 'Open'),
-        ('responded', 'Responded'),
-        ('resolved', 'Resolved'),
+        ("open", "Open"),
+        ("responded", "Responded"),
+        ("resolved", "Resolved"),
     ]
-    
+
     issue_id = models.AutoField(primary_key=True)
     posting = models.ForeignKey(BundlePosting, on_delete=models.CASCADE)
-    consumer = models.ForeignKey(Consumer, on_delete=models.SET_NULL, null=True, blank=True)
+    consumer = models.ForeignKey(
+        Consumer, on_delete=models.SET_NULL, null=True, blank=True
+    )
     type = models.CharField(max_length=255)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
@@ -179,7 +268,8 @@ class IssueReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'issue_report'
+        db_table = "issue_report"
+
 
 class ForecastInput(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -187,23 +277,26 @@ class ForecastInput(models.Model):
     time_window = models.CharField(max_length=255)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, null=True, blank=True)
     category = models.CharField(max_length=255, null=True, blank=True)
-    price = models.FloatField(null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     weather_flag = models.IntegerField(default=0)
     observed_reservations = models.IntegerField()
     observed_no_show = models.IntegerField()
     unreserved_stock = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        db_table = 'forecast_input'
+        db_table = "forecast_input"
+
 
 class ForecastOutput(models.Model):
     output_id = models.AutoField(primary_key=True)
-    posting = models.ForeignKey(BundlePosting, on_delete=models.CASCADE, null=True, blank=True)
-    predicted_reservations = models.FloatField()
-    predicted_no_show_prob = models.FloatField()
+    posting = models.ForeignKey(
+        BundlePosting, on_delete=models.CASCADE, null=True, blank=True
+    )
+    predicted_reservations = models.DecimalField(max_digits=10, decimal_places=2)
+    predicted_no_show_prob = models.DecimalField(max_digits=3, decimal_places=2)
     confidence = models.CharField(max_length=255, null=True, blank=True)
     rationale = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'forecast_output'
+        db_table = "forecast_output"
