@@ -9,10 +9,10 @@ from argon2 import PasswordHasher
 from ..models import (
     Seller,
     SellerSerializer,
-    BundleSerializer,
+    BundlePostingSerializer,
     SellerWithPasswordSerializer,
 )
-from ..models import Bundle
+from ..models import BundlePosting
 
 
 class CreateSellerView(CreateAPIView):

@@ -6,13 +6,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from ..models import Bundle, BundleSerializer, BundlePosting, BundlePostingSerializer
+from ..models import (
+    BundlePosting,
+    BundlePostingSerializer,
+)
 
 
 class CreateBundleView(CreateAPIView):
     name = "bundle-create"
-    serializer_class = BundleSerializer
-    queryset = Bundle
+    serializer_class = BundlePostingSerializer
+    queryset = BundlePosting
     permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
@@ -23,11 +26,12 @@ class BundlesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        bundles = Bundle.objects.all()
+        bundles = BundlePosting.objects.all()
 
         ids = [bundle_id for bundle_id in bundles.values_list("pk", flat=True)]
 
         return Response(ids)
+
     name = "bundles"
     permission_classes = [AllowAny]
 
@@ -37,7 +41,6 @@ class BundlesView(APIView):
         return Response(serializer.data)
 
 
-
 # get a specific bundle
 class BundleView(APIView):
     name: str = "bundle"
@@ -45,12 +48,12 @@ class BundleView(APIView):
 
     def get(self, request, bundle_id):
         try:
-            bundle = Bundle.objects.get(pk=bundle_id)
+            bundle = BundlePosting.objects.get(pk=bundle_id)
 
-            serializer = BundleSerializer(bundle)
+            serializer = BundlePostingSerializer(bundle)
 
             return Response(serializer.data)
-        except Bundle.DoesNotExist:
+        except BundlePosting.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 

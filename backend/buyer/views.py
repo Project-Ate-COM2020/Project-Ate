@@ -4,8 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
-from core.models import BundlePosting, Reservation, Seller
+from .models import BundlePosting, Reservation, Seller
 from claimcodegeneration import generate_claim_code
+
 
 class MarkReservationAsReserveredView(APIView):
     def post(self, request):
@@ -20,27 +21,39 @@ class MarkReservationAsReserveredView(APIView):
         if not posting_id or not consumer_id:
             return Response(
                 {"error": "posting_id and consumer_id are required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
             posting = BundlePosting.objects.get(posting_id=posting_id)
             if posting.quantity_remaining <= 0:
-                return Response({"error": "No quantity remaining for this bundle"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "No quantity remaining for this bundle"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             reservation = Reservation.objects.create(
                 posting=posting,
                 consumer_id=consumer_id,
                 claim_code=generate_claim_code(),
-                status="reserved"
+                status="reserved",
             )
-            
+
             posting.quantity_remaining -= 1
             posting.save()
-            return Response({"message": "Reservation marked as reserved", "reservation_id": reservation.reservation_id}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": "Reservation marked as reserved",
+                    "reservation_id": reservation.reservation_id,
+                },
+                status=status.HTTP_200_OK,
+            )
         except BundlePosting.DoesNotExist:
-            return Response({"error": "BundlePosting not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response(
+                {"error": "BundlePosting not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
 class MarkReservationAsUnreservedView(APIView):
     def post(self, request):
         """
@@ -54,7 +67,7 @@ class MarkReservationAsUnreservedView(APIView):
         if not reservation_id:
             return Response(
                 {"error": "reservation_id is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
@@ -63,10 +76,15 @@ class MarkReservationAsUnreservedView(APIView):
             posting.quantity_remaining += 1
             posting.save()
             reservation.delete()
-            return Response({"message": "Reservation deleted"}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Reservation deleted"}, status=status.HTTP_200_OK
+            )
         except Reservation.DoesNotExist:
-            return Response({"error": "Reservation not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response(
+                {"error": "Reservation not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
 class GetBuyerReservationsView(APIView):
     def get(self, request, consumer_id):
         """
@@ -76,11 +94,13 @@ class GetBuyerReservationsView(APIView):
         reservations = Reservation.objects.filter(consumer_id=consumer_id)
         reservation_data = []
         for reservation in reservations:
-            reservation_data.append({
-                "reservation_id": reservation.reservation_id,
-                "posting_id": reservation.posting.posting_id,
-                "claim_code": reservation.claim_code,
-                "status": reservation.status,
-                "created_at": reservation.created_at,
-            })
+            reservation_data.append(
+                {
+                    "reservation_id": reservation.reservation_id,
+                    "posting_id": reservation.posting.posting_id,
+                    "claim_code": reservation.claim_code,
+                    "status": reservation.status,
+                    "created_at": reservation.created_at,
+                }
+            )
         return Response({"reservations": reservation_data}, status=status.HTTP_200_OK)
