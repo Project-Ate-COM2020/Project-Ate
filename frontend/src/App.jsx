@@ -15,6 +15,8 @@ import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
 import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
 import SellerHomePage from "./seller/homepage/main.jsx";
+import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
+import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 
 
 // simple function defining the element to be returned based on the URL
@@ -38,6 +40,8 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
         {/*<Route path="/basket" element={<Basket />} />*/}
         <Route path="/orders" element={<Orders />}/>
+        <Route path="/report-issue" element={<IssueReportingPage />} />
+        <Route path="/seller/issues" element={<SellerIssuesPage />} />
       </Routes>
     </Router>
   );

@@ -15,6 +15,7 @@ export default function NavBar() {
         {/* <li><NavLink to="/basket">Basket</NavLink></li> */}
         <li><NavLink to="/login">Login</NavLink></li>
         <li><NavLink to="/orders">Orders</NavLink></li>
+        <li><NavLink to="/report-issue">Report Issue</NavLink></li>
       </ul>
     </nav>
   );
