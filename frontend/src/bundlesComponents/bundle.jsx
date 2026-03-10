@@ -87,6 +87,7 @@ function Bundle( {includedAttributes = []} ) {
 
     return (
         <div className = "bundleDisplay">
+            <button>X</button>
             <div className = "bundleTitle">
                 <h3>{bundleName}</h3>
             </div>
