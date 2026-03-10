@@ -104,6 +104,7 @@ class Seller(models.Model):
     seller_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    password = models.CharField(max_length=150)
     opening_hours = models.TextField(null=True, blank=True)
     contact_stub = models.CharField(max_length=255, null=True, blank=True)
 

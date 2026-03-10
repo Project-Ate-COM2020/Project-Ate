@@ -14,18 +14,6 @@ class Seller(models.Model):
     opening_hours = models.CharField(max_length=20)
     contact_stub = models.CharField(max_length=20)
 
-
-class SellerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Seller
-        fields = ["name", "location", "opening_hours", "contact_stub"]
-
-
-class SellerWithPasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Seller
-        fields = ["id", "name", "password", "location", "opening_hours", "contact_stub"]
-
     def create(self, validated_data):
         ph = PasswordHasher()
 
