@@ -96,6 +96,23 @@ class RecentRescuesView(ListAPIView):
             # gets all the records that are "collected" and the limit is set
         )
 
+class ConsumerBadgesView(APIView):
+
+    def get(self, request):
+        consumer = request.user.consumer
+
+        badges = consumer.badges
+        if badges:
+            badges = json.loads(badges)
+        else:
+            badges = []
+
+        return Response({
+            "badges": badges,
+            "total_badges": len(badges)
+        })
+        
+
 # test view
 class TestView(APIView):
     def get(self, request):
