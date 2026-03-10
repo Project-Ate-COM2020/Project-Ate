@@ -64,10 +64,10 @@ class CreateBundleViewsTests(APITestCase):
             self.bundle_creation_response.status_code, status.HTTP_201_CREATED
         )
 
-        self.assertEqual(Bundle.objects.count(), 1)
+        self.assertEqual(BundlePosting.objects.count(), 1)
 
     def test_bundle_data_integrity(self):
-        bundle = Bundle.objects.get(id=self.bundle_id)
+        bundle = BundlePosting.objects.get(id=self.bundle_id)
 
         self.assertEqual(bundle.seller.id, self.seller_id)
         self.assertEqual(bundle.category, "food")
