@@ -1,0 +1,85 @@
+.bundleDisplay {
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+  max-width: 65rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bundleTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+  justify-content: center;
+}
+
+.bundleTitle h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 0.0125rem;
+  display: flex;
+  align-self: center;
+  gap: 0.625rem;
+}
+
+.bundleDisplay hr {
+  border: none;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  margin: 0.75rem 0;
+}
+
+.bundleBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bundleBody img {
+  width: 100%;
+  height: 25rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.infoContainer p {
+  margin: 0;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+  opacity: 0.88;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+}
+
+.infoContainer p:first-child {
+  border-top: none;
+  padding-top: 0.125rem;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(35, 240, 199, 0.3);
+}
+

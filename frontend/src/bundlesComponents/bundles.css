@@ -1,0 +1,86 @@
+.bundlesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1.125rem;
+  max-width: 65rem;
+}
+
+.postingsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1.125rem;
+  max-width: 65rem;
+}
+
+.bundleContainer {
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-radius: 1rem;
+  padding: 1rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.bundleContainer:hover {
+  transform: translateY(-0.125rem);
+  border-color: rgba(35, 240, 199, 0.25);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.bundleContainer img {
+  width: 100%;
+  height: 12.5rem;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.bundleContainer h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.0125rem;
+  display: flex;
+  align-self: center;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.bundleContainer p {
+  margin: 0;
+  padding: 0.625rem 0;
+  font-size: 0.92rem;
+  opacity: 0.82;
+}
+
+.bundleContainer p:not(:first-of-type) {
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  padding-top: 0.625rem;
+}
+
+.bundleContainer button {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.625rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.92rem;
+  transition: 140ms ease, border-color 140ms ease;
+}
+
+.bundleContainer button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(35, 240, 199, 0.3);
+}
