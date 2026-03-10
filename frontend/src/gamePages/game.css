@@ -67,8 +67,9 @@
     gap: 18px;
   }
 
-  /* make recent card span full width on desktop */
-  .game-card.recent {
+  /* full-width cards on desktop */
+  .game-card.recent,
+  .game-card--full {
     grid-column: 1 / -1;
   }
 }
@@ -134,6 +135,54 @@
   font-weight: 800;
   letter-spacing: 0.2px;
 }
+
+/* ── Badge section ─────────────────────────────────────────────────────── */
+
+/* horizontal wrapping row of badge items */
+.badge-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* each badge: image stacked above label */
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 80px;
+  text-align: center;
+}
+
+/* placeholder square — teammate: replace with <img className="badge-img"> */
+.badge-img-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: rgba(35, 240, 199, 0.12);
+  border: 2px dashed rgba(35, 240, 199, 0.35);
+}
+
+/* swap .badge-img-placeholder for .badge-img once assets exist */
+.badge-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.badge-name {
+  font-size: 0.78rem;
+  opacity: 0.8;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* ── Recent list ────────────────────────────────────────────────────────── */
 
 /* recent list  */
 .recent-list {

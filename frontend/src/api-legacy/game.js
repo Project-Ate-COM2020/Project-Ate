@@ -14,13 +14,13 @@ function getAccessToken() {
   return localStorage.getItem("access");
 }
 
-// Helper function for GET requests that return JSON
+// Helper function for GET requests that return JSON — sends JWT token when available
 async function getJson(path) {
   const url = API_BASE + path;
+  const token = getAccessToken();
 
-  // Do NOT send Authorization header for game endpoints (public, hardcoded user)
   const res = await fetch(url, {
-    // No headers needed
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   if (!res.ok) {

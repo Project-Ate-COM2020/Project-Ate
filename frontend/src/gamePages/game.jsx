@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { fetchGameSummary, fetchRecentRescues } from "../api-legacy/game";
+import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
 
 // toggle to false when endpoints are ready
-const USE_MOCK_DATA = false;
+const USE_MOCK_DATA = true;
 
 // local mock data
 const MOCK_SUMMARY = {
@@ -12,26 +12,13 @@ const MOCK_SUMMARY = {
   has_rescued_this_week: true,
   total_rescued_bundles: 12,
   estimated_co2e_saved_kg: 28.5,
+  // badges comes from GET /game/api/game/summary/ — array of badge name strings
+  // TODO: swap these for real badge objects once the badge images/assets are decided
+  badges: ["First Rescue", "Eco Warrior"],
 };
-
-const MOCK_RECENT = [
-  {
-    reservation_id: 1,
-    category: "Bakery",
-    seller_name: "Bob Bakes",
-    collected_at: "2026-01-22T17:31:00Z",
-  },
-  {
-    reservation_id: 2,
-    category: "Groceries",
-    seller_name: "tesco",
-    collected_at: "2026-01-18T12:10:00Z",
-  },
-];
 
 export default function Game() {
   const [summary, setSummary] = useState(null);
-  const [recentRescues, setRecentRescues] = useState([]);
   const [error, setError] = useState(null);
 
   const load = useCallback(async () => {
@@ -40,20 +27,14 @@ export default function Game() {
     try {
       if (USE_MOCK_DATA) {
         setSummary(MOCK_SUMMARY);
-        setRecentRescues(MOCK_RECENT);
         return;
       }
 
       // If you ever get 401, check this in console after logging in:
       // console.log("access token:", localStorage.getItem("access"));
 
-      const [summaryResponse, recentResponse] = await Promise.all([
-        fetchGameSummary(),
-        fetchRecentRescues(10),
-      ]);
-
+      const summaryResponse = await fetchGameSummary();
       setSummary(summaryResponse);
-      setRecentRescues(Array.isArray(recentResponse) ? recentResponse : []);
     } catch (e) {
       // Make errors readable (fetch() errors, thrown API errors, etc.)
       const message =
@@ -112,7 +93,7 @@ export default function Game() {
         <header className="game-header">
           <h2 className="game-title">Rescue Streaks</h2>
           <p className="game-subtitle">
-            Track your streak, your impact, and your recent rescues.
+            Track your streak, your impact, and your badges.
           </p>
         </header>
 
@@ -160,29 +141,33 @@ export default function Game() {
             </div>
           </section>
 
-          <section className="game-card recent">
-            <h3>Recent rescues</h3>
+          {/* ── Badges 
+               ZACH TODO     : replace placeholder squares with real badge images
+               each badge in summary.badges is a string name from the API
+               suggested shape once assets exist
+                 <img src={`/badges/${badge}.png`} alt={badge} className="badge-img" />
+               The CSS class "badge-img" needs adding to game.css.
+           */}
+          <section className="game-card game-card--full">
+            <h3>Badges</h3>
 
-            {recentRescues.length > 0 ? (
-              <ul className="recent-list">
-                {recentRescues.map((rescue) => (
-                  <li className="recent-item" key={rescue.reservation_id}>
-                    <span className="stat-value">
-                      {rescue.category ? `${rescue.category}` : "Rescue"}
-                    </span>
-                    <span className="stat-label">
-                      {rescue.seller_name ? ` • ${rescue.seller_name}` : ""}
-                      {rescue.collected_at
-                        ? ` • ${new Date(rescue.collected_at).toLocaleString()}`
-                        : ""}
-                    </span>
+            {Array.isArray(summary.badges) && summary.badges.length > 0 ? (
+              <ul className="badge-list">
+                {summary.badges.map((badge) => (
+                  <li className="badge-item" key={badge}>
+                    {/* TODO: swap this placeholder div for an <img> once badge assets are ready */}
+                    <div className="badge-img-placeholder" aria-hidden="true" />
+                    <span className="badge-name">{badge}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="game-subtitle">No recent rescues.</p>
+              <p className="game-subtitle">
+                No badges yet — keep rescuing bundles to earn them.
+              </p>
             )}
           </section>
+
         </div>
       </div>
     </div>
