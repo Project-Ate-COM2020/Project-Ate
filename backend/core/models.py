@@ -124,6 +124,7 @@ class Badges(models.Model):
 class Consumer(models.Model):
     consumer_id = models.AutoField(primary_key=True)
     display_name = models.CharField(max_length=255)
+    password = models.CharField(max_length=150)
     streak = models.IntegerField(default=0)
 
     class Meta:

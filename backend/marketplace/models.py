@@ -59,27 +59,6 @@ class Consumer(models.Model):
     badges = models.TextField()
 
 
-class ConsumerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Consumer
-        fields = ["display_name", "streak", "badges"]
-
-
-class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Consumer
-        fields = ["id", "display_name", "password", "streak", "badges"]
-
-    def create(self, validated_data):
-        ph = PasswordHasher()
-
-        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
-
-        self.Meta.model.is_active = True
-
-        return super().create(validated_data)
-
-
 class Reservation(models.Model):
     bundle = models.ForeignKey(Bundle, on_delete=models.CASCADE)
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
