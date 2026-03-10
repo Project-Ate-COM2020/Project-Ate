@@ -104,7 +104,7 @@ class GetCollectedReservationsView(APIView):
             return Response({"error": str(e)}, status=500)
 
 
-# ── Sprint 2 views ────────────────────────────────────────────────────────────
+# -------------- sprint 2 views ---------------
 
 class SellThroughBreakdownView(APIView):
     def get(self, request):

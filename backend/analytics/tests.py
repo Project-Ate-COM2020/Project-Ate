@@ -60,7 +60,7 @@ class AnalyticsViewTests(APITestCase):
             status=status,
         )
 
-    # ── existing tests ────────────────────────────────────────────────────────
+# ----------- Sprint 1 tests -----------
 
     def test_total_listings_empty_returns_400(self):
         request = self.factory.get("/analytics/total-listings/", {"seller_id": self.seller.seller_id})
@@ -160,7 +160,7 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("total_no_shows"), 2)
 
-    # ── Sprint 2 tests ────────────────────────────────────────────────────────
+    # ----------- Sprint 2 tests -----------
 
     def test_sell_through_missing_seller_id_returns_400(self):
         request = self.factory.get("/analytics/sell-through/")
