@@ -7,6 +7,8 @@ from backend.core.models import (
     Badges,
 )
 
+from argon2 import PasswordHasher
+
 from rest_framework import serializers
 
 
@@ -39,3 +41,33 @@ class SellerWithPasswordSerializer(serializers.ModelSerializer):
             "opening_hours",
             "contact_stub",
         ]
+
+    def create(self, validated_data):
+        ph = PasswordHasher()
+
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
+
+        return super().create(validated_data)
+
+
+class ConsumerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = ["display_name", "streak"]
+
+
+class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = ["consumer_id", "display_name", "password", "streak"]
+
+    def create(self, validated_data):
+        ph = PasswordHasher()
+
+        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+
+        self.Meta.model.is_active = True
+
+        return super().create(validated_data)
