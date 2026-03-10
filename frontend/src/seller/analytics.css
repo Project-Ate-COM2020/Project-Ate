@@ -1,0 +1,30 @@
+.analytics-panel {
+  max-width: 65rem;
+  margin: 1.5rem auto 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-radius: 1rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+}
+
+.analytics-panel h2 {
+  margin: 0 0 0.5rem;
+}
+
+.analytics-panel h3 {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.analytics-panel p {
+  margin: 0;
+  padding: 0.65rem 0;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  font-size: 1rem;
+}

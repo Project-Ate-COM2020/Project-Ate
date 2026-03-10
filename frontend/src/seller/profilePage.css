@@ -1,0 +1,76 @@
+.sellerProfilePage .infoContainer {
+  max-width: 65rem;
+  margin: 1.5rem auto 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-radius: 1rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+}
+
+.sellerProfilePage .Info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 0;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+}
+
+.sellerProfilePage .Info:first-child {
+  border-top: none;
+  padding-top: 0.2rem;
+}
+
+.sellerProfilePage .Info p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.sellerProfilePage .Info p:first-child {
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.sellerProfilePage .Info input[type="text"] {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.sellerProfilePage .editButton,
+.sellerProfilePage .saveButton,
+.sellerProfilePage .cancelButton {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.sellerProfilePage .saveButton,
+.sellerProfilePage .cancelButton {
+  margin-top: 0.75rem;
+}
+
+.sellerProfilePage button {
+  padding: 0.75rem 1rem;
+  min-width: 10rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+}
+
+.sellerProfilePage button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(35, 240, 199, 0.3);
+}

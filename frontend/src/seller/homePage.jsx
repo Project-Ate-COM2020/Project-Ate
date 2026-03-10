@@ -21,6 +21,7 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 import NavBar from "../reusableComponents/navBar.jsx";
 import Postings from "../bundlesComponents/postings.jsx";
 import ReservedBundles from "../bundlesComponents/bundles.jsx";
+import "./homePage.css";
 
 /* --- Test Data Declarations --- */
 const sellerName = "Test Seller Name";
@@ -87,17 +88,18 @@ function BundlePostings() {
 
 
     return (
-        <div>
+        <div className = "dashboardPanel bundlePostings">
             <h4>Bundle Postings</h4>
-            <button>Create New Posting</button>
-            <Postings includedAttributes = {["price", "more info button"]} />
+            <button className = "button">Create New Posting</button>
+            <button className = "button">View All Postings</button>
+            <Postings includedAttributes = {["price", "stock", "more info button"]} numberOfBundles={3}/>
         </div>
     )
 }
 
 function BundleReservations() {
     return (
-        <div>
+        <div className = "dashboardPanel bundleReservations">
             <h4>Customer Reservations</h4>
             <ReservedBundles includedAttributes = {["buyer", "more info button"]} />
         </div>
@@ -116,13 +118,16 @@ function BundlePostCreation() {
 
 function SellerHomePage() {
     return (
-        <div>
+        <div className = "sellerHomePage">
             <NavBar />
-            <SellerInfo />
-            <Analytics />
-            <BundlePostings />
-            <BundleReservations />
-            <BundlePostCreation />
+            <div className = "topSellerInfo">
+                <SellerInfo />
+            </div>
+            <div className = "dashboardGrid">
+                <Analytics />
+                <BundlePostings />
+                <BundleReservations />
+            </div>
         </div>
     )
 

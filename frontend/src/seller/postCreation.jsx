@@ -3,6 +3,7 @@
 
 /* --- Import Statements --- */
 import NavBar from "../reusableComponents/navBar";
+import "./postCreation.css";
 
 /* --- Test Data Declarations --- */
 let time_window;
@@ -15,9 +16,11 @@ let no_bundles;
 /* --- Main Page Function --- */
 function PostCreation() {
     return (
-        <div className = "bundleForecast-panel">
-            <NavBar />
-            <div>
+        
+        <div>
+        <NavBar />
+            <div className = "bundleForecast-panel">
+            <p>Time Window</p>
             <select value={time_window}>
                 <option value="00:00-01:00">0-1am</option>
                 <option value="01:00-02:00">1-2am</option>
@@ -45,6 +48,7 @@ function PostCreation() {
                 <option value="23:00-00:00">11-12am</option>                    
             </select>
             <hr />
+            <p>Category</p>
             <select value={category}>
                 <option value="Bakery">Bakery</option>
                 <option value="Hot Meals">Hot Meals</option>
@@ -72,23 +76,16 @@ function PostCreation() {
             </select>
             <hr />
             <p>No. Bundles to sell</p>
-            <input
-                type="number"
-                min="0"
-                value={no_bundles}
-            />
-            <hr />
+            <input type="number" min="1" value={no_bundles}/>
             <button>Load Forecasts</button>
-        </div>
             <hr />
-            <div>
-                <h2>Suggested price</h2>
-                <p>Not Implemented Yet</p>
-                <p>Set Price</p>
-                <input type = "number"></input>
-                <p>Post Bundle listing</p>
-                <button>Post Listing</button>
-            </div>
+            <h2>Suggested price</h2>
+            <p>Not Implemented Yet</p>
+            <p>Set Price</p>
+            <input type = "number"></input>
+            <p>Post Bundle listing</p>
+            <button>Post Listing</button>
+        </div>
         </div>
     )
 }

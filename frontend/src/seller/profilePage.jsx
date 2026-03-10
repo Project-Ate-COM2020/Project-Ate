@@ -11,6 +11,7 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 import { useGetData, usePostData, postData } from "../reusableComponents/api.jsx";
 import { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar.jsx";
+import "./profilePage.css";
 
 /* --- Helper Functions --- */
 
@@ -64,14 +65,9 @@ function SellerProfilePage() {
     const editInfoContainer = (
         <div className = "infoContainer">
             
-            <div className = "Info">
+                <div className = "Info">
                     <p>Seller Name:</p>
                     <input type = "text" defaultValue = {sellerName}></input>
-                </div>
-                
-                <div className = "Info">
-                    <p>Account Lifetime:</p>
-                    <input type = "text" defaultValue = {accountLifetime}></input>
                 </div>
 
                 <div className = "Info">
@@ -100,7 +96,7 @@ function SellerProfilePage() {
 
     if (!editMode) {
         return (
-            <div>
+            <div className = "sellerProfilePage">
                 <NavBar />
                 {infoContainer}
             </div>
@@ -108,7 +104,7 @@ function SellerProfilePage() {
     } else {
         console.log("Switch SUccessful");
         return (
-            <div>
+            <div className = "sellerProfilePage">
                 <NavBar />
                 {editInfoContainer}
             </div>

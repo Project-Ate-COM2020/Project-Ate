@@ -1,0 +1,56 @@
+.bundleForecast-panel {
+  max-width: 65rem;
+  margin: 1.5rem auto 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+  align-items: center;
+}
+
+.bundleForecast-panel hr {
+  border: none;
+  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  margin: 0.75rem 0;
+}
+
+.bundleForecast-panel p,
+.bundleForecast-panel h2 {
+  margin: 0.5rem 0;
+}
+
+.bundleForecast-panel select,
+.bundleForecast-panel input[type="number"] {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.bundleForecast-panel button {
+  margin-top: 0.5rem;
+  align-self: center;
+  padding: 0.75rem 1rem;
+  min-width: 10rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+  justify-content: center;
+}
+
+.bundleForecast-panel button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(35, 240, 199, 0.3);
+}

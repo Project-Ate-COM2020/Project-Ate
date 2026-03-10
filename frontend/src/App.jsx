@@ -26,6 +26,7 @@ import Reservation from "./seller/reservation.jsx";
 import Reservations from "./seller/reservations.jsx";
 import Posting from "./seller/posting.jsx";
 import Postings from "./seller/postings.jsx";
+import Analytics from "./seller/analytics.jsx";
 
 /* --- Buyer Imports --- */
 // import BuyerProfilePage from "./buyer/profilePage.jsx";
@@ -57,6 +58,7 @@ function App() {
         <Route path="/seller/reservations" element={<Reservations />}/>
         <Route path="seller/posting" element = {<Posting />} />
         <Route path="seller/postings" element = {<Postings />} />
+        <Route path="seller/analytics" element = {<Analytics />} />
 
         {/* Authorisation Paths */}
         <Route path="/seller/login" element={<SellerLoginPage />} />
