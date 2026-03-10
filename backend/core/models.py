@@ -1,7 +1,5 @@
 from django.db import models
 
-from backend.marketplace.models import Consumer
-
 # Create your models here.
 
 # I MADE THE DATABASES IN DBEAVER, I WILL PASTE THE RAW SQL HERE FOR REFERENCE
@@ -122,20 +120,21 @@ class Badges(models.Model):
         db_table = "badges"
 
 
-class BadgeMapping(models.Model):
-    badge_mapping_id = models.AutoField(primary_key=True)
-    badge_id = models.ForeignKey(Badges, on_delete=models.CASCADE)
-    consumer_id = models.ForeignKey(Consumer, on_delete=models.DO_NOTHING)
-
-
 class Consumer(models.Model):
     consumer_id = models.AutoField(primary_key=True)
     display_name = models.CharField(max_length=255)
     streak = models.IntegerField(default=0)
-    badges = models.ForeignKey(BadgeMapping, on_delete=models.DO_NOTHING)
 
     class Meta:
         db_table = "consumer"
+
+
+class BadgeMapping(models.Model):
+    badge_id = models.ForeignKey(Badges, on_delete=models.CASCADE)
+    consumer_id = models.ForeignKey(Consumer, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        unique_together = ("badge_id", "consumer_id")
 
 
 class BundlePosting(models.Model):
