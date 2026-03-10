@@ -187,6 +187,68 @@ class Reservation(models.Model):
         db_table = "reservation"
 
 
+class SellerReview(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    stars = models.IntegerField()
+    title = models.CharField(max_length=50)
+    review = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "seller_review"
+
+
+class ConsumerReview(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    stars = models.IntegerField()
+    title = models.CharField(max_length=50)
+    review = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "consumer_review"
+
+
+# if a seller is reported
+class ConsumerReport(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "consumer_report"
+
+
+# if a seller is reported
+class SellerReport(models.Model):
+    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "seller_report"
+
+
+class Allergen(models.Model):
+    allergen_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "allergens"
+
+
+class BundleAllergens(models.Model):
+    bundle_id = models.ForeignKey(BundlePosting, on_delete=models.CASCADE)
+    allergen_id = models.ForeignKey(Allergen, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("bundle_id", "allergen_id")
+
+
 class IssueReport(models.Model):
     STATUS_CHOICES = [
         ("open", "Open"),
