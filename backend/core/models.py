@@ -99,6 +99,8 @@ from django.db import models
   FOREIGN KEY (posting_id) REFERENCES bundle_posting(posting_id)
 );"""
 
+from argon2 import PasswordHasher
+
 
 class Seller(models.Model):
     seller_id = models.AutoField(primary_key=True)
