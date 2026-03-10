@@ -31,7 +31,7 @@ const bundles = [
   ];
 
 /* --- Helper Functions  --- */
-function SingleBundle({bundleData, includedAttributes = []}) {
+function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFunction}) {
 
     let pickupTimeDisplayed = false;
     let bundleCategoryDisplayed = false;
@@ -74,14 +74,14 @@ function SingleBundle({bundleData, includedAttributes = []}) {
 
             {locationDisplayed && <p>Location: {bundleData.location}</p>}
 
-            {moreInfoButtonDisplayed && <button>More Info</button>}
+            {moreInfoButtonDisplayed && <button onClick={moreInfoButtonFunction}>More Info</button>}
 
         </div>
     )
 }
 
 /* --- Main Page Function --- */
-function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}}) {
+function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
     return (
         <div className = "bundlesContainer">
             {bundles.slice(0, numberOfBundles).map((bundle) => (
@@ -89,6 +89,7 @@ function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", pos
                     key={bundle.collectionCode}
                     bundleData={bundle}
                     includedAttributes={includedAttributes}
+                    moreInfoButtonFunction={moreInfoButtonFunction}
                 />
             ))}
         </div>

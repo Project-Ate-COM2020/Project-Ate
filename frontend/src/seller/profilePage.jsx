@@ -97,7 +97,7 @@ function SellerProfilePage() {
     if (!editMode) {
         return (
             <div className = "sellerProfilePage">
-                <NavBar />
+                <NavBar user_type = {"seller"}/>
                 {infoContainer}
             </div>
         );
@@ -105,7 +105,7 @@ function SellerProfilePage() {
         console.log("Switch SUccessful");
         return (
             <div className = "sellerProfilePage">
-                <NavBar />
+                <NavBar user_type = {"seller"}/>
                 {editInfoContainer}
             </div>
         );

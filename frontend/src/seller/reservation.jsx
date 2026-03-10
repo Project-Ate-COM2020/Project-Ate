@@ -16,7 +16,7 @@ function Reservation() {
     const navigate = useNavigate();
     return (
         <div>
-            <NavBar />
+            <NavBar user_type = {"seller"} />
             <Bundle includedAttributes={["buyer", "pickup time", "mark collected button", "collection code"]} backfunction={() => navigate("/seller/reservations")}/>
         </div>
     )

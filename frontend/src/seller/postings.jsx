@@ -9,13 +9,15 @@ and endpoints refactored, the endpoints and maybe the parsing for this file will
 /* --- Import Statements --- */
 import NavBar from "../reusableComponents/navBar.jsx";
 import Postings from "../bundlesComponents/postings.jsx";
+import { useNavigate } from "react-router-dom";
 
 /* --- Main Page Function --- */
 function Reservation() {
+    const navigate = useNavigate();
     return (
         <div>
-            <NavBar />
-            <Postings includedAttributes={["stock", "more info button"]} numberOfBundles={18}/>
+            <NavBar user_type = {"seller"}/>
+            <Postings includedAttributes={["stock", "more info button"]} numberOfBundles={18} moreInfoButtonFunction={() => navigate("/seller/posting")}/>
         </div>
     )
 }

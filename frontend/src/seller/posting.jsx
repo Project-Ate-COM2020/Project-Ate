@@ -16,8 +16,8 @@ function Reservation() {
     const navigate = useNavigate();
     return (
         <div>
-            <NavBar />
-            <Posting includedAttributes={["stock", "pickup time", "location", "price"]} backFunction={() => navigate("/seller/reservations")} />
+            <NavBar user_type = {"seller"}/>
+            <Posting includedAttributes={["stock", "pickup time", "location", "price"]} backFunction={() => navigate("/seller/postings")} />
         </div>
     )
 }

@@ -18,7 +18,7 @@ function PostCreation() {
     return (
         
         <div>
-        <NavBar />
+        <NavBar user_type = {"seller"}/>
             <div className = "bundleForecast-panel">
             <p>Time Window</p>
             <select value={time_window}>

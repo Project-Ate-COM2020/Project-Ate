@@ -22,7 +22,7 @@ const avgRevenuePerListing = 17.16;
 function Analytics() {
     return (
         <div>
-        <NavBar />
+        <NavBar user_type = {"seller"}/>
         <div className="analytics-panel">
             <h2>All time Analytics</h2>
 

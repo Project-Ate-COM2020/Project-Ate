@@ -18,6 +18,7 @@ each of these will be split up into helper functions for readability and maintai
 and endpoints refactored, the endpoints and maybe the parsing for this file will also need to change */
 
 /* --- Import Statements --- */
+import { useNavigate } from "react-router-dom";
 import NavBar from "../reusableComponents/navBar.jsx";
 import Postings from "../bundlesComponents/postings.jsx";
 import ReservedBundles from "../bundlesComponents/bundles.jsx";
@@ -60,12 +61,13 @@ function SellerInfo() {
 }
 
 function Analytics() {
+    const navigate = useNavigate();
     return (
         <div className = "analytics">
 
             <h4>Analytics</h4>
 
-            <button className = "button">View All Analytics</button>
+            <button className = "button" onClick={() => navigate("/seller/analytics")}>View All Analytics</button>
 
             <div className = "infoContainer">
 
@@ -87,21 +89,23 @@ function Analytics() {
 }
 
 function BundlePostings() {
+    const navigate = useNavigate();
     return (
         <div className = "dashboardPanel bundlePostings">
             <h4>Bundle Postings</h4>
-            <button className = "button">Create New Posting</button>
-            <button className = "button">View All Postings</button>
-            <Postings includedAttributes = {["price", "stock", "more info button"]} numberOfBundles={3}/>
+            <button className = "button" onClick={() => navigate("/seller/createPosting")}>Create New Posting</button>
+            <button className = "button" onClick={() => navigate("/seller/postings")}>View All Postings</button>
+            <Postings includedAttributes = {["price", "stock", "more info button"]} numberOfBundles={3} moreInfoButtonFunction={() => navigate("/seller/posting")}/>
         </div>
     )
 }
 
 function BundleReservations() {
+    const navigate = useNavigate();
     return (
         <div className = "dashboardPanel bundleReservations">
             <h4>Customer Reservations</h4>
-            <button className = "button">View All Reservations</button>
+            <button className = "button" onClick={() => navigate("/seller/reservations")}>View All Reservations</button>
             <ReservedBundles includedAttributes = {["buyer", "pickup time", "more info button"]} />
         </div>
     )
@@ -120,7 +124,7 @@ function BundlePostCreation() {
 function SellerHomePage() {
     return (
         <div className = "sellerHomePage">
-            <NavBar />
+            <NavBar user_type = "seller"/>
             <div className = "topSellerInfo">
                 <SellerInfo />
             </div>
