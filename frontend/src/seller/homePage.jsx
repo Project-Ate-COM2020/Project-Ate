@@ -65,6 +65,8 @@ function Analytics() {
 
             <h4>Analytics</h4>
 
+            <button className = "button">View All Analytics</button>
+
             <div className = "infoContainer">
 
                 <div className = "info">
@@ -85,8 +87,6 @@ function Analytics() {
 }
 
 function BundlePostings() {
-
-
     return (
         <div className = "dashboardPanel bundlePostings">
             <h4>Bundle Postings</h4>
@@ -101,7 +101,8 @@ function BundleReservations() {
     return (
         <div className = "dashboardPanel bundleReservations">
             <h4>Customer Reservations</h4>
-            <ReservedBundles includedAttributes = {["buyer", "more info button"]} />
+            <button className = "button">View All Reservations</button>
+            <ReservedBundles includedAttributes = {["buyer", "pickup time", "more info button"]} />
         </div>
     )
 }
