@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework.test import force_authenticate
 from django.urls import reverse
 
-from .models import Seller, Consumer, Reservation, Bundle
+from .models import Seller, Consumer, Reservation, BundlePosting
 from .views import (
     CreateBundleView,
     CreateSellerView,

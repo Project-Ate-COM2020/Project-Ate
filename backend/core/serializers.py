@@ -1,4 +1,4 @@
-from backend.core.models import (
+from .models import (
     BundlePosting,
     Reservation,
     Consumer,
@@ -71,3 +71,15 @@ class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
         self.Meta.model.is_active = True
 
         return super().create(validated_data)
+
+
+class BundlePostingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BundlePosting
+        fields = "__all__"
+
+
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = "__all__"
