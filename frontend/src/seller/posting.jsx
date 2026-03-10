@@ -15,7 +15,7 @@ function Reservation() {
     return (
         <div>
             <NavBar />
-            <Posting />
+            <Posting includedAttributes={["stock", "pickup time", "location", "price"]}/>
         </div>
     )
 }

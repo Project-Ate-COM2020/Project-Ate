@@ -1,4 +1,3 @@
-/* Bundle Display Container */
 .bundleDisplay {
   background: rgba(255, 255, 255, 0.06);
   border: 0.0625rem solid rgba(255, 255, 255, 0.10);
@@ -6,21 +5,18 @@
   padding: 1.5rem;
   backdrop-filter: blur(0.625rem);
   box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
-  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+  max-width: 65rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.bundleDisplay:hover {
-  transform: translateY(-0.125rem);
-  border-color: rgba(35, 240, 199, 0.25);
-  background: rgba(255, 255, 255, 0.075);
-}
-
-/* Bundle Title Section */
 .bundleTitle {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   margin-bottom: 0.75rem;
+  justify-content: center;
 }
 
 .bundleTitle h3 {
@@ -28,18 +24,16 @@
   font-size: 1.15rem;
   letter-spacing: 0.0125rem;
   display: flex;
-  align-items: center;
+  align-self: center;
   gap: 0.625rem;
 }
 
-/* Divider */
 .bundleDisplay hr {
   border: none;
   border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
   margin: 0.75rem 0;
 }
 
-/* Bundle Body */
 .bundleBody {
   display: flex;
   flex-direction: column;
@@ -48,13 +42,12 @@
 
 .bundleBody img {
   width: 100%;
-  height: 15rem;
+  height: 25rem;
   object-fit: cover;
   border-radius: 0.75rem;
   background: rgba(0, 0, 0, 0.1);
 }
 
-/* Info Container */
 .infoContainer {
   display: flex;
   flex-direction: column;
@@ -71,10 +64,9 @@
 
 .infoContainer p:first-child {
   border-top: none;
-  padding-top: 0;
+  padding-top: 0.125rem;
 }
 
-/* Buttons */
 .infoContainer button {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
@@ -84,7 +76,6 @@
   color: inherit;
   cursor: pointer;
   font-size: 0.95rem;
-  transition: background 140ms ease, border-color 140ms ease;
 }
 
 .infoContainer button:hover {
@@ -92,10 +83,3 @@
   border-color: rgba(35, 240, 199, 0.3);
 }
 
-.infoContainer button:first-of-type {
-  margin-top: 0.5rem;
-}
-
-.infoContainer button + button {
-  margin-top: 0.5rem;
-}

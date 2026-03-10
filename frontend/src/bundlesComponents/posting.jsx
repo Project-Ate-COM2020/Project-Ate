@@ -48,7 +48,6 @@ function OptionalContainer( { includedAttributes } ) {
         if (i == "seller") {sellerDisplayed = true;}
         if (i == "price") {priceDisplayed = true;}
         if (i == "location") {locationDisplayed = true;}
-        if (i == "mark collected button") {markCollectedButtonDisplayed = true;}
         if (i == "reserve bundle button") {reserveBundleButtonDisplayed = true;}
         if (i == "stock") {stockDisplayed = true;}
     }

@@ -1,14 +1,3 @@
-.bundlesContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 1.125rem;
-  max-width: 65rem;
-}
-
 .postingsContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -30,6 +19,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
 }
 
 .bundleContainer:hover {

@@ -15,7 +15,7 @@ function Reservation() {
     return (
         <div>
             <NavBar />
-            <Bundle />
+            <Bundle includedAttributes={["buyer", "pickup time", "mark collected button", "collection code"]}/>
         </div>
     )
 }
