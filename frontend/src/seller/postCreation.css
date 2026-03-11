@@ -30,27 +30,73 @@
   width: 100%;
   padding: 0.75rem 0.9rem;
   border-radius: 0.75rem;
-  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
+  border: 0.125rem solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.6);
   color: inherit;
   font-size: 0.95rem;
   outline: none;
   box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.bundleForecast-panel select:focus,
+.bundleForecast-panel input[type="number"]:focus {
+  border-color: rgba(35, 240, 199, 0.8);
 }
 
 .bundleForecast-panel button {
   margin-top: 0.5rem;
   align-self: center;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1.5rem;
   min-width: 10rem;
   border-radius: 0.75rem;
-  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
+  border: 0.125rem solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.6);
+  color: inherit;
   font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
   justify-content: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .bundleForecast-panel button:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(35, 240, 199, 0.3);
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(35, 240, 199, 0.8);
+}
+
+.bundleForecast-panel button.btn-primary {
+  background: rgba(35, 240, 199, 0.85);
+  border-color: rgba(35, 240, 199, 1);
+  color: #0d2e29;
+  font-size: 1rem;
+  min-width: 14rem;
+  padding: 0.85rem 2rem;
+}
+
+.bundleForecast-panel button.btn-primary:hover {
+  background: rgba(35, 240, 199, 1);
+  border-color: rgba(35, 240, 199, 1);
+}
+
+.allergen-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.75rem 6rem;
+  justify-content: center;
+}
+
+.allergen-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.allergen-checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: rgba(35, 240, 199, 0.8);
 }

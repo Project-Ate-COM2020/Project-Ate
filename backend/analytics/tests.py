@@ -42,7 +42,6 @@ class AnalyticsViewTests(APITestCase):
             seller=seller,
             category=category,
             contents="mixed",
-            allergens="none",
             quantity=5,
             quantity_remaining=3,
             price=price,
