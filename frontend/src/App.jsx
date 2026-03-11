@@ -5,29 +5,23 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // import the files for each URL endpoint
 import Orders from "./orders/orders.jsx";
-import Orders from "./orders/orders.jsx";
-import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
-import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
-import LoginPage from "./authorisationPages/loginPage.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import GamePage from "./gamePages/game.jsx";
 import MarketplacePage from "./marketplacePages/marketplace";
-import PageNotFound from "./reusableComponents/pageNotFound";
+import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import UserHomePage from "./homePage/userHomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
-import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
-import Orders from "./orders/orders.jsx"
 
 /* --- Auth Imports --- */
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
 import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
 
-import SellerLoginPage from "./authorisationPages/sellerLoginPage.jsx";
+// import SellerLoginPage from "./authorisationPages/sellerLoginPage.jsx";
 // import BuyerLoginPage from "./authorisationPages/buyerLoginPage.jsx"
 
 /* --- Seller Imports --- */
 import SellerProfilePage from "./seller/profilePage.jsx";
-import SellerHomePage from "./seller/homePage";
+import SellerHomePage from "./seller/homePage.jsx";
 import CreatePostPage from "./seller/postCreation.jsx";
 import Reservation from "./seller/reservation.jsx";
 import Reservations from "./seller/reservations.jsx";
@@ -39,9 +33,6 @@ import Analytics from "./seller/analytics.jsx";
 // import BuyerProfilePage from "./buyer/profilePage.jsx";
 // import BuyerHomePage from "./buyer/homePage";
 import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
-import SellerHomePage from "./seller/homepage/main.jsx";
-import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
-import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
 import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 
@@ -86,7 +77,7 @@ function App() {
         <Route path="seller/analytics" element = {<Analytics />} />
 
         {/* Authorisation Paths */}
-        <Route path="/seller/login" element={<SellerLoginPage />} />
+        {/* <Route path="/seller/login" element={<SellerLoginPage />} /> */}
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
         <Route path="/report-issue" element={<IssueReportingPage />} />
