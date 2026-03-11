@@ -75,13 +75,13 @@ function App() {
         <Route path="seller/posting" element = {<Posting />} />
         <Route path="seller/postings" element = {<Postings />} />
         <Route path="seller/analytics" element = {<Analytics />} />
+        <Route path="/seller/issues" element={<SellerIssuesPage />} />
 
         {/* Authorisation Paths */}
         {/* <Route path="/seller/login" element={<SellerLoginPage />} /> */}
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
         <Route path="/report-issue" element={<IssueReportingPage />} />
-        <Route path="/seller/issues" element={<SellerIssuesPage />} />
       </Routes>
     </Router>
   );

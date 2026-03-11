@@ -120,7 +120,7 @@ export default function SellerIssuesPage() {
 
   return (
     <div className="seller-issues-page">
-      <NavBar />
+      <NavBar user_type={"seller"}/>
       <div className="seller-issues-container">
         <section className="seller-issues-list-panel">
           <h1 className="seller-issues-title">Customer Queries</h1>
