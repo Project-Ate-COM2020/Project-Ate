@@ -10,4 +10,5 @@ urlpatterns = [
     path("forecast/", include("forecasts.urls")),
     path("analytics/", include("analytics.urls")),
     path("maintainer/", include("maintainer.urls")),
+    path("auth/", include("authentication.urls")),
 ]

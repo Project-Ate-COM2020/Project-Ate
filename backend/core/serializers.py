@@ -1,3 +1,6 @@
+from django.contrib.auth.hashers import make_password
+from rest_framework.status import HTTP_404_NOT_FOUND
+
 from .models import (
     Allergen,
     BundleAllergens,
@@ -16,6 +19,39 @@ from .models import (
 from argon2 import PasswordHasher
 
 from rest_framework import serializers
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = "__all__"
+
+
+class RegisterUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = "__all__"
+
+    def create(self, validated_data):
+        password = self.validated_data["password"]
+        groups = validated_data.pop("groups", [])
+        user_permissions = validated_data.pop("user_permissions", [])
+
+        user = self.Meta.model(**validated_data)
+
+        user.set_password(password)
+
+        user.save()
+
+        if groups:
+            user.groups.set(groups)
+
+        if user_permissions:
+            user.user_permissions.set(user_permissions)
+
+        return user
 
 
 class BadgeSerializer(serializers.ModelSerializer):
@@ -48,26 +84,30 @@ class SellerSerializer(serializers.ModelSerializer):
         fields = ["name", "location", "opening_hours", "contact_stub"]
 
 
-class SellerWithPasswordSerializer(serializers.ModelSerializer):
+class RegisterSellerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Seller
         fields = [
             "seller_id",
             "name",
-            "password",
             "location",
             "opening_hours",
             "contact_stub",
+            "user_id",
         ]
 
     def create(self, validated_data):
-        ph = PasswordHasher()
+        user = validated_data.pop("user_id")
 
-        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+        user_model = get_user_model()
 
-        self.Meta.model.is_active = True
+        user = user_model.objects.get(pk=user)
 
-        return super().create(validated_data)
+        seller = Seller.objects.create(user=user, **validated_data)
+
+        return seller
 
 
 class ConsumerSerializer(serializers.ModelSerializer):

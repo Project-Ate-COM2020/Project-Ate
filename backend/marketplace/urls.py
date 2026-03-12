@@ -155,36 +155,4 @@ urlpatterns = [
         views.ReservationView.as_view(),
         name=views.ReservationView.name,
     ),
-    # Seller Authentication
-    path(
-        "seller/auth/token",
-        SellerTokenObtainPairView.as_view(),
-        name="seller-token-obtain-pair",
-    ),
-    path(
-        "seller/auth/token/refresh",
-        TokenRefreshView.as_view(),
-        name="seller-token-refresh",
-    ),
-    path(
-        "seller/auth/token/verify/",
-        TokenVerifyView.as_view(),
-        name="seller-token-verify",
-    ),
-    # Consumer Authentication
-    path(
-        "consumer/auth/token",
-        ConsumerTokenObtainPairView.as_view(),
-        name="consumer-token-obtain-pair",
-    ),
-    path(
-        "consumer/auth/token/refresh",
-        TokenRefreshView.as_view(),
-        name="consumer-token-refresh",
-    ),
-    path(
-        "consumer/auth/token/verify/",
-        TokenVerifyView.as_view(),
-        name="consumer-token-verify",
-    ),
 ]
