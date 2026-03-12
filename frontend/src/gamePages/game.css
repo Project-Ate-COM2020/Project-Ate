@@ -171,6 +171,34 @@
   transform: scale(1.1);
 }
 
+.badge-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 160px;
+  text-align: center;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.badge-wrapper:hover .badge-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
 /* ── Recent list ────────────────────────────────────────────────────────── */
 
 /* recent list  */

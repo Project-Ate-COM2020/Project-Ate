@@ -17,16 +17,40 @@ const MOCK_SUMMARY = {
   badges: ["Explorer", "Eco Starter"],
 };
 
-const BADGE_ICONS = {
-  "Explorer": "/badges/explorer.png",
-  "Discoverer": "/badges/discoverer.png",
-  "Adventurer": "/badges/adventurer.png",
-  "Master": "/badges/master.png",
+const BADGES = {
+  "Explorer": {
+    icon: "/badges/explorer.png",
+    description: "Rescued 2 different food categories."
+  },
+  "Discoverer": {
+    icon: "/badges/discoverer.png",
+    description: "Rescued 3 different food categories."
+  },
+  "Adventurer": {
+    icon: "/badges/adventurer.png",
+    description: "Rescued 4 different food categories."
+  },
+  "Master": {
+    icon: "/badges/master.png",
+    description: "Rescued all 6 food categories."
+  },
 
-  "Eco Starter": "/badges/eco_starter.png",
-  "Eco Friend": "/badges/eco_friend.png",
-  "Climate Hero": "/badges/climate_hero.png",
-  "Planet Saver": "/badges/planet_saver.png"
+  "Eco Starter": {
+    icon: "/badges/eco_starter.png",
+    description: "Saved 100kg of CO₂ by rescuing food."
+  },
+  "Eco Friend": {
+    icon: "/badges/eco_friend.png",
+    description: "Saved 500kg of CO₂ by rescuing food."
+  },
+  "Climate Hero": {
+    icon: "/badges/climate_hero.png",
+    description: "Saved 1,000kg of CO₂ by rescuing food."
+  },
+  "Planet Saver": {
+    icon: "/badges/planet_saver.png",
+    description: "Saved 10,000kg of CO₂ by rescuing food."
+  }
 };
 
 export default function Game() {
@@ -167,12 +191,17 @@ export default function Game() {
               <ul className="badge-list">
                 {summary.badges.map((badge) => (
                   <li className="badge-item" key={badge}>
-                    {/* TODO: swap this placeholder div for an <img> once badge assets are ready */}
-                    <img
-                      src={BADGE_ICONS[badge] || "/badges/default.png"}
-                      alt={badge}
-                      className="badge-img"
-                    />
+                    <div className="badge-wrapper">
+                      <img
+                        src={BADGES[badge]?.icon || "/badges/default.png"}
+                        alt={badge}
+                        className="badge-img"
+                      />
+
+                      <div className="badge-tooltip">
+                        {BADGES[badge]?.description || "Badge description"}
+                      </div>
+                    </div>
 
                     <span className="badge-name">{badge}</span>
                   </li>
