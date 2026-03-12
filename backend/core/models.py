@@ -270,6 +270,7 @@ class IssueReport(models.Model):
     class Meta:
         db_table = "issue_report"
 
+
 class Maintainer(models.Model):
     maintainer_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -278,6 +279,7 @@ class Maintainer(models.Model):
 
     class Meta:
         db_table = "maintainer"
+
 
 class ForecastInput(models.Model):
     record_id = models.AutoField(primary_key=True)

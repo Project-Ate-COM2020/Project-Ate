@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "marketplace",
     "game",
     "issue_reporting",
+    "maintainer",
     
     
     # For specific API development
