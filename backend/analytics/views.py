@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,6 +20,8 @@ from core.models import BundlePosting
 
 
 class TotalListingsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
@@ -32,6 +35,8 @@ class TotalListingsView(APIView):
 
 
 class TotalRevenueView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
@@ -45,13 +50,15 @@ class TotalRevenueView(APIView):
 
 
 class TotalReservationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             response = get_total_reservations_by_seller(seller_id)
             return Response({"total_reservations": response})
@@ -60,13 +67,15 @@ class TotalReservationsView(APIView):
 
 
 class FoodWasteReductionView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             response = get_reduction_in_food_waste_by_seller(seller_id)
             return Response({"food_waste_reduction_percentage": response})
@@ -75,13 +84,15 @@ class FoodWasteReductionView(APIView):
 
 
 class TotalNoShowsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             response = get_total_no_shows_by_seller(seller_id)
             return Response({"total_no_shows": response})
@@ -90,13 +101,15 @@ class TotalNoShowsView(APIView):
 
 
 class GetCollectedReservationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             response = get_collected_reservations_by_seller(seller_id)
             return Response(response)
@@ -106,14 +119,17 @@ class GetCollectedReservationsView(APIView):
 
 # -------------- sprint 2 views ---------------
 
+
 class SellThroughBreakdownView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(get_sell_through_breakdown(seller_id))
         except Exception as e:
@@ -121,13 +137,15 @@ class SellThroughBreakdownView(APIView):
 
 
 class WasteProxyView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(get_waste_proxy(seller_id))
         except Exception as e:
@@ -135,13 +153,15 @@ class WasteProxyView(APIView):
 
 
 class PricingEffectivenessView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(get_pricing_effectiveness(seller_id))
         except Exception as e:
@@ -149,13 +169,15 @@ class PricingEffectivenessView(APIView):
 
 
 class PopularCategoriesView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(get_popular_categories(seller_id))
         except Exception as e:
@@ -163,13 +185,15 @@ class PopularCategoriesView(APIView):
 
 
 class BestPickupWindowsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             seller_id = request.query_params.get("seller_id")
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(get_best_pickup_windows(seller_id))
         except Exception as e:
