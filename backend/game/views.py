@@ -48,6 +48,7 @@ class GameSummaryView(APIView):
             "total_rescued_bundles": 12,
             "estimated_co2e_saved_kg": 28.5,
             "badges": ["Explorer", "Discoverer", "Eco Starter"],
+            "unique_categories_rescued": 3,
         }
         return Response(data)
 

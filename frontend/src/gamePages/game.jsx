@@ -153,20 +153,43 @@ const { data: summary, loading } = USE_MOCK_DATA
             <ul className="badge-list">
               {Object.keys(BADGES).map((badge) => {
                 const hasBadge = summary.badges.includes(badge); // check if user has it
+
+                // Define badge requirements
+                const badgeRequirements = {
+                  "Explorer": { type: "categories", required: 2 },
+                  "Discoverer": { type: "categories", required: 3 },
+                  "Adventurer": { type: "categories", required: 4 },
+                  "Master": { type: "categories", required: 6 },
+                  "Eco Starter": { type: "co2", required: 100 },
+                  "Eco Friend": { type: "co2", required: 500 },
+                  "Climate Hero": { type: "co2", required: 1000 },
+                  "Planet Saver": { type: "co2", required: 10000 },
+                };
+
+                // Compute current progress from summary
+                let current = 0;
+                const req = badgeRequirements[badge];
+                if (req.type === "categories") {
+                  current = summary.unique_categories_rescued; // how many unique badges earned so far
+                } else if (req.type === "co2") {
+                  current = (summary.estimated_co2e_saved_kg || 0);
+                }
+
+                const tooltipText = hasBadge
+                  ? BADGES[badge].description
+                  : req.type === "categories"
+                    ? `${current}/${req.required} unique categories.`
+                    : `${current}/${req.required}kg of CO2.`;
+
                 return (
-                  <li
-                    className="badge-item"
-                    key={badge}
-                  >
+                  <li className="badge-item" key={badge}>
                     <div className="badge-wrapper">
                       <img
                         src={BADGES[badge].icon}
                         alt={badge}
                         className={`badge-img ${hasBadge ? "" : "badge-greyed"}`}
                       />
-                      <div className="badge-tooltip">
-                        {BADGES[badge].description}
-                      </div>
+                      <div className="badge-tooltip">{tooltipText}</div>
                     </div>
 
                     <span className="badge-name">{badge}</span>
