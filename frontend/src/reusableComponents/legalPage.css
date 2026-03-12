@@ -1,0 +1,146 @@
+.legal-page {
+    width: 100%;
+    min-height: 100vh;
+    background: #f6f8f6;
+    padding: 48px 20px 64px;
+    box-sizing: border-box;
+  }
+  
+  .legal-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #dfe8df;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(20, 40, 20, 0.06);
+    padding: 40px 36px;
+  }
+  
+  .legal-title {
+    margin: 0 0 14px;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #2f7d4a;
+  }
+  
+  .legal-intro {
+    margin: 0 0 32px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4a5560;
+  }
+  
+  .legal-section {
+    margin-bottom: 32px;
+  }
+  
+  .legal-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .legal-section h2 {
+    margin: 0 0 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #1f2937;
+  }
+  
+  .legal-section p {
+    margin: 0 0 14px;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #475467;
+  }
+  
+  .legal-section p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .legal-section ul {
+    margin: 0;
+    padding-left: 22px;
+    color: #475467;
+  }
+  
+  .legal-section li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .legal-section li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .legal-highlight {
+    background: #f3faf4;
+    border: 1px solid #d7ead9;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-top: 14px;
+  }
+  
+  .legal-highlight p {
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .legal-page {
+      padding: 28px 14px 40px;
+    }
+  
+    .legal-container {
+      padding: 26px 20px;
+      border-radius: 16px;
+    }
+  
+    .legal-title {
+      font-size: 1.8rem;
+    }
+  
+    .legal-section h2 {
+      font-size: 1.15rem;
+    }
+  
+    .legal-intro,
+    .legal-section p,
+    .legal-section li {
+      font-size: 0.96rem;
+    }
+  }
+
+  .legal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+  
+    width: 34px;
+    height: 34px;
+  
+    border: none;
+    border-radius: 8px;
+  
+    background: #eef5ef;
+    color: #2f7d4a;
+  
+    font-size: 1.4rem;
+    font-weight: bold;
+  
+    cursor: pointer;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    transition: background 0.15s ease;
+  }
+  
+  .legal-close:hover {
+    background: #dfeee2;
+  }
+  
+  .legal-container {
+    position: relative;
+  }
