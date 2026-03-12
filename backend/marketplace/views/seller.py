@@ -10,7 +10,7 @@ from ..models import (
     Seller,
     SellerSerializer,
     BundlePostingSerializer,
-    SellerWithPasswordSerializer,
+    RegisterSellerSerializer,
 )
 from ..models import BundlePosting
 
@@ -18,7 +18,7 @@ from ..models import BundlePosting
 class CreateSellerView(CreateAPIView):
     name = "seller-create"
     queryset = Seller
-    serializer_class = SellerWithPasswordSerializer
+    serializer_class = RegisterSellerSerializer
 
 
 class SellerView(RetrieveUpdateDestroyAPIView):

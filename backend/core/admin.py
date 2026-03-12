@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import ForecastInput, BundlePosting, Seller, Consumer, Reservation, IssueReport, ForecastOutput
+from django.contrib.auth.admin import UserAdmin
+from .models import (
+    ForecastInput,
+    BundlePosting,
+    Seller,
+    Consumer,
+    Reservation,
+    IssueReport,
+    ForecastOutput,
+)
 
 # Register your models here.
 admin.site.register(ForecastInput)
