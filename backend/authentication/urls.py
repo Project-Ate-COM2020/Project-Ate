@@ -18,7 +18,7 @@ urlpatterns = [
     path(
         "refresh",
         TokenRefreshView.as_view(),
-        name="token_refresh",
+        name="token-refresh",
     ),
     path(
         "verify",

@@ -8,11 +8,14 @@ from rest_framework.response import Response
 
 from ..models import ReservationSerializer, Reservation
 
+from authentication.permissions import IsConsumer
+
 
 class CreateReservationView(CreateAPIView):
     name = "reservations-create"
     serializer_class = ReservationSerializer
     queryset = Reservation
+    permission_classes = [IsConsumer]
 
 
 class ReservationView(RetrieveUpdateDestroyAPIView):
