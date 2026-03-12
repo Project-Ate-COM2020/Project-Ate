@@ -14,7 +14,7 @@ const MOCK_SUMMARY = {
   estimated_co2e_saved_kg: 28.5,
   // badges comes from GET /game/api/game/summary/ — array of badge name strings
   // TODO: swap these for real badge objects once the badge images/assets are decided
-  badges: ["First Rescue", "Eco Warrior"],
+  badges: ["Explorer", "Eco Starter"],
 };
 
 const BADGE_ICONS = {
