@@ -37,11 +37,19 @@ import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
 import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
 import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 
+/* --- Webpage Imports --- */
+
+import CookiesConsent from "./cookiePopup/cookiesConsent";
+import TermsAndConditions from "./cookiePopup/TermsAndConditions";
+import CookiePolicy from "./cookiePopup/CookiePolicy";
 
 // simple function defining the element to be returned based on the URL
 function App() {
   return (
     <Router>
+      
+      <CookiesConsent />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -83,6 +91,9 @@ function App() {
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
         <Route path="/report-issue" element={<IssueReportingPage />} />
+
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
       </Routes>
     </Router>
   );
