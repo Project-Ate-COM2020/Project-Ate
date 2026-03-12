@@ -19,6 +19,7 @@ class CreateSellerView(CreateAPIView):
     name = "seller-create"
     queryset = Seller
     serializer_class = RegisterSellerSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class SellerView(RetrieveUpdateDestroyAPIView):
@@ -37,12 +38,12 @@ class SellerBundlesView(APIView):
         try:
             seller = Seller.objects.get(pk=seller_id)
 
-            bundle = Bundle.objects.get(seller=seller)
+            bundle = BundlePosting.objects.get(seller=seller)
 
-            serializer = BundleSerializer(bundle)
+            serializer = BundlePostingSerializer(bundle)
 
             return Response(serializer.data)
-        except Bundle.DoesNotExist:
+        except BundlePosting.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 

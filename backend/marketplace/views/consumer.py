@@ -13,6 +13,7 @@ class CreateConsumerView(CreateAPIView):
     name = "consumer-create"
     queryset = Consumer
     serializer_class = ConsumerWithPasswordSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class ConsumerView(RetrieveUpdateDestroyAPIView):
