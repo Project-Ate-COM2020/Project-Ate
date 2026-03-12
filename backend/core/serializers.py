@@ -8,6 +8,7 @@ from .models import (
     IssueReport,
     ForecastInput,
     ForecastOutput,
+    Maintainer
 )
 
 from argon2 import PasswordHasher
@@ -26,6 +27,15 @@ class BadgeMappingSerializer(serializers.ModelSerializer):
         model = BadgeMapping
         fields = "__all__"
 
+class MaintainerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintainer
+        fields = ["name", "email"]
+
+class MaintainerWithPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintainer
+        fields = ["maintainer_id", "name", "email", "password"]
 
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
