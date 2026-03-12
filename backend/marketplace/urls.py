@@ -1,10 +1,6 @@
 from django.urls import path
 from . import views
 
-from .consumer_token import ConsumerTokenObtainPairView
-from .seller_token import SellerTokenObtainPairView
-from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
-
 urlpatterns = [
     #
     #
