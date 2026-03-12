@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
+import { useMemo } from "react";
 
 
 /* --- TO USE REAL DATA: --- */
 import { useGetData } from "../reusableComponents/api.jsx"
 
 // toggle to false when endpoints are ready
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // local mock data
 const MOCK_SUMMARY = {
@@ -58,63 +58,17 @@ const BADGES = {
 };
 
 export default function Game() {
-  const [summary, setSummary] = useState(null);
-  const [error, setError] = useState(null);
+
+// memoize queryParams so useEffect doesn't trigger repeatedly
+const queryParams = useMemo(() => ({}), []); // empty object, stable reference
+
+const { data: summary, loading } = USE_MOCK_DATA
+  ? { data: MOCK_SUMMARY, loading: false }
+  : useGetData("game/api/game/summary/", queryParams, false);
 
   /* --- USING REAL DATA --- */
 
-  const [badges, loadingBadges] = useGetData("api/game/badges", "", false);
-
-  const load = useCallback(async () => {
-    setError(null);
-
-    try {
-      if (USE_MOCK_DATA) {
-        setSummary(MOCK_SUMMARY);
-        return;
-      }
-
-      // If you ever get 401, check this in console after logging in:
-      // console.log("access token:", localStorage.getItem("access"));
-
-      const summaryResponse = await fetchGameSummary();
-      setSummary(summaryResponse);
-    } catch (e) {
-      // Make errors readable (fetch() errors, thrown API errors, etc.)
-      const message =
-        e && typeof e === "object" && "message" in e
-          ? e.message
-          : "Failed to load game data";
-
-      setError(new Error(message));
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (error) {
-    return (
-      <div className="game-page">
-        <NavBar />
-        <div className="game-state">
-          <div className="game-error">
-            <h2 className="game-title">Rescue Streaks</h2>
-            <p>{error.message}</p>
-            <button className="game-button" type="button" onClick={load}>
-              Try again
-            </button>
-            {USE_MOCK_DATA && (
-              <p className="game-subtitle">(Dev mode: mock data)</p>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!summary) {
+  if (loading || !summary) {
     return (
       <div className="game-page">
         <NavBar />
