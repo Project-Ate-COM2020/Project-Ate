@@ -3,9 +3,17 @@ from . import views
 
 from .consumer_token import ConsumerTokenObtainPairView
 from .seller_token import SellerTokenObtainPairView
+from .views.bundles import AllergenListView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
+
+    # get all allergens (UK Food Information Regulations 2014 - 14 allergens)
+    # GET ... /marketplace/allergens/
+    path("allergens/", 
+        AllergenListView.as_view(), 
+        name="allergen-list"
+    ),
     #
     #
     #   GLOBAL OPERATIONS ON RETRIEVAL OF BUNDLES

@@ -40,7 +40,6 @@ class CreateBundleViewsTests(APITestCase):
             "seller": int(self.seller_id),
             "category": "food",
             "contents": "A bagel",
-            "allergens": "lots",
             "quantity": 8,
             "price": 55,
             "pickup_window": "00:00-24:00",
@@ -72,7 +71,6 @@ class CreateBundleViewsTests(APITestCase):
         self.assertEqual(bundle.seller.id, self.seller_id)
         self.assertEqual(bundle.category, "food")
         self.assertEqual(bundle.contents, "A bagel")
-        self.assertEqual(bundle.allergens, "lots")
         self.assertEqual(bundle.quantity, 8)
         self.assertEqual(bundle.pickup_window, "00:00-24:00")
         self.assertEqual(bundle.status, 7)
@@ -132,7 +130,6 @@ class CreateReservationViewsTests(APITestCase):
             "seller": int(self.seller_id),
             "category": "food",
             "contents": "A bagel",
-            "allergens": "lots",
             "quantity": 8,
             "price": 55,
             "pickup_window": "00:00-24:00",

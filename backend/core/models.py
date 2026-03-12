@@ -153,7 +153,6 @@ class BundlePosting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=255)
     contents = models.TextField(null=True, blank=True)
-    allergens = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
     quantity_remaining = models.IntegerField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
-from core.models import BundlePosting, Reservation, Seller
+from core.models import Allergen, BundleAllergens, BundlePosting, Reservation, Seller
 
 
 # Create your views here.
@@ -111,18 +111,17 @@ class SellerReservationsView(APIView):
 class AddNewListingView(APIView):
     def post(self, request):
         """Adds a new listing for a seller.
-        Expects seller_id, category, contents, allergens, quantity, price, pickup_window in the request body.
+        Expects seller_id, category, contents, allergen_ids, quantity, price, pickup_window in the request body.
+        allergen_ids is an optional list of allergen IDs (integers) from the /marketplace/allergens/ endpoint.
         """
         data = request.data
-        print(data)
         seller_id = data.get("seller_id")
         category = data.get("category")
         contents = data.get("contents")
-        allergens = data.get("allergens")
+        allergen_ids = data.get("allergen_ids", [])
         quantity = data.get("quantity")
         price = data.get("price")
         pickup_window = data.get("pickup_window")
-        print(seller_id, category, contents, allergens, price, pickup_window)
         if not seller_id or not category or not contents or not quantity or not price or not pickup_window:
             return Response(
                 {"error": "seller_id, category, contents, quantity, price, and pickup_window are required in the request body"},
@@ -134,12 +133,16 @@ class AddNewListingView(APIView):
                 seller=seller,
                 category=category,
                 contents=contents,
-                allergens=allergens,
                 quantity=quantity,
                 price=price,
                 pickup_window=pickup_window,
             )
-            # add new listing to the database
+            if allergen_ids:
+                allergens = Allergen.objects.filter(allergen_id__in=allergen_ids)
+                BundleAllergens.objects.bulk_create([
+                    BundleAllergens(bundle_id=new_listing, allergen_id=allergen)
+                    for allergen in allergens
+                ])
             return Response(
                 {"message": "New listing created", "posting_id": new_listing.posting_id},
                 status=status.HTTP_201_CREATED
