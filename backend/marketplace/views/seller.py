@@ -25,13 +25,13 @@ class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 # get all bundles by a seller
 class SellerBundlesView(APIView):
     name: str = "seller-bundles"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         try:
@@ -49,7 +49,7 @@ class SellerBundlesView(APIView):
 # get newest bundles
 class SellerBundleNewestView(APIView):
     name = "seller-bundles-newest"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         count = request.GET.get("count", 20)
@@ -58,7 +58,7 @@ class SellerBundleNewestView(APIView):
 # get oldest bundles
 class SellerBundleOldestView(APIView):
     name = "seller-bundles-oldest"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         count = request.GET.get("count", 20)
@@ -67,7 +67,7 @@ class SellerBundleOldestView(APIView):
 # get bundles made between date range bundles
 class SellerBundleBetweenView(APIView):
     name = "seller-bundles-between"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date_from = request.GET.get("from")
@@ -77,7 +77,7 @@ class SellerBundleBetweenView(APIView):
 # get bundles made between date range bundles
 class SellerBundleOlderView(APIView):
     name = "seller-bundles-older"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date = request.GET.get("date")
@@ -86,7 +86,7 @@ class SellerBundleOlderView(APIView):
 # get bundles newer than a specified date
 class SellerBundleNewerView(APIView):
     name = "seller-bundles-newer"
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, seller_id):
         date = request.GET.get("date")

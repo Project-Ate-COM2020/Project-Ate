@@ -1,0 +1,141 @@
+/* --- File Description --- */
+/* Also Following Will's Description to some extent, this file act more as a preview for the seller - allow some small actions to be made - and allow 
+the seller to breakout into dedicated pages such as analytics and bundleCreation. 
+
+Includes: 
+ - Seller info
+ - Analytics
+ - Seller Bundle Postings
+ - Seller Bundle Reservations
+ - Seller Bundle Post Creation + Forecasting
+ 
+each of these will be split up into helper functions for readability and maintainability
+*/
+
+/* --- Current Issues --- */
+
+/* The main issue is the current backend bug preventing from loggin in - this means when the backend is fixed 
+and endpoints refactored, the endpoints and maybe the parsing for this file will also need to change */
+
+/* --- Import Statements --- */
+import { useNavigate } from "react-router-dom";
+import NavBar from "../reusableComponents/navBar.jsx";
+import Postings from "../bundlesComponents/postings.jsx";
+import ReservedBundles from "../bundlesComponents/bundles.jsx";
+import "./homePage.css";
+
+/* --- Test Data Declarations --- */
+const sellerName = "Test Seller Name";
+const location = "Test Seller location";
+
+const numListings = 120;
+const amountRevenue = 2400;
+const percentageListingsCollected = 0.7;
+
+let time_window;
+let category;
+let weather;
+let day_of_week;
+let no_bundles;
+
+/* --- Helper Functions --- */
+
+function SellerInfo() {
+    return (
+        <div className = "sellerInfo">
+            <h4>Seller Info</h4>
+
+            <div className = "infoContainer">
+                
+                <div className = "info">
+                    <p>Name: {sellerName}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Location: {location}</p>
+                </div>
+
+            </div>
+        </div>
+    )
+}
+
+function Analytics() {
+    const navigate = useNavigate();
+    return (
+        <div className = "analytics">
+
+            <h4>Analytics</h4>
+
+            <button className = "button" onClick={() => navigate("/seller/analytics")}>View All Analytics</button>
+
+            <div className = "infoContainer">
+
+                <div className = "info">
+                    <p>Total Number of Listings: {numListings}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Total Revenue: {amountRevenue}</p>
+                </div>
+
+                <div className = "info">
+                    <p>Percentage of Listings Collected by Users: {percentageListingsCollected*100}%</p>
+                </div>
+
+            </div>
+        </div>
+    )
+}
+
+function BundlePostings() {
+    const navigate = useNavigate();
+    return (
+        <div className = "dashboardPanel bundlePostings">
+            <h4>Bundle Postings</h4>
+            <button className = "button" onClick={() => navigate("/seller/createPosting")}>Create New Posting</button>
+            <button className = "button" onClick={() => navigate("/seller/postings")}>View All Postings</button>
+            <Postings includedAttributes = {["price", "stock", "more info button"]} numberOfBundles={3} moreInfoButtonFunction={() => navigate("/seller/posting")}/>
+        </div>
+    )
+}
+
+function BundleReservations() {
+    const navigate = useNavigate();
+    return (
+        <div className = "dashboardPanel bundleReservations">
+            <h4>Customer Reservations</h4>
+            <button className = "button" onClick={() => navigate("/seller/reservations")}>View All Reservations</button>
+            <ReservedBundles includedAttributes = {["buyer", "pickup time", "more info button"]} />
+        </div>
+    )
+}
+
+function BundlePostCreation() {
+    return (
+        <div className = "BundlePostCreation">
+            
+        </div>
+    )
+}
+
+/* --- Main Page Function --- */
+
+function SellerHomePage() {
+    return (
+        <div className = "sellerHomePage">
+            <NavBar user_type = "seller"/>
+            <div className = "topSellerInfo">
+                <SellerInfo />
+            </div>
+            <div className = "dashboardGrid">
+                <Analytics />
+                <BundlePostings />
+                <BundleReservations />
+            </div>
+        </div>
+    )
+
+}
+
+export default SellerHomePage;

@@ -3,7 +3,7 @@
 /* Centres the lisitings pannel */
 .listings-page {
     width: 100%;
-    min-height: 100vh;           
+    min-height: 50vh;           
     display: flex;
     justify-content: center;   
     align-items: center;          
@@ -11,7 +11,7 @@
   
   /* Main pannel info */
   .listings-panel {
-    background: white;
+    background: #fffefe;
     border-radius: 16px;
     padding: 20px;
     width: 100%;
@@ -22,10 +22,12 @@
   
   /* formatts the info dropdown pannel */
   .info-panel {
-    border: 1px solid #ddd;
+    background: #328833;
+    border: 1px solid #238924;
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 12px;
+    color: #fffefe;
   }
   
   /* Changes the font size of info to be readable  */

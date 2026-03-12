@@ -1,4 +1,6 @@
 from .models import (
+    Allergen,
+    BundleAllergens,
     BundlePosting,
     Reservation,
     Consumer,
@@ -8,6 +10,7 @@ from .models import (
     IssueReport,
     ForecastInput,
     ForecastOutput,
+    Maintainer,
 )
 
 from argon2 import PasswordHasher
@@ -25,6 +28,18 @@ class BadgeMappingSerializer(serializers.ModelSerializer):
     class Meta:
         model = BadgeMapping
         fields = "__all__"
+
+
+class MaintainerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintainer
+        fields = ["name", "email"]
+
+
+class MaintainerWithPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintainer
+        fields = ["maintainer_id", "name", "email", "password"]
 
 
 class SellerSerializer(serializers.ModelSerializer):
@@ -76,10 +91,25 @@ class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class AllergenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergen
+        fields = ["allergen_id", "name"]
+
+
 class BundlePostingSerializer(serializers.ModelSerializer):
+    allergens = serializers.SerializerMethodField()
+
     class Meta:
         model = BundlePosting
         fields = "__all__"
+
+    def get_allergens(self, obj):
+        return list(
+            BundleAllergens.objects.filter(bundle_id=obj)
+            .select_related("allergen_id")
+            .values_list("allergen_id__name", flat=True)
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):

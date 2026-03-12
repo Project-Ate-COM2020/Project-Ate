@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import BundlePosting, Reservation # type: ignore
+from core.models import BundleAllergens
+
 
 class BundlePostingSerializer(serializers.ModelSerializer):
     seller_name = serializers.CharField(
         source="seller.name", read_only=True, allow_null=True
     )
+    allergens = serializers.SerializerMethodField()
 
     class Meta:
         model = BundlePosting
@@ -23,6 +26,13 @@ class BundlePostingSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def get_allergens(self, obj):
+        return list(
+            BundleAllergens.objects.filter(bundle_id=obj)
+            .select_related("allergen_id")
+            .values_list("allergen_id__name", flat=True)
+        )
 
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
