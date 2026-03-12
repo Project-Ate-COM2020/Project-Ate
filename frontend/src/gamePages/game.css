@@ -136,14 +136,14 @@
 
 /* ── Badge section ─────────────────────────────────────────────────────── */
 
-/* horizontal wrapping row of badge items */
+/* grid of badge items */
 .badge-list {
-  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  list-style: none;
 }
 
 /* each badge: image stacked above label */
@@ -151,33 +151,24 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  width: 80px;
   text-align: center;
 }
 
-/* placeholder square — teammate: replace with <img className="badge-img"> */
-.badge-img-placeholder {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
-  background: var(--green-pale);
-  border: 2px dashed var(--green-light);
-}
-
-/* swap .badge-img-placeholder for .badge-img once assets exist */
 .badge-img {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
 }
 
 .badge-name {
-  font-size: 0.78rem;
-  opacity: 0.8;
-  line-height: 1.25;
-  word-break: break-word;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.badge-item:hover .badge-img {
+  transform: scale(1.1);
 }
 
 /* ── Recent list ────────────────────────────────────────────────────────── */

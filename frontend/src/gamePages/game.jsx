@@ -17,6 +17,18 @@ const MOCK_SUMMARY = {
   badges: ["First Rescue", "Eco Warrior"],
 };
 
+const BADGE_ICONS = {
+  "Explorer": "/badges/explorer.png",
+  "Discoverer": "/badges/discoverer.png",
+  "Adventurer": "/badges/adventurer.png",
+  "Master": "/badges/master.png",
+
+  "Eco Starter": "/badges/eco_starter.png",
+  "Eco Friend": "/badges/eco_friend.png",
+  "Climate Hero": "/badges/climate_hero.png",
+  "Planet Saver": "/badges/planet_saver.png"
+};
+
 export default function Game() {
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState(null);
@@ -156,7 +168,12 @@ export default function Game() {
                 {summary.badges.map((badge) => (
                   <li className="badge-item" key={badge}>
                     {/* TODO: swap this placeholder div for an <img> once badge assets are ready */}
-                    <div className="badge-img-placeholder" aria-hidden="true" />
+                    <img
+                      src={BADGE_ICONS[badge] || "/badges/default.png"}
+                      alt={badge}
+                      className="badge-img"
+                    />
+
                     <span className="badge-name">{badge}</span>
                   </li>
                 ))}
