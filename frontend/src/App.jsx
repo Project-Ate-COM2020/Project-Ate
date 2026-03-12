@@ -46,18 +46,18 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/seller/login" element={<LoginPage />} />
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/seller/login" element={<LoginPage />} />
+        {/*<Route path="/" element={<LoginPage />} />*/}
+        {/*<Route path="/login" element={<LoginPage />} />*/}
+        {/*<Route path="/seller/login" element={<LoginPage />} />*/}
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
-        <Route path="/user" element={<UserHomePage />} />
+        <Route path="/user" element={<HomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/buyer-profile" element={<BuyerProfilePage />} />
+        {/*<Route path="/buyer-profile" element={<BuyerProfilePage />} />
         <Route path="/buyer-profile" element={<BuyerProfilePage />} />
-        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
-        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
+        <Route path="/buyer-profile" element={<BuyerProfilePage />} /> */}
         {/* <Route path="/seller/marketplace" element={<SellerMarketplace />} /> */}
         {/* <Route path="/seller/analytics" element={<AnalyticsPage />} /> */}
         {/* <Route path="/seller/forecast" element={<ForecastPage />} /> */}
