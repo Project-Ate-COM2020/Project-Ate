@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny
 from core.models import Consumer, Reservation, BundlePosting
 from django.utils import timezone
 from .serializers import ReservationSerializer
@@ -97,6 +99,8 @@ class RecentRescuesView(ListAPIView):
         )
 
 class ConsumerBadgesView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
     def get(self, request):
         consumer = request.user.consumer

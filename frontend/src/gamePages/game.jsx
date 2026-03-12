@@ -3,6 +3,10 @@ import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
 
+
+/* --- TO USE REAL DATA: --- */
+import { useGetData } from "../reusableComponents/api.jsx"
+
 // toggle to false when endpoints are ready
 const USE_MOCK_DATA = true;
 
@@ -56,6 +60,10 @@ const BADGES = {
 export default function Game() {
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState(null);
+
+  /* --- USING REAL DATA --- */
+
+  const [badges, loadingBadges] = useGetData("api/game/badges", "", false);
 
   const load = useCallback(async () => {
     setError(null);
