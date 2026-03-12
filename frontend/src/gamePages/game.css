@@ -199,6 +199,12 @@
   opacity: 1;
 }
 
+/* Grey out badges the user doesn't have */
+.badge-greyed {
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
 /* ── Recent list ────────────────────────────────────────────────────────── */
 
 /* recent list  */

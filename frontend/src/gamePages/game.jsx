@@ -146,35 +146,37 @@ const { data: summary, loading } = USE_MOCK_DATA
                  <img src={`/badges/${badge}.png`} alt={badge} className="badge-img" />
                The CSS class "badge-img" needs adding to game.css.
            */}
+           
           <section className="game-card game-card--full">
             <h3>Badges</h3>
 
-            {Array.isArray(summary.badges) && summary.badges.length > 0 ? (
-              <ul className="badge-list">
-                {summary.badges.map((badge) => (
-                  <li className="badge-item" key={badge}>
+            <ul className="badge-list">
+              {Object.keys(BADGES).map((badge) => {
+                const hasBadge = summary.badges.includes(badge); // check if user has it
+                return (
+                  <li
+                    className="badge-item"
+                    key={badge}
+                  >
                     <div className="badge-wrapper">
                       <img
-                        src={BADGES[badge]?.icon || "/badges/default.png"}
+                        src={BADGES[badge].icon}
                         alt={badge}
-                        className="badge-img"
+                        className={`badge-img ${hasBadge ? "" : "badge-greyed"}`}
                       />
-
                       <div className="badge-tooltip">
-                        {BADGES[badge]?.description || "Badge description"}
+                        {BADGES[badge].description}
                       </div>
                     </div>
 
                     <span className="badge-name">{badge}</span>
                   </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="game-subtitle">
-                No badges yet — keep rescuing bundles to earn them.
-              </p>
-            )}
+                );
+              })}
+            </ul>
           </section>
+
+          
 
         </div>
       </div>
