@@ -1,10 +1,9 @@
-// for testing you need to reset the locat storage on the website using this localStorage.removeItem("cookie_consent_choice_v1") 
-
-
+// for testing you need to reset the locat storage on the website using this 
+// - >
+// localStorage.removeItem("cookie_consent_choice_v1") 
 
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { sendCookieConsent } from "../api-legacy/cookieConsentApi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./cookiesConsentStyle.css";
 
 const CONSENT_KEY = "cookie_consent_choice_v1";
@@ -12,15 +11,15 @@ const CONSENT_KEY = "cookie_consent_choice_v1";
 export default function CookiesConsent() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedChoice = localStorage.getItem(CONSENT_KEY);
     const path = location.pathname;
 
-    const isHome = path === "/";
     const isLogin = path === "/login";
 
-    if ((isHome && !savedChoice) || (isLogin && savedChoice !== "accepted")) {
+    if (isLogin && (savedChoice === null || savedChoice === "rejected")) {
       setIsOpen(true);
       document.body.style.overflow = "hidden";
     } else {
@@ -33,18 +32,15 @@ export default function CookiesConsent() {
     };
   }, [location.pathname]);
 
-  const handleChoice = async (choice) => {
+  const handleChoice = (choice) => {
     localStorage.setItem(CONSENT_KEY, choice);
-    
-
-    try {
-      await sendCookieConsent(choice);
-    } catch (err) {
-      console.error("Consent logging failed:", err);
-    }
 
     setIsOpen(false);
     document.body.style.overflow = "";
+
+    if (choice === "rejected") {
+      navigate("/");
+    }
   };
 
   if (!isOpen) return null;
@@ -68,8 +64,8 @@ export default function CookiesConsent() {
 
         <p id="cookie-description" className="cookie-text">
           We use essential cookies to keep Project-Ate secure and working
-          correctly. Optional cookies help improve the platform and understand
-          how people use the service.
+          correctly. Cookies help improve the platform and understand how
+          people use the service.
         </p>
 
         <p className="cookie-text small">
@@ -90,7 +86,7 @@ export default function CookiesConsent() {
             className="cookie-btn secondary"
             onClick={() => handleChoice("rejected")}
           >
-            Reject optional cookies
+            Reject cookies
           </button>
 
           <button
@@ -98,7 +94,7 @@ export default function CookiesConsent() {
             className="cookie-btn primary"
             onClick={() => handleChoice("accepted")}
           >
-            Accept optional cookies
+            Accept cookies
           </button>
         </div>
       </div>
