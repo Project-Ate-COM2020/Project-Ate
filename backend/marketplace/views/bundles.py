@@ -10,14 +10,14 @@ from ..models import (
     BundlePosting,
     BundlePostingSerializer,
 )
+from authentication.permissions import IsSeller
 
 
 class CreateBundleView(CreateAPIView):
     name = "bundle-create"
     serializer_class = BundlePostingSerializer
     queryset = BundlePosting
-    permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsSeller]
 
 
 # get all bundles
@@ -31,14 +31,6 @@ class BundlesView(APIView):
         ids = [bundle_id for bundle_id in bundles.values_list("pk", flat=True)]
 
         return Response(ids)
-
-    name = "bundles"
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        bundles = BundlePosting.objects.all()
-        serializer = BundlePostingSerializer(bundles, many=True)
-        return Response(serializer.data)
 
 
 # get a specific bundle
