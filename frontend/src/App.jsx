@@ -42,8 +42,8 @@ import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 import CookiesConsent from "./cookiePopup/cookiesConsent";
 import TermsAndConditions from "./cookiePopup/TermsAndConditions";
 import CookiePolicy from "./cookiePopup/CookiePolicy";
-import FootNote from "./reusableComponents/FootNote";
-import PrivacyPolicy from "./reusableComponents/PrivacyPolicy";
+import FootNote from "./reusableComponents/footnote";
+import PrivacyPolicy from "./reusableComponents/privacyPolicy";
 
 // simple function defining the element to be returned based on the URL
 function App() {
