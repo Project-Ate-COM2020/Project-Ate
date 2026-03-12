@@ -1,0 +1,33 @@
+.site-footnote {
+    width: 100%;
+    margin-top: 30px;
+    padding: 18px 0 12px;
+    background: #f7faf7;
+    border-top: 1px solid #d9e8db;
+    text-align: center;
+  }
+  
+  .footnote-links {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  
+  .footnote-links a {
+    font-size: 0.9rem;
+    color: #2f3b2f;
+    text-decoration: none;
+  }
+  
+  .footnote-links a:hover {
+    color: #2f7d4a;
+    text-decoration: underline;
+  }
+  
+  .footnote-bottom p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #5f6b60;
+  }

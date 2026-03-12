@@ -42,6 +42,8 @@ import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 import CookiesConsent from "./cookiePopup/cookiesConsent";
 import TermsAndConditions from "./cookiePopup/TermsAndConditions";
 import CookiePolicy from "./cookiePopup/CookiePolicy";
+import FootNote from "./reusableComponents/FootNote";
+import PrivacyPolicy from "./reusableComponents/PrivacyPolicy";
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -94,7 +96,11 @@ function App() {
 
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       </Routes>
+
+      <FootNote />
+
     </Router>
   );
 }
