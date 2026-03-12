@@ -1,13 +1,5 @@
-/* Colour scheme*/
-:root {
-  --green:      #2D6A4F;
-  --green-light:#52B788;
-  --green-pale: #D8F3DC;
-  --cream:      #F8FAF5;
-  --dark:       #1B2D23;
-  --muted:      #6B7C6E;
-  --shadow:     0 4px 24px rgba(0,0,0,0.08);
-}
+/*this is the first page that loads when a user goes on the website. 
+it does not require a user to be logged in*/
 
 /* page details*/
 .home-page {

@@ -38,8 +38,8 @@
   padding: 8px 12px;
   border-radius: 999px;
   font-size: 0.95rem;
-  background: rgba(35, 240, 199, 0.12);
-  border: 1px solid rgba(35, 240, 199, 0.26);
+  background: rgba(82, 183, 136, 0.12);;
+  border: 1px solid var(--green-light);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
 
@@ -49,8 +49,8 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: rgba(35, 240, 199, 0.9);
-  box-shadow: 0 0 0 4px rgba(35, 240, 199, 0.12);
+  background: var(--green-light);
+  box-shadow: 0 0 0 4px var(--green-pale);
 }
 
 /* responsive grid */
@@ -76,13 +76,12 @@
 
 /* Card styling  */
 .game-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: white;
+  border: 1px solid var(--green-pale);
   border-radius: 16px;
   padding: 18px;
-
   backdrop-filter: blur(10px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
 
   /* lift + tint on hover */
   transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
@@ -90,8 +89,8 @@
 
 .game-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(35, 240, 199, 0.25);
-  background: rgba(255, 255, 255, 0.075);
+  border-color: var(--green-light);
+  background: var(--green-pale);
 }
 
 .game-card h3 {
@@ -110,8 +109,8 @@
   width: 10px;
   height: 10px;
   border-radius: 3px;
-  background: rgba(35, 240, 199, 0.9);
-  box-shadow: 0 0 0 4px rgba(35, 240, 199, 0.12);
+  background: var(--green-light);
+  box-shadow: 0 0 0 4px var(--green-pale);
 }
 
 /* stat rows: label left, value right */
@@ -124,8 +123,7 @@
 
 /* Border only between rows  */
 .stat-row + .stat-row {
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
-}
+  border-top:1px solid var(--green-pale); }
 
 .stat-label {
   opacity: 0.88;
@@ -163,8 +161,8 @@
   width: 64px;
   height: 64px;
   border-radius: 12px;
-  background: rgba(35, 240, 199, 0.12);
-  border: 2px dashed rgba(35, 240, 199, 0.35);
+  background: var(--green-pale);
+  border: 2px dashed var(--green-light);
 }
 
 /* swap .badge-img-placeholder for .badge-img once assets exist */
@@ -200,7 +198,7 @@
 
 /* Divider */
 .recent-item + .recent-item {
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid var(--green-pale);
 }
 
 .recent-item .stat-value {
@@ -226,12 +224,12 @@
   padding: 10px 14px;
   border-radius: 12px;
 
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
-  color: inherit;
+  border: 1px solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
   cursor: pointer;
 }
 
 .game-button:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--green-light);
 }

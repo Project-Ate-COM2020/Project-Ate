@@ -24,13 +24,15 @@ $gradient-radial: radial-gradient(#242331ff, #23f0c7ff, #938ba1ff, #e4572eff, #f
 
 
 :root {
-    --main: #F4F8F4; /* page background*/
-    --accent: #1F2937; /* main text*/
-    --accent2: #2E7D32; /*primary green */
-    --accent3: #4CAF50; /*hover green */
-    --accent4: #DDEEDF; /*light card background */
-    --accent5: #A5D6A7; /*soft highlights*/
+    --green:       #2D6A4F;
+    --green-light: #52B788;
+    --green-pale:  #D8F3DC;
+    --cream:       #F8FAF5;
+    --dark:        #1B2D23;
+    --muted:       #6B7C6E;
+    --shadow:      0 4px 24px rgba(0,0,0,0.08);
 }
+
 
 /* This is background colours for every page - ensures consistency */
 html, body {
@@ -40,5 +42,5 @@ html, body {
     padding: 0;
     /* global font for the entire site */
     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, Arial, sans-serif;
+    "Segoe UI", Roboto, Arial, sans-serif;
 }
