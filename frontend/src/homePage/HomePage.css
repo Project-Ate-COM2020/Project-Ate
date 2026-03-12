@@ -1,0 +1,293 @@
+/* Colour scheme*/
+:root {
+  --green:      #2D6A4F;
+  --green-light:#52B788;
+  --green-pale: #D8F3DC;
+  --cream:      #F8FAF5;
+  --dark:       #1B2D23;
+  --muted:      #6B7C6E;
+  --shadow:     0 4px 24px rgba(0,0,0,0.08);
+}
+
+/* page details*/
+.home-page {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  overflow-x: hidden;
+}
+
+/*Navbar details*/
+.home-nav {
+  background: white;
+  padding: 0 2rem;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.home-nav-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--green);
+  text-decoration: none;
+}
+
+/*Website description at the top left of homepage 
+and bundle preview example cards on the right*/
+.Website-Description {
+  background: linear-gradient(135deg, var(--dark), #2D6A4F);
+  color: white;
+  padding: 5rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.tag-line {
+  display: inline-block;
+  background: rgba(82,183,136,0.2);
+  border: 1px solid rgba(82,183,136,0.4);
+  color: var(--green-light);
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+
+.Web-content h1 {
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.2rem;
+}
+
+.Web-content h1 em {
+  font-style: italic;
+  color: var(--green-light);
+}
+
+.Web-content p {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 440px;
+}
+
+.web-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+/* buttons */
+/* shared bundles button */
+.btn-primary {
+  background: var(--green-light);
+  color: white;
+  padding: 0.85rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); }
+
+/*how it works button*/
+.btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  padding: 0.85rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: background 0.2s;
+  display: inline-block;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.2); }
+
+/* example bundles cards*/
+.Description-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  transform: rotate(-3deg);
+}
+
+.food-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: transform 0.3s;
+}
+.food-card:hover { transform: translateY(-4px); }
+.food-card:nth-child(2) { margin-top: 1.5rem; }
+.food-card:nth-child(4) { margin-top: -1.5rem; }
+
+.food-card-name  { font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 0.4rem; }
+.food-card-price { font-size: 1.1rem; font-weight: 700; color: var(--green-light); }
+
+/*tag lines*/
+.tagline-bar {
+  background: white;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--green-pale);
+  border-top: 1px solid var(--green-pale);
+}
+
+.tagline-item {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--green);
+}
+
+/* principles of the project-ate*/
+.principle-section {
+  padding: 4rem 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 0.6rem;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 2.5rem;
+  max-width: 520px;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.prop-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--green-pale);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.prop-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.1); }
+
+.prop-card h3 { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--dark); }
+.prop-card p  { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+/*bundles section ********WILL NEED TO BE CHANGED FROM HARDCODED*/
+.bundles-section {
+  background: var(--green-pale);
+  padding: 4rem 3rem;
+}
+
+.bundles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+}
+
+.bundle-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--green-pale);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.bundle-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+
+.bundle-body { padding: 1.5rem; }
+.bundle-body h3 { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.3rem; }
+
+.bundle-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.bundle-tag {
+  display: inline-block;
+  background: var(--green-pale);
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.bundle-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.bundle-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.btn-add {
+  background: var(--green);
+  color: white;
+  padding: 0.55rem 1.2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-block;
+}
+.btn-add:hover { background: var(--green-light); transform: scale(1.04); }
+
+/*from ai not sure about this part*/
+.view-all {
+  display: block;
+  text-align: center;
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.view-all:hover { text-decoration: underline; }

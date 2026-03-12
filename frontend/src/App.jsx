@@ -10,6 +10,7 @@ import GamePage from "./gamePages/game.jsx";
 import MarketplacePage from "./marketplacePages/marketplace";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import UserHomePage from "./homePage/userHomePage.jsx";
+import HomePage from "./homePage/HomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
 
 /* --- Auth Imports --- */
@@ -42,7 +43,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/seller/login" element={<LoginPage />} />
         <Route path="/" element={<LoginPage />} />
