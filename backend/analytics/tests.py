@@ -2,7 +2,7 @@ from decimal import Decimal
 from rest_framework.test import APITestCase, APIRequestFactory
 
 from core.models import BundlePosting, Reservation, Seller, Consumer
-from analytics.views import (
+from .views import (
     TotalListingsView,
     TotalRevenueView,
     TotalReservationsView,
@@ -36,8 +36,14 @@ class AnalyticsViewTests(APITestCase):
         self.consumer = Consumer.objects.create(display_name="Test Buyer", password="")
         self._claim_seq = 1
 
-    def _create_posting(self, seller, status="active", price=Decimal("5.00"),
-                        category="veg_box", pickup_window="18:00-20:00"):
+    def _create_posting(
+        self,
+        seller,
+        status="active",
+        price=Decimal("5.00"),
+        category="veg_box",
+        pickup_window="18:00-20:00",
+    ):
         return BundlePosting.objects.create(
             seller=seller,
             category=category,
@@ -59,10 +65,12 @@ class AnalyticsViewTests(APITestCase):
             status=status,
         )
 
-# ----------- Sprint 1 tests -----------
+    # ----------- Sprint 1 tests -----------
 
     def test_total_listings_empty_returns_400(self):
-        request = self.factory.get("/analytics/total-listings/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-listings/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalListingsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data.get("error"), "No data available")
@@ -71,13 +79,17 @@ class AnalyticsViewTests(APITestCase):
         self._create_posting(self.seller)
         self._create_posting(self.seller)
         self._create_posting(self.other_seller)
-        request = self.factory.get("/analytics/total-listings/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-listings/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalListingsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, 2)
 
     def test_total_revenue_empty_returns_400(self):
-        request = self.factory.get("/analytics/total-revenue/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-revenue/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalRevenueView.as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data.get("error"), "No data available")
@@ -90,7 +102,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_two, status="collected")
         self._create_reservation(posting_two, status="no-show")
         self._create_reservation(posting_other, status="reserved")
-        request = self.factory.get("/analytics/total-revenue/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-revenue/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalRevenueView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Decimal(str(response.data)), Decimal("12.50"))
@@ -99,7 +113,9 @@ class AnalyticsViewTests(APITestCase):
         request = self.factory.get("/analytics/total-reservations/")
         response = TotalReservationsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data.get("error"), "seller_id query parameter is required")
+        self.assertEqual(
+            response.data.get("error"), "seller_id query parameter is required"
+        )
 
     def test_total_reservations_counts(self):
         posting_one = self._create_posting(self.seller)
@@ -108,7 +124,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_one, status="reserved")
         self._create_reservation(posting_two, status="collected")
         self._create_reservation(posting_other, status="reserved")
-        request = self.factory.get("/analytics/total-reservations/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-reservations/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalReservationsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("total_reservations"), 2)
@@ -117,11 +135,15 @@ class AnalyticsViewTests(APITestCase):
         request = self.factory.get("/analytics/food-waste-reduction/")
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data.get("error"), "seller_id query parameter is required")
+        self.assertEqual(
+            response.data.get("error"), "seller_id query parameter is required"
+        )
 
     def test_food_waste_reduction_no_reservations_returns_zero(self):
         # No reservations exist — should return 0.0, not an error
-        request = self.factory.get("/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id}
+        )
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("food_waste_reduction_percentage"), 0.0)
@@ -134,8 +156,12 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting, status="collected")
         self._create_reservation(posting2, status="reserved")
         self._create_reservation(posting2, status="reserved")
-        self._create_reservation(posting_other, status="collected")  # other seller, excluded
-        request = self.factory.get("/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id})
+        self._create_reservation(
+            posting_other, status="collected"
+        )  # other seller, excluded
+        request = self.factory.get(
+            "/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id}
+        )
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("food_waste_reduction_percentage"), 50.0)
@@ -144,7 +170,9 @@ class AnalyticsViewTests(APITestCase):
         request = self.factory.get("/analytics/total-no-shows/")
         response = TotalNoShowsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data.get("error"), "seller_id query parameter is required")
+        self.assertEqual(
+            response.data.get("error"), "seller_id query parameter is required"
+        )
 
     def test_total_no_shows_counts(self):
         posting_one = self._create_posting(self.seller)
@@ -154,7 +182,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_two, status="no-show")
         self._create_reservation(posting_two, status="reserved")
         self._create_reservation(posting_other, status="no-show")
-        request = self.factory.get("/analytics/total-no-shows/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/total-no-shows/", {"seller_id": self.seller.seller_id}
+        )
         response = TotalNoShowsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("total_no_shows"), 2)
@@ -167,7 +197,9 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_sell_through_no_data_returns_zeros(self):
-        request = self.factory.get("/analytics/sell-through/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/sell-through/", {"seller_id": self.seller.seller_id}
+        )
         response = SellThroughBreakdownView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("total"), 0)
@@ -181,7 +213,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting, status="no-show")
         self._create_reservation(posting, status="expired")
         self._create_reservation(posting_other, status="collected")  # excluded
-        request = self.factory.get("/analytics/sell-through/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/sell-through/", {"seller_id": self.seller.seller_id}
+        )
         response = SellThroughBreakdownView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("collected"), 2)
@@ -200,7 +234,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting, status="collected")
         self._create_reservation(posting, status="collected")
         self._create_reservation(posting, status="no-show")
-        request = self.factory.get("/analytics/waste-proxy/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/waste-proxy/", {"seller_id": self.seller.seller_id}
+        )
         response = WasteProxyView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("bundles_collected"), 2)
@@ -218,7 +254,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(cheap, status="collected")
         self._create_reservation(cheap, status="no-show")
         self._create_reservation(expensive, status="collected")
-        request = self.factory.get("/analytics/pricing-effectiveness/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/pricing-effectiveness/", {"seller_id": self.seller.seller_id}
+        )
         response = PricingEffectivenessView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         ranges = [item["price_range"] for item in response.data]
@@ -240,7 +278,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(bakery, status="reserved")
         self._create_reservation(bakery, status="reserved")
         self._create_reservation(veg, status="reserved")
-        request = self.factory.get("/analytics/popular-categories/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/popular-categories/", {"seller_id": self.seller.seller_id}
+        )
         response = PopularCategoriesView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]["category"], "bakery")
@@ -258,7 +298,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(evening, status="reserved")
         self._create_reservation(evening, status="reserved")
         self._create_reservation(morning, status="reserved")
-        request = self.factory.get("/analytics/best-pickup-windows/", {"seller_id": self.seller.seller_id})
+        request = self.factory.get(
+            "/analytics/best-pickup-windows/", {"seller_id": self.seller.seller_id}
+        )
         response = BestPickupWindowsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data[0]["pickup_window"], "18:00-20:00")
