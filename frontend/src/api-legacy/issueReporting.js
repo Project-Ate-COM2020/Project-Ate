@@ -1,32 +1,54 @@
 import { requestJson } from "./authorisation";
 
-const ISSUE_BASE = "/issue-reporting";
+const ISSUE_BASE = "/issues";
 
-export async function createIssue({ title, description, category, orderId }) {
-  return requestJson(`${ISSUE_BASE}/issues/`, {
+export async function createIssue({
+  title,
+  description,
+  category,
+  orderId,
+  consumerId,
+  posting,
+  type,
+}) {
+  const resolvedConsumerId =
+    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+
+  return requestJson(`${ISSUE_BASE}/report/`, {
     method: "POST",
     body: {
-      title,
+      consumer_id: resolvedConsumerId,
+      posting: posting || orderId || null,
+      type: type || category || title || "Other",
       description,
-      category,
-      order_id: orderId || null,
     },
   });
 }
 
-export async function fetchMyIssues() {
-  return requestJson(`${ISSUE_BASE}/issues/mine/`);
+export async function fetchMyIssues(consumerId) {
+  const resolvedConsumerId =
+    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+  return requestJson(`${ISSUE_BASE}/buyer/${resolvedConsumerId}/`);
+}
+
+export async function fetchBuyerReportablePostings(consumerId) {
+  const resolvedConsumerId =
+    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+  return requestJson(`${ISSUE_BASE}/buyer/${resolvedConsumerId}/reportable-postings/`);
 }
 
 export async function fetchSellerIssues(sellerId) {
-  return requestJson(`/seller/issues/?seller_id=${sellerId}`);
+  return requestJson(`${ISSUE_BASE}/seller/${sellerId}/`);
+}
+
+export async function fetchSellerIssuesOverview(sellerId) {
+  return requestJson(`${ISSUE_BASE}/seller/${sellerId}/overview/`);
 }
 
 export async function updateSellerIssue({ issueId, status, sellerResponse, sellerId }) {
-  return requestJson(`/seller/issues/update/?seller_id=${sellerId}`, {
-    method: "POST",
+  return requestJson(`${ISSUE_BASE}/seller/${sellerId}/${issueId}/respond/`, {
+    method: "PATCH",
     body: {
-      issue_id: issueId,
       status: status || undefined,
       seller_response: sellerResponse || undefined,
     },

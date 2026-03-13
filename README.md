@@ -93,6 +93,7 @@ python manage.py test seller.tests
 python manage.py test forecasts.tests
 python manage.py test analytics.tests
 python manage.py test marketplace.tests
+python manage.py test issue_reporting.tests
 ```
 
 ## API Overview
@@ -101,57 +102,133 @@ Base URL: `http://127.0.0.1:8000/`
 
 ### Marketplace (`/marketplace/`)
 
-- Bundles: create and retrieve bundle listings
-- Sellers/Consumers: create and retrieve profile entities
-- Reservations: create and fetch reservation records
-- Auth: seller and consumer JWT issue/refresh/verify
+#### Allergens
 
-Representative endpoints:
+- `GET /marketplace/allergens/`
+
+#### Bundle Listings
 
 - `POST /marketplace/bundle/`
 - `GET /marketplace/bundles/`
+- `GET /marketplace/bundles/between`
+- `GET /marketplace/bundles/oldest`
+- `GET /marketplace/bundles/older/`
+- `GET /marketplace/bundles/newer/`
+- `GET /marketplace/bundles/open/`
+- `GET /marketplace/bundles/collection/`
 - `GET /marketplace/bundle/<bundle_id>/`
+
+#### Consumer Profiles
+
+- `POST /marketplace/consumer`
+- `GET /marketplace/consumer/<consumer_id>/`
+- `PUT /marketplace/consumer/<consumer_id>/`
+- `PATCH /marketplace/consumer/<consumer_id>/`
+- `DELETE /marketplace/consumer/<consumer_id>/`
+
+#### Seller Profiles (Marketplace domain)
+
+- `POST /marketplace/seller`
+- `GET /marketplace/seller/<seller_id>/`
+- `PUT /marketplace/seller/<seller_id>/`
+- `PATCH /marketplace/seller/<seller_id>/`
+- `DELETE /marketplace/seller/<seller_id>/`
+
+#### Seller Bundle Views
+
+- `GET /marketplace/seller/<seller_id>/bundles`
+- `GET /marketplace/seller/<seller_id>/bundles/between`
+- `GET /marketplace/seller/<seller_id>/bundles/newest`
+- `GET /marketplace/seller/<seller_id>/bundles/oldest`
+- `GET /marketplace/seller/<seller_id>/bundles/older/`
+- `GET /marketplace/seller/<seller_id>/bundles/younger/`
+- `GET /marketplace/seller/<seller_id>/bundles/collection/`
+
+#### Reservations
+
 - `POST /marketplace/reservations`
+- `GET /marketplace/reservations/<reservation_id>/`
+- `PUT /marketplace/reservations/<reservation_id>/`
+- `PATCH /marketplace/reservations/<reservation_id>/`
+- `DELETE /marketplace/reservations/<reservation_id>/`
+
+#### JWT Authentication
+
 - `POST /marketplace/seller/auth/token`
+- `POST /marketplace/seller/auth/token/refresh`
+- `POST /marketplace/seller/auth/token/verify/`
 - `POST /marketplace/consumer/auth/token`
+- `POST /marketplace/consumer/auth/token/refresh`
+- `POST /marketplace/consumer/auth/token/verify/`
 
 ### Seller (`/seller/`)
 
-- Seller identity and address retrieval
-- Reservation retrieval
-- Listing creation and collection update
-
-Representative endpoints:
-
-- `GET /seller/getsellername/`
-- `GET /seller/getselleraddress/`
-- `GET /seller/getreservations/`
+- `GET /seller/getsellername/?seller_id=<seller_id>`
+- `GET /seller/getselleraddress/?seller_id=<seller_id>`
+- `GET /seller/getreservations/?seller_id=<seller_id>`
 - `POST /seller/createlisting/`
 - `POST /seller/collectbundle/`
 
+### Buyer (`/buyer/`)
+
+- `POST /buyer/reservebundle/`
+- `POST /buyer/unreservebundle/`
+- `GET /buyer/getreservations/<consumer_id>/`
+
 ### Forecasting (`/forecast/`)
 
-Representative endpoint:
+- `POST /forecast/prediction/`
 
-- `GET /forecast/prediction/`
+Request fields:
+- Required: `category`, `day_of_week`, `time_window`
+- Optional: `seller_id`, `weather`, `no_bundles`, `price`
 
 ### Analytics (`/analytics/`)
 
-Representative endpoints:
+All endpoints are `GET` and expect `seller_id` as a query parameter.
 
-- `GET /analytics/total-listings/`
-- `GET /analytics/total-revenue/`
-- `GET /analytics/total-reservations/`
-- `GET /analytics/food-waste-reduction/`
-- `GET /analytics/total-no-shows/`
-- `GET /analytics/collected-reservations/`
+- `/analytics/total-listings/`
+- `/analytics/total-revenue/`
+- `/analytics/total-reservations/`
+- `/analytics/food-waste-reduction/`
+- `/analytics/total-no-shows/`
+- `/analytics/collected-reservations/`
+- `/analytics/sell-through/`
+- `/analytics/waste-proxy/`
+- `/analytics/pricing-effectiveness/`
+- `/analytics/popular-categories/`
+- `/analytics/best-pickup-windows/`
 
 ### Game (`/game/`)
 
-Representative endpoints:
-
 - `GET /game/api/game/summary/`
 - `GET /game/api/game/recent/`
+- `GET /game/api/test/`
+
+### Maintainer (`/maintainer/`)
+
+- `POST /maintainer/auth/token`
+- `POST /maintainer/auth/refresh`
+- `POST /maintainer/auth/verify`
+
+### Issue Reporting (`/issues/`)
+
+#### Buyer APIs
+
+- `POST /issues/report/`
+- `GET /issues/buyer/<consumer_id>/`
+- `GET /issues/buyer/<consumer_id>/reportable-postings/`
+
+#### Seller APIs
+
+- `GET /issues/seller/<seller_id>/`
+- `GET /issues/seller/<seller_id>/overview/`
+- `PATCH /issues/seller/<seller_id>/<issue_id>/respond/`
+
+### Utility/Framework Endpoints
+
+- `GET|POST /api-auth/` (DRF browsable API auth)
+- `GET /admin/` (Django admin)
 
 ## Frontend Routes (Current)
 
