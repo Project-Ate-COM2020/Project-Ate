@@ -6,45 +6,8 @@ import "./sellerIssuesPage.css";
 const STATUS_OPTIONS = ["open", "responded", "resolved"];
 
 export default function SellerIssuesPage() {
-  const [issues, setIssues] = useState([
-    {
-      issue_id: 1,
-      posting_id: 101,
-      posting_category: "Bakery",
-      consumer_name: "Sarah Johnson",
-      consumer_id: 5,
-      type: "Product quality",
-      description: "The bread I received was stale and hard. It was not fresh at all. I expected fresh bakery items based on the listing description.",
-      status: "open",
-      seller_response: null,
-      created_at: "2026-03-08T14:30:00",
-    },
-    {
-      issue_id: 2,
-      posting_id: 102,
-      posting_category: "Vegetables",
-      consumer_name: "Mike Chen",
-      consumer_id: 12,
-      type: "Order issue",
-      description: "I ordered 2kg of tomatoes but only received 1kg. The package felt light when I picked it up.",
-      status: "responded",
-      seller_response: "I apologize for the mix-up. I've checked our records and found the error. We will provide a refund or replacement. Please let us know your preference.",
-      created_at: "2026-03-07T10:15:00",
-    },
-    {
-      issue_id: 3,
-      posting_id: 103,
-      posting_category: "Dairy",
-      consumer_name: "Emma Wilson",
-      consumer_id: 8,
-      type: "Delivery issue",
-      description: "The milk arrived 30 minutes after the pickup window ended. I had to wait much longer than expected.",
-      status: "resolved",
-      seller_response: "We sincerely apologize for the delay. This was due to traffic issues on that day. We've implemented better scheduling to prevent this in the future.",
-      created_at: "2026-03-06T16:45:00",
-    },
-  ]);
-  const [isLoadingIssues, setIsLoadingIssues] = useState(false);
+  const [issues, setIssues] = useState([]);
+  const [isLoadingIssues, setIsLoadingIssues] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
@@ -53,26 +16,30 @@ export default function SellerIssuesPage() {
   const [statusValue, setStatusValue] = useState("open");
   const [isUpdating, setIsUpdating] = useState(false);
   
-  // TODO: Get seller ID from session/auth context
-  const sellerId = localStorage.getItem("sellerId") || "1";
+  // Temporary fallback to ID=1 while auth is still being integrated.
+  const sellerId = localStorage.getItem("seller_id") || localStorage.getItem("sellerId") || "1";
 
   const loadIssues = async () => {
     setIsLoadingIssues(true);
+    setError("");
     try {
       const data = await fetchSellerIssues(sellerId);
       setIssues(Array.isArray(data) ? data : []);
     } catch (err) {
       setIssues([]);
-      setError("Failed to load issues");
+      const message =
+        typeof err?.message === "string" && err.message.trim()
+          ? err.message
+          : "Failed to load issues";
+      setError(message);
     } finally {
       setIsLoadingIssues(false);
     }
   };
 
   useEffect(() => {
-    // Uncomment to load real issues from backend
-    // loadIssues();
-  }, []);
+    loadIssues();
+  }, [sellerId]);
 
   const handleSelectIssue = (issue) => {
     setSelectedIssueId(issue.issue_id);
@@ -134,9 +101,15 @@ export default function SellerIssuesPage() {
             <div className="seller-issues-list">
               {issues.map((issue, index) => {
                 const key = issue.issue_id || index;
-                const displayConsumer = issue.consumer_name || "Unknown customer";
+                const displayConsumer =
+                  issue.consumer_name ||
+                  issue.consumer_display_name ||
+                  (issue.consumer ? `Consumer #${issue.consumer}` : "Unknown customer");
                 const displayStatus = issue.status || "open";
                 const displayType = issue.type || "General inquiry";
+                const displayPosting =
+                  issue.posting_category ||
+                  (issue.posting ? `Posting #${issue.posting}` : "Unknown");
                 const isSelected = selectedIssueId === issue.issue_id;
 
                 return (
@@ -156,7 +129,7 @@ export default function SellerIssuesPage() {
                       </span>
                     </div>
                     <p className="seller-issue-card-category">
-                      Category: {issue.posting_category || "Unknown"}
+                      Category: {displayPosting}
                     </p>
                     <p className="seller-issue-card-description">
                       {issue.description || "No description provided."}
@@ -196,7 +169,9 @@ export default function SellerIssuesPage() {
                 <div className="seller-issue-detail-row">
                   <span className="seller-issue-detail-label">From:</span>
                   <span className="seller-issue-detail-value">
-                    {currentIssue.consumer_name || "Unknown"}
+                    {currentIssue.consumer_name ||
+                      currentIssue.consumer_display_name ||
+                      (currentIssue.consumer ? `Consumer #${currentIssue.consumer}` : "Unknown")}
                   </span>
                 </div>
                 <div className="seller-issue-detail-row">
@@ -208,7 +183,8 @@ export default function SellerIssuesPage() {
                 <div className="seller-issue-detail-row">
                   <span className="seller-issue-detail-label">Posting:</span>
                   <span className="seller-issue-detail-value">
-                    {currentIssue.posting_category || "Unknown"}
+                    {currentIssue.posting_category ||
+                      (currentIssue.posting ? `Posting #${currentIssue.posting}` : "Unknown")}
                   </span>
                 </div>
                 <div className="seller-issue-detail-row">

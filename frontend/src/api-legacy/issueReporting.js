@@ -12,7 +12,11 @@ export async function createIssue({
   type,
 }) {
   const resolvedConsumerId =
-    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+    consumerId ||
+    localStorage.getItem("consumer_id") ||
+    localStorage.getItem("consumerId") ||
+    localStorage.getItem("buyerId") ||
+    1;
 
   return requestJson(`${ISSUE_BASE}/report/`, {
     method: "POST",
@@ -27,13 +31,21 @@ export async function createIssue({
 
 export async function fetchMyIssues(consumerId) {
   const resolvedConsumerId =
-    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+    consumerId ||
+    localStorage.getItem("consumer_id") ||
+    localStorage.getItem("consumerId") ||
+    localStorage.getItem("buyerId") ||
+    1;
   return requestJson(`${ISSUE_BASE}/buyer/${resolvedConsumerId}/`);
 }
 
 export async function fetchBuyerReportablePostings(consumerId) {
   const resolvedConsumerId =
-    consumerId || localStorage.getItem("consumerId") || localStorage.getItem("buyerId");
+    consumerId ||
+    localStorage.getItem("consumer_id") ||
+    localStorage.getItem("consumerId") ||
+    localStorage.getItem("buyerId") ||
+    1;
   return requestJson(`${ISSUE_BASE}/buyer/${resolvedConsumerId}/reportable-postings/`);
 }
 

@@ -6,16 +6,20 @@ from core.models import IssueReport, Reservation
 from .serializers import IssueReportSerializer
 
 
+FIXED_CONSUMER_ID = 1
+FIXED_SELLER_ID = 1
+
+
 class ConsumerCreateIssueView(APIView):
     def post(self, request):
-        consumer_id = request.data.get("consumer_id")
+        consumer_id = FIXED_CONSUMER_ID
         posting_id = request.data.get("posting")
         issue_type = request.data.get("type")
         description = request.data.get("description")
 
-        if not consumer_id or not posting_id:
+        if not posting_id:
             return Response(
-                {"error": "consumer_id and posting are required"},
+                {"error": "posting is required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -55,7 +59,7 @@ class ConsumerIssuesView(APIView):
     def get(self, request, consumer_id):
         issues = (
             IssueReport.objects
-            .filter(consumer__consumer_id=consumer_id)
+            .filter(consumer__consumer_id=FIXED_CONSUMER_ID)
             .order_by("-created_at")
         )
         serializer = IssueReportSerializer(issues, many=True)
@@ -67,7 +71,7 @@ class ConsumerReportablePostingsView(APIView):
         reservations = (
             Reservation.objects
             .select_related("posting")
-            .filter(consumer__consumer_id=consumer_id, status="collected")
+            .filter(consumer__consumer_id=FIXED_CONSUMER_ID, status="collected")
             .order_by("-posting__created_at")
         )
 
@@ -94,7 +98,7 @@ class SellerIssueRespondView(APIView):
         try:
             issue = IssueReport.objects.get(
                 issue_id=issue_id,
-                posting__seller__seller_id=seller_id,
+                posting__seller__seller_id=FIXED_SELLER_ID,
             )
         except IssueReport.DoesNotExist:
             return Response(
@@ -114,7 +118,7 @@ class SellerIssueRespondView(APIView):
 
 class SellerIssuesOverviewView(APIView):
     def get(self, request, seller_id):
-        qs = IssueReport.objects.filter(posting__seller__seller_id=seller_id)
+        qs = IssueReport.objects.filter(posting__seller__seller_id=FIXED_SELLER_ID)
         counts = qs.aggregate(
             total=Count("issue_id"),
             open=Count("issue_id", filter=Q(status="open")),
@@ -134,7 +138,7 @@ class SellerIssuesView(APIView):
     def get(self, request, seller_id):
         issues = (
             IssueReport.objects
-            .filter(posting__seller__seller_id=seller_id)
+            .filter(posting__seller__seller_id=FIXED_SELLER_ID)
             .order_by("-created_at")
         )
         serializer = IssueReportSerializer(issues, many=True)

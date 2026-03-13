@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar";
-import { createIssue, fetchMyIssues } from "../api-legacy/issueReporting";
+import {
+  createIssue,
+  fetchMyIssues,
+  fetchBuyerReportablePostings,
+} from "../api-legacy/issueReporting";
 import "./issueReportingPage.css";
 
 const CATEGORY_OPTIONS = [
@@ -15,18 +19,26 @@ export default function IssueReportingPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
-  const [orderId, setOrderId] = useState("");
+  const [postingId, setPostingId] = useState("");
 
   const [issues, setIssues] = useState([]);
+  const [reportablePostings, setReportablePostings] = useState([]);
   const [isLoadingIssues, setIsLoadingIssues] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Temporary fallback while auth is still being integrated.
+  const consumerId =
+    localStorage.getItem("consumer_id") ||
+    localStorage.getItem("consumerId") ||
+    localStorage.getItem("buyerId") ||
+    "1";
+
   const loadIssues = async () => {
     setIsLoadingIssues(true);
     try {
-      const data = await fetchMyIssues();
+      const data = await fetchMyIssues(consumerId);
       setIssues(Array.isArray(data) ? data : []);
     } catch {
       setIssues([]);
@@ -35,9 +47,24 @@ export default function IssueReportingPage() {
     }
   };
 
+  const loadReportablePostings = async () => {
+    try {
+      const data = await fetchBuyerReportablePostings(consumerId);
+      const postings = Array.isArray(data) ? data : [];
+      setReportablePostings(postings);
+      if (postings.length > 0) {
+        setPostingId(String(postings[0].posting_id));
+      }
+    } catch {
+      setReportablePostings([]);
+      setPostingId("");
+    }
+  };
+
   useEffect(() => {
     loadIssues();
-  }, []);
+    loadReportablePostings();
+  }, [consumerId]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,19 +72,26 @@ export default function IssueReportingPage() {
     setSuccess("");
     setIsLoading(true);
 
+    if (!postingId) {
+      setError("Choose one of your collected bundle postings first.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       await createIssue({
         title: title.trim(),
         description: description.trim(),
         category,
-        orderId: orderId.trim(),
+        consumerId,
+        posting: Number(postingId),
+        type: category,
       });
 
       setSuccess("Issue submitted successfully.");
       setTitle("");
       setDescription("");
       setCategory(CATEGORY_OPTIONS[0]);
-      setOrderId("");
       await loadIssues();
     } catch (err) {
       const message =
@@ -86,9 +120,9 @@ export default function IssueReportingPage() {
             <div className="issue-list">
               {issues.map((issue, index) => {
                 const key = issue.id || issue.issue_id || index;
-                const displayTitle = issue.title || "Untitled issue";
-                const displayCategory = issue.category || "Uncategorised";
-                const displayStatus = issue.status || "Open";
+                const displayTitle = issue.type || `Issue #${issue.issue_id || index + 1}`;
+                const displayCategory = issue.type || "Uncategorised";
+                const displayStatus = issue.status || "open";
                 const displayDescription =
                   issue.description || "No description provided.";
 
@@ -141,13 +175,23 @@ export default function IssueReportingPage() {
             </label>
 
             <label className="issue-label">
-              Order ID (optional)
-              <input
+              Bundle Posting
+              <select
                 className="issue-input"
-                value={orderId}
-                onChange={(event) => setOrderId(event.target.value)}
-                placeholder="Related order id"
-              />
+                value={postingId}
+                onChange={(event) => setPostingId(event.target.value)}
+                required
+              >
+                {reportablePostings.length === 0 ? (
+                  <option value="">No collected bundles available</option>
+                ) : (
+                  reportablePostings.map((posting) => (
+                    <option key={posting.posting_id} value={posting.posting_id}>
+                      #{posting.posting_id} - {posting.category || "Bundle"} ({posting.pickup_window || "No window"})
+                    </option>
+                  ))
+                )}
+              </select>
             </label>
 
             <label className="issue-label">
