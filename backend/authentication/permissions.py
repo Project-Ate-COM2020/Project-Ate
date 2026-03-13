@@ -26,7 +26,7 @@ class IsMaintainer(BasePermission):
         if token is None:
             return False
 
-        return (token.get("maintainer_id") is not None)
+        return token.get("maintainer_id") is not None
 
 class IsConsumerOrSeller(BasePermission):
     def has_permission(self, request, view):
