@@ -4,6 +4,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from core.models import Seller
 from core.models import Consumer
 
+from core.models import Maintainer
+
 
 class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -26,6 +28,12 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
         except Consumer.DoesNotExist:
             token['consumer_id'] = -1
 
+        try:
+            maintainer = Maintainer.objects.get(user=user)
+
+            token['maintainer_id'] = maintainer.pk
+        except Maintainer.DoesNotExist:
+            token['maintainer_id'] = -1
 
         return token
 
