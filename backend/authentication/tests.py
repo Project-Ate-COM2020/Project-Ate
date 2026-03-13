@@ -8,7 +8,7 @@ from .permissions import IsSeller
 from .views import UserCreateView
 
 from marketplace.views import CreateSellerView
-from marketplace.views import CreateBundleView
+from marketplace.views import CreateBundleView, CreateReservationView
 
 
 
