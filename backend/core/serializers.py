@@ -32,7 +32,13 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = "__all__"
+        fields = [
+            "email",
+            "password",
+            "username",
+            "first_name",
+            "last_name",
+        ]
 
     def create(self, validated_data):
         password = self.validated_data["password"]
@@ -42,6 +48,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user = self.Meta.model(**validated_data)
 
         user.set_password(password)
+
+        user.is_active = True
 
         user.save()
 
