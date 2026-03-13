@@ -9,5 +9,9 @@ urlpatterns = [
     path("game/", include("game.urls")),
     path("forecast/", include("forecasts.urls")),
     path("analytics/", include("analytics.urls")),
+<<<<<<< Feature/Fix-auth
     path("auth/", include("authentication.urls")),
+=======
+    path("maintainer/", include("maintainer.urls")),
+>>>>>>> Development
 ]

@@ -1,16 +1,9 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import (
-    ForecastInput,
-    BundlePosting,
-    Seller,
-    Consumer,
-    Reservation,
-    IssueReport,
-    ForecastOutput,
-)
+from .models import Allergen, BundleAllergens, ForecastInput, BundlePosting, Seller, Consumer, Reservation, IssueReport, ForecastOutput
 
 # Register your models here.
+admin.site.register(Allergen)
+admin.site.register(BundleAllergens)
 admin.site.register(ForecastInput)
 admin.site.register(BundlePosting)
 admin.site.register(Seller)

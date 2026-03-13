@@ -161,7 +161,6 @@ class BundlePosting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=255)
     contents = models.TextField(null=True, blank=True)
-    allergens = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
     quantity_remaining = models.IntegerField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -277,6 +276,16 @@ class IssueReport(models.Model):
 
     class Meta:
         db_table = "issue_report"
+
+
+class Maintainer(models.Model):
+    maintainer_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    password = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "maintainer"
 
 
 class ForecastInput(models.Model):

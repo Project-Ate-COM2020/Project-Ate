@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "authentication",
     "game",
     "issue_reporting",
+    "maintainer",
     # For specific API development
     "rest_framework",
     "rest_framework_simplejwt",
