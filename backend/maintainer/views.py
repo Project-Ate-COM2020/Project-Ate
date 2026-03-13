@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import render
-from .models import Maintainer, MaintainerSerializer, MaintainerWithPasswordSerializer
+from .models import Maintainer, MaintainerSerializer, RegisterMaintainerSerializer
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from django.db import connection
@@ -9,7 +9,7 @@ from django.db import connection
 class CreateMaintainerView(CreateAPIView):
     name = "maintainer-create"
     queryset = Maintainer
-    serializer_class = MaintainerWithPasswordSerializer
+    serializer_class = RegisterMaintainerSerializer
 
 class MaintainerView(RetrieveUpdateDestroyAPIView):
     name = "maintainer"
