@@ -36,9 +36,11 @@ IMPACT_BADGES = [
     {"name": "Planet Saver", "min_co2": 10000},
 ]
 
+from authentication.permissions import IsConsumer
+
 
 class GameSummaryView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsConsumer]
 
     def get(self, request):
         consumer = request.user.consumer
@@ -91,7 +93,7 @@ class GameSummaryView(APIView):
 
 
 class RecentRescuesView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsConsumer]
 
     serializer_class = ReservationSerializer
 
@@ -106,9 +108,3 @@ class RecentRescuesView(ListAPIView):
             )[:limit]
             # gets all the records that are "collected" and the limit is set
         )
-
-
-# test view
-class TestView(APIView):
-    def get(self, request):
-        return Response({"ok": True})
