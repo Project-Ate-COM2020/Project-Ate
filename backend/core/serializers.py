@@ -32,7 +32,13 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = "__all__"
+        fields = [
+            "email",
+            "password",
+            "username",
+            "first_name",
+            "last_name",
+        ]
 
     def create(self, validated_data):
         password = self.validated_data["password"]
@@ -42,6 +48,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user = self.Meta.model(**validated_data)
 
         user.set_password(password)
+
+        user.is_active = True
 
         user.save()
 
@@ -69,13 +77,26 @@ class BadgeMappingSerializer(serializers.ModelSerializer):
 class MaintainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintainer
-        fields = ["name", "email"]
+        fields = ["maintainer_id"]
 
 
-class MaintainerWithPasswordSerializer(serializers.ModelSerializer):
+class RegisterMaintainerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Maintainer
-        fields = ["maintainer_id", "name", "email", "password"]
+        fields = "maintainer_id"
+
+    def create(self, validated_data):
+        user = validated_data.pop("user_id")
+
+        user_model = get_user_model()
+
+        user = user_model.objects.get(pk=user)
+
+        seller = Seller.objects.create(user=user, **validated_data)
+
+        return seller
 
 
 class SellerSerializer(serializers.ModelSerializer):
