@@ -202,6 +202,17 @@ class SellerIssuesViewTests(IssueReportingAPITestBase):
 		self.assertEqual(len(response.data), 1)
 		self.assertEqual(response.data[0]["issue_id"], own.issue_id)
 
+	def test_returns_issues_for_non_default_seller_id(self):
+		self._create_issue(self.posting_1, self.consumer_1, desc="Seller one")
+		own = self._create_issue(self.posting_3, self.consumer_1, desc="Seller two")
+
+		url = reverse("seller-issues", kwargs={"seller_id": self.seller_2.seller_id})
+		response = self.client.get(url)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(len(response.data), 1)
+		self.assertEqual(response.data[0]["issue_id"], own.issue_id)
+
 	def test_orders_seller_issues_by_created_at_desc(self):
 		older = self._create_issue(self.posting_1, self.consumer_1, desc="Older")
 		newer = self._create_issue(self.posting_2, self.consumer_1, desc="Newer")
@@ -237,6 +248,19 @@ class SellerIssuesOverviewViewTests(IssueReportingAPITestBase):
 		self.assertEqual(response.data["open"], 1)
 		self.assertEqual(response.data["responded"], 1)
 		self.assertEqual(response.data["resolved"], 1)
+
+	def test_counts_for_non_default_seller_id(self):
+		self._create_issue(self.posting_1, self.consumer_1, "open")
+		self._create_issue(self.posting_3, self.consumer_1, "responded")
+
+		url = reverse("seller-issues-overview", kwargs={"seller_id": self.seller_2.seller_id})
+		response = self.client.get(url)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data["total_issues"], 1)
+		self.assertEqual(response.data["open"], 0)
+		self.assertEqual(response.data["responded"], 1)
+		self.assertEqual(response.data["resolved"], 0)
 
 	def test_unresolved_is_open_plus_responded(self):
 		self._create_issue(self.posting_1, self.consumer_1, "open")
@@ -304,3 +328,20 @@ class SellerIssueRespondViewTests(IssueReportingAPITestBase):
 		)
 		response = self.client.patch(url, {"status": "responded"}, format="json")
 		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+	def test_patch_works_for_non_default_seller_id(self):
+		issue = self._create_issue(self.posting_3, self.consumer_1, "open", desc="Need seller two")
+		url = reverse(
+			"seller-issue-respond",
+			kwargs={"seller_id": self.seller_2.seller_id, "issue_id": issue.issue_id},
+		)
+		response = self.client.patch(
+			url,
+			{"status": "responded", "seller_response": "Acknowledged."},
+			format="json",
+		)
+
+		issue.refresh_from_db()
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(issue.status, "responded")
+		self.assertEqual(issue.seller_response, "Acknowledged.")
