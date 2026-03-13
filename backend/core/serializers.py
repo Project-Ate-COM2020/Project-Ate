@@ -101,19 +101,23 @@ class ConsumerSerializer(serializers.ModelSerializer):
         fields = ["display_name", "streak"]
 
 
-class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
+class RegisterConsumerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Consumer
-        fields = ["consumer_id", "display_name", "password", "streak"]
+        fields = ["consumer_id", "display_name", "streak", "user_id"]
 
     def create(self, validated_data):
-        ph = PasswordHasher()
+        user = validated_data.pop("user_id")
 
-        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+        user_model = get_user_model()
 
-        self.Meta.model.is_active = True
+        user = user_model.objects.get(pk=user)
 
-        return super().create(validated_data)
+        consumer = Seller.objects.create(user=user, **validated_data)
+
+        return consumer
 
 
 class BundlePostingSerializer(serializers.ModelSerializer):

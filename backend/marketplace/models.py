@@ -4,7 +4,7 @@ from core.serializers import (
     SellerSerializer,
     RegisterSellerSerializer,
     ConsumerSerializer,
-    ConsumerWithPasswordSerializer,
+    RegisterConsumerSerializer,
     ReservationSerializer,
     UserSerializer,
 )
