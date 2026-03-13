@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.db.models import OneToOneField
@@ -280,9 +281,7 @@ class IssueReport(models.Model):
 
 class Maintainer(models.Model):
     maintainer_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    password = models.CharField(max_length=255)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         db_table = "maintainer"
