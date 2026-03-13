@@ -6,13 +6,14 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 
-from ..models import Consumer, ConsumerSerializer, ConsumerWithPasswordSerializer
+from ..models import Consumer, ConsumerSerializer, RegisterConsumerSerializer
 
 
 class CreateConsumerView(CreateAPIView):
     name = "consumer-create"
     queryset = Consumer
-    serializer_class = ConsumerWithPasswordSerializer
+    serializer_class = RegisterConsumerSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class ConsumerView(RetrieveUpdateDestroyAPIView):

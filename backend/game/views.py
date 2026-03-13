@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from marketplace.models import Consumer
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -17,7 +18,7 @@ CO2_PER_ITEM = {
     "Prepared Salads": 1.2,
     "Bakery": 0.8,
     "Desserts": 1.0,
-    "Dairy": 1.5
+    "Dairy": 1.5,
 }
 
 VARIETY_BADGES = [
@@ -35,11 +36,15 @@ IMPACT_BADGES = [
     {"name": "Planet Saver", "min_co2": 10000},
 ]
 
+
 class GameSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         consumer = request.user.consumer
-        collected = Reservation.objects.filter(consumer=consumer, status="collected").select_related("posting")
+        collected = Reservation.objects.filter(
+            consumer=consumer, status="collected"
+        ).select_related("posting")
         total_co2 = 0
         categories = set()
         for reservation in collected:
@@ -53,8 +58,7 @@ class GameSummaryView(APIView):
         current_week = now.isocalendar()[1]
         current_year = now.year
         has_rescued_this_week = collected.filter(
-            collected_at__week=current_week,
-            collected_at__year=current_year
+            collected_at__week=current_week, collected_at__year=current_year
         ).exists()
 
         # calculate badges
@@ -74,16 +78,21 @@ class GameSummaryView(APIView):
         consumer.badges = json.dumps(earned_badges)
         consumer.save()
 
-        return Response({
-            "current_streak_weeks": consumer.streak,
-            "has_rescued_this_week": has_rescued_this_week,
-            "total_rescued_bundles": collected.count(),
-            "estimated_co2e_saved_kg": total_co2,
-            "badges": earned_badges,
-            "unique_categories_rescued": len(categories)
-        })
-    
+        return Response(
+            {
+                "current_streak_weeks": consumer.streak,
+                "has_rescued_this_week": has_rescued_this_week,
+                "total_rescued_bundles": collected.count(),
+                "estimated_co2e_saved_kg": total_co2,
+                "badges": earned_badges,
+                "unique_categories_rescued": len(categories),
+            }
+        )
+
+
 class RecentRescuesView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
@@ -92,9 +101,12 @@ class RecentRescuesView(ListAPIView):
         # sets the limit at 10 so only the last 10 records are shown
 
         return (
-            Reservation.objects.filter(consumer=consumer, status="collected").order_by("collected_at")[:limit]
+            Reservation.objects.filter(consumer=consumer, status="collected").order_by(
+                "collected_at"
+            )[:limit]
             # gets all the records that are "collected" and the limit is set
         )
+
 
 # test view
 class TestView(APIView):

@@ -12,6 +12,7 @@ from ..models import (
     BundlePosting,
     BundlePostingSerializer,
 )
+from authentication.permissions import IsSeller
 
 
 class AllergenListView(APIView):
@@ -28,14 +29,13 @@ class CreateBundleView(CreateAPIView):
     name = "bundle-create"
     serializer_class = BundlePostingSerializer
     queryset = BundlePosting
-    # permission_classes = [IsAuthenticated]
-    # permission_classes = [AllowAny]
+    permission_classes = [IsSeller]
 
 
 # get all bundles
 class BundlesView(APIView):
     name: str = "bundles"
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         bundles = BundlePosting.objects.all()
@@ -43,8 +43,7 @@ class BundlesView(APIView):
         ids = [bundle_id for bundle_id in bundles.values_list("pk", flat=True)]
 
         return Response(ids)
-
-    name = "bundles"
+      
     # permission_classes = [AllowAny]
 
     def get(self, request):
