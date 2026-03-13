@@ -74,7 +74,7 @@ class IsMaintainerOrSeller(BasePermission):
             return False
 
 
-        return (token.get("maintainer_id") is not None) or (token.get("consumer_id") is not None)
+        return (token.get("maintainer_id") is not None) or (token.get("seller_id") is not None)
 
 class IsMaintainerAndSeller(BasePermission):
     def has_permission(self, request, view):
