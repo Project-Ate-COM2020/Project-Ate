@@ -1,6 +1,5 @@
 import json
 
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,9 +19,11 @@ from .forecasting import (
     _best_approach,
 )
 
+from authentication.permissions import IsSeller
+
 
 class ForecastPredictionView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def post(self, request):
         try:
