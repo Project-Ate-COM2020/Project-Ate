@@ -61,9 +61,6 @@ export default function Game() {
             <button className="game-button" type="button" onClick={load}>
               Try again
             </button>
-            {USE_MOCK_DATA && (
-              <p className="game-subtitle">(Dev mode: mock data)</p>
-            )}
           </div>
         </div>
       </div>
@@ -77,9 +74,6 @@ export default function Game() {
         <div className="game-state">
           <h2 className="game-title">Rescue Streaks</h2>
           <p className="game-subtitle">Loading…</p>
-          {USE_MOCK_DATA && (
-            <p className="game-subtitle">(Dev mode: mock data)</p>
-          )}
         </div>
       </div>
     );
@@ -92,9 +86,6 @@ export default function Game() {
       <div className="game-wrap">
         <header className="game-header">
           <h2 className="game-title">Rescue Streaks</h2>
-          <p className="game-subtitle">
-            Track your streak, your impact, and your badges.
-          </p>
         </header>
 
         <div style={{ marginBottom: 14 }}>
