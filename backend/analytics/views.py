@@ -17,10 +17,11 @@ from .analytics import (
     get_best_pickup_windows,
 )
 from core.models import BundlePosting
+from authentication.permissions import IsSeller
 
 
 class TotalListingsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -35,7 +36,7 @@ class TotalListingsView(APIView):
 
 
 class TotalRevenueView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -50,7 +51,7 @@ class TotalRevenueView(APIView):
 
 
 class TotalReservationsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -67,7 +68,7 @@ class TotalReservationsView(APIView):
 
 
 class FoodWasteReductionView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -84,7 +85,7 @@ class FoodWasteReductionView(APIView):
 
 
 class TotalNoShowsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -101,7 +102,7 @@ class TotalNoShowsView(APIView):
 
 
 class GetCollectedReservationsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -121,7 +122,7 @@ class GetCollectedReservationsView(APIView):
 
 
 class SellThroughBreakdownView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -137,7 +138,7 @@ class SellThroughBreakdownView(APIView):
 
 
 class WasteProxyView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -153,7 +154,7 @@ class WasteProxyView(APIView):
 
 
 class PricingEffectivenessView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -169,7 +170,7 @@ class PricingEffectivenessView(APIView):
 
 
 class PopularCategoriesView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
@@ -185,7 +186,7 @@ class PopularCategoriesView(APIView):
 
 
 class BestPickupWindowsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
     def get(self, request):
         try:
