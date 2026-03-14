@@ -1,7 +1,12 @@
 from decimal import Decimal
-from rest_framework.test import APITestCase, APIRequestFactory
 
+from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase, APIRequestFactory
+from django.urls import reverse
+from authentication.token import UserTokenObtainPairSerializer
+from django.conf import settings
 from core.models import BundlePosting, Reservation, Seller, Consumer
+from marketplace.views import CreateConsumerView
 from .views import (
     TotalListingsView,
     TotalRevenueView,
@@ -19,22 +24,80 @@ from .views import (
 class AnalyticsViewTests(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
-        self.seller = Seller.objects.create(
+
+        self.user, _ = self._create_user_get_auth_headers(
+            username="sellerone", password="password", email="sellerone@sellerone.com"
+        )
+
+        self.seller, self.seller_auth_headers = self._make_user_a_seller(
+            self.user,
             name="Seller One",
             location="Test Location",
             opening_hours="09:00-17:00",
             contact_stub="seller1@example.com",
-            password="",
         )
-        self.other_seller = Seller.objects.create(
-            name="Seller Two",
+
+        self.other_user, _ = self._create_user_get_auth_headers(
+            "other", "other@other.com", "password"
+        )
+
+        self.other_seller, self.other_seller_headers = self._make_user_a_seller(
+            self.other_user,
+            name="Test seller",
             location="Other Location",
-            opening_hours="10:00-18:00",
+            opening_hours="09:00-17:00",
             contact_stub="seller2@example.com",
-            password="",
         )
-        self.consumer = Consumer.objects.create(display_name="Test Buyer", password="")
+
+        self.consumer_user, _ = self._create_user_get_auth_headers(
+            "consumer", "consumer@consumer.com", "password"
+        )
+
+        self.consumer, self.consumer_user_headers = self._make_user_a_consumer(
+            self.consumer_user, "Test buyer"
+        )
+
         self._claim_seq = 1
+
+    @staticmethod
+    def _create_user_get_auth_headers(username, email, password):
+        user_model = get_user_model()
+
+        user = user_model.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
+
+        token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+        return user, {"AUTHORIZATION": f"Bearer {token}"}
+
+    @staticmethod
+    def _make_user_a_consumer(user, display_name):
+
+        consumer = Consumer.objects.create(
+            display_name=display_name,
+            user=user,
+        )
+
+        token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+        return consumer, {"AUTHORIZATION": f"Bearer {token}"}
+
+    @staticmethod
+    def _make_user_a_seller(user, name, location, opening_hours, contact_stub):
+        seller = Seller.objects.create(
+            location=location,
+            opening_hours=opening_hours,
+            contact_stub=contact_stub,
+            name=name,
+            user=user,
+        )
+
+        token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+        return seller, {"AUTHORIZATION": f"Bearer {token}"}
 
     def _create_posting(
         self,
@@ -69,7 +132,9 @@ class AnalyticsViewTests(APITestCase):
 
     def test_total_listings_empty_returns_400(self):
         request = self.factory.get(
-            "/analytics/total-listings/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-listings/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalListingsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
@@ -80,7 +145,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_posting(self.seller)
         self._create_posting(self.other_seller)
         request = self.factory.get(
-            "/analytics/total-listings/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-listings/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalListingsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -88,7 +155,9 @@ class AnalyticsViewTests(APITestCase):
 
     def test_total_revenue_empty_returns_400(self):
         request = self.factory.get(
-            "/analytics/total-revenue/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-revenue/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalRevenueView.as_view()(request)
         self.assertEqual(response.status_code, 400)
@@ -103,14 +172,18 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_two, status="no-show")
         self._create_reservation(posting_other, status="reserved")
         request = self.factory.get(
-            "/analytics/total-revenue/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-revenue/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalRevenueView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Decimal(str(response.data)), Decimal("12.50"))
 
     def test_total_reservations_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/total-reservations/")
+        request = self.factory.get(
+            "/analytics/total-reservations/", headers=self.seller_auth_headers
+        )
         response = TotalReservationsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -125,14 +198,18 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_two, status="collected")
         self._create_reservation(posting_other, status="reserved")
         request = self.factory.get(
-            "/analytics/total-reservations/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-reservations/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalReservationsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("total_reservations"), 2)
 
     def test_food_waste_reduction_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/food-waste-reduction/")
+        request = self.factory.get(
+            "/analytics/food-waste-reduction/", headers=self.seller_auth_headers
+        )
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -142,7 +219,9 @@ class AnalyticsViewTests(APITestCase):
     def test_food_waste_reduction_no_reservations_returns_zero(self):
         # No reservations exist — should return 0.0, not an error
         request = self.factory.get(
-            "/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id}
+            "/analytics/food-waste-reduction/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -160,14 +239,18 @@ class AnalyticsViewTests(APITestCase):
             posting_other, status="collected"
         )  # other seller, excluded
         request = self.factory.get(
-            "/analytics/food-waste-reduction/", {"seller_id": self.seller.seller_id}
+            "/analytics/food-waste-reduction/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = FoodWasteReductionView.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get("food_waste_reduction_percentage"), 50.0)
 
     def test_total_no_shows_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/total-no-shows/")
+        request = self.factory.get(
+            "/analytics/total-no-shows/", headers=self.seller_auth_headers
+        )
         response = TotalNoShowsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -183,7 +266,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting_two, status="reserved")
         self._create_reservation(posting_other, status="no-show")
         request = self.factory.get(
-            "/analytics/total-no-shows/", {"seller_id": self.seller.seller_id}
+            "/analytics/total-no-shows/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = TotalNoShowsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -192,13 +277,17 @@ class AnalyticsViewTests(APITestCase):
     # ----------- Sprint 2 tests -----------
 
     def test_sell_through_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/sell-through/")
+        request = self.factory.get(
+            "/analytics/sell-through/", headers=self.seller_auth_headers
+        )
         response = SellThroughBreakdownView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
     def test_sell_through_no_data_returns_zeros(self):
         request = self.factory.get(
-            "/analytics/sell-through/", {"seller_id": self.seller.seller_id}
+            "/analytics/sell-through/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = SellThroughBreakdownView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -214,7 +303,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting, status="expired")
         self._create_reservation(posting_other, status="collected")  # excluded
         request = self.factory.get(
-            "/analytics/sell-through/", {"seller_id": self.seller.seller_id}
+            "/analytics/sell-through/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = SellThroughBreakdownView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -225,7 +316,9 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(response.data.get("sell_through_rate"), 50.0)
 
     def test_waste_proxy_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/waste-proxy/")
+        request = self.factory.get(
+            "/analytics/waste-proxy/", headers=self.seller_auth_headers
+        )
         response = WasteProxyView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
@@ -235,7 +328,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(posting, status="collected")
         self._create_reservation(posting, status="no-show")
         request = self.factory.get(
-            "/analytics/waste-proxy/", {"seller_id": self.seller.seller_id}
+            "/analytics/waste-proxy/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = WasteProxyView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -244,7 +339,9 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(response.data.get("assumed_weight_kg_per_bundle"), 0.6)
 
     def test_pricing_effectiveness_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/pricing-effectiveness/")
+        request = self.factory.get(
+            "/analytics/pricing-effectiveness/", headers=self.seller_auth_headers
+        )
         response = PricingEffectivenessView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
@@ -255,7 +352,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(cheap, status="no-show")
         self._create_reservation(expensive, status="collected")
         request = self.factory.get(
-            "/analytics/pricing-effectiveness/", {"seller_id": self.seller.seller_id}
+            "/analytics/pricing-effectiveness/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = PricingEffectivenessView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -267,7 +366,9 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(cheap_bucket["sell_through_rate"], 50.0)
 
     def test_popular_categories_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/popular-categories/")
+        request = self.factory.get(
+            "/analytics/popular-categories/", headers=self.seller_auth_headers
+        )
         response = PopularCategoriesView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
@@ -279,7 +380,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(bakery, status="reserved")
         self._create_reservation(veg, status="reserved")
         request = self.factory.get(
-            "/analytics/popular-categories/", {"seller_id": self.seller.seller_id}
+            "/analytics/popular-categories/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = PopularCategoriesView.as_view()(request)
         self.assertEqual(response.status_code, 200)
@@ -288,7 +391,9 @@ class AnalyticsViewTests(APITestCase):
         self.assertEqual(response.data[1]["category"], "veg_box")
 
     def test_best_pickup_windows_missing_seller_id_returns_400(self):
-        request = self.factory.get("/analytics/best-pickup-windows/")
+        request = self.factory.get(
+            "/analytics/best-pickup-windows/", headers=self.seller_auth_headers
+        )
         response = BestPickupWindowsView.as_view()(request)
         self.assertEqual(response.status_code, 400)
 
@@ -299,7 +404,9 @@ class AnalyticsViewTests(APITestCase):
         self._create_reservation(evening, status="reserved")
         self._create_reservation(morning, status="reserved")
         request = self.factory.get(
-            "/analytics/best-pickup-windows/", {"seller_id": self.seller.seller_id}
+            "/analytics/best-pickup-windows/",
+            {"seller_id": self.seller.seller_id},
+            headers=self.seller_auth_headers,
         )
         response = BestPickupWindowsView.as_view()(request)
         self.assertEqual(response.status_code, 200)
