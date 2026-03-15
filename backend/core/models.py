@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+from django.db.models import OneToOneField
 
 # Create your models here.
 
@@ -100,13 +103,19 @@ from django.db import models
 );"""
 
 from argon2 import PasswordHasher
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    email = models.EmailField(max_length=255, unique=True)
 
 
 class Seller(models.Model):
     seller_id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
-    password = models.CharField(max_length=150)
     opening_hours = models.TextField(null=True, blank=True)
     contact_stub = models.CharField(max_length=255, null=True, blank=True)
 
@@ -125,8 +134,8 @@ class Badges(models.Model):
 
 class Consumer(models.Model):
     consumer_id = models.AutoField(primary_key=True)
+    user = OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=255)
-    password = models.CharField(max_length=150)
     streak = models.IntegerField(default=0)
 
     class Meta:
@@ -153,7 +162,6 @@ class BundlePosting(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     category = models.CharField(max_length=255)
     contents = models.TextField(null=True, blank=True)
-    allergens = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
     quantity_remaining = models.IntegerField(null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -269,6 +277,14 @@ class IssueReport(models.Model):
 
     class Meta:
         db_table = "issue_report"
+
+
+class Maintainer(models.Model):
+    maintainer_id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "maintainer"
 
 
 class ForecastInput(models.Model):

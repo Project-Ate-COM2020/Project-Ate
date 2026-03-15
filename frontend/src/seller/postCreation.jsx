@@ -2,8 +2,13 @@
 /* Blah Blah Blah I got bored of this shit ICL */
 
 /* --- Import Statements --- */
+import { useState } from "react";
 import NavBar from "../reusableComponents/navBar";
+import { useGetData, postData } from "../reusableComponents/api";
 import "./postCreation.css";
+
+/* --- Stable References --- */
+const NO_PARAMS = {};
 
 /* --- Test Data Declarations --- */
 let time_window;
@@ -15,8 +20,32 @@ let no_bundles;
 
 /* --- Main Page Function --- */
 function PostCreation() {
+    const [selectedAllergenIds, setSelectedAllergenIds] = useState([]);
+    const { data: allergens, loading: allergensLoading } = useGetData("marketplace/allergens/", NO_PARAMS, false);
+
+    function toggleAllergen(allergenId) {
+        setSelectedAllergenIds(prev =>
+            prev.includes(allergenId)
+                ? prev.filter(id => id !== allergenId)
+                : [...prev, allergenId]
+        );
+    }
+
+    async function handlePostListing() {
+        const result = await postData("seller/createlisting", {
+            seller_id: localStorage.getItem("seller_id"),
+            category: category,
+            contents: "placeholder",
+            quantity: no_bundles,
+            price: 0,
+            pickup_window: time_window,
+            allergen_ids: selectedAllergenIds,
+        }, false);
+        console.log("Post listing result:", result);
+    }
+
     return (
-        
+
         <div>
         <NavBar user_type = {"seller"}/>
             <div className = "bundleForecast-panel">
@@ -45,7 +74,7 @@ function PostCreation() {
                 <option value="20:00-21:00">8-9pm</option>
                 <option value="21:00-22:00">9-10pm</option>
                 <option value="22:00-23:00">10-11pm</option>
-                <option value="23:00-00:00">11-12am</option>                    
+                <option value="23:00-00:00">11-12am</option>
             </select>
             <hr />
             <p>Category</p>
@@ -77,14 +106,33 @@ function PostCreation() {
             <hr />
             <p>No. Bundles to sell</p>
             <input type="number" min="1" value={no_bundles}/>
-            <button>Load Forecasts</button>
+            <button className="btn-primary">Load Forecasts</button>
             <hr />
             <h2>Suggested price</h2>
             <p>Not Implemented Yet</p>
             <p>Set Price</p>
             <input type = "number"></input>
+            <hr />
+            <p>Allergens</p>
+            {allergensLoading ? (
+                <p>Loading allergens...</p>
+            ) : (
+                <div className="allergen-checkboxes">
+                    {allergens && allergens.map(allergen => (
+                        <label key={allergen.allergen_id} className="allergen-checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={selectedAllergenIds.includes(allergen.allergen_id)}
+                                onChange={() => toggleAllergen(allergen.allergen_id)}
+                            />
+                            {allergen.name}
+                        </label>
+                    ))}
+                </div>
+            )}
+            <hr />
             <p>Post Bundle listing</p>
-            <button>Post Listing</button>
+            <button className="btn-primary" onClick={handlePostListing}>Post Listing</button>
         </div>
         </div>
     )

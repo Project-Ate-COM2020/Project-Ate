@@ -1,0 +1,39 @@
+.legal-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    line-height: 1.7;
+    color: #1f2a3d;
+  }
+  
+  .legal-page h1 {
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+  }
+  
+  .legal-page h2 {
+    margin-top: 28px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+  }
+  
+  .legal-page p {
+    color: #5e6774;
+  }
+  
+  .legal-close {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: #eef2f1;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .legal-close:hover {
+    background: #59e3c6;
+  }

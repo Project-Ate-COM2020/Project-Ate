@@ -1,30 +1,202 @@
-.analytics-panel {
-  max-width: 65rem;
-  margin: 1.5rem auto 0;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
-  border-radius: 1rem;
-  backdrop-filter: blur(0.625rem);
-  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+/* analytics dashboard page wrapper */
+
+.analytics-page {
+    min-height: 100vh;
+    background: var(--cream, #F8FAF5);
 }
 
-.analytics-panel h2 {
-  margin: 0 0 0.5rem;
+/* main container  */
+.analytics-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-.analytics-panel h3 {
-  margin: 0.75rem 0 0;
-  font-size: 1rem;
-  opacity: 0.9;
+/* header section */
+.analytics-header {
+    margin-bottom: 0.25rem;
 }
 
-.analytics-panel p {
-  margin: 0;
-  padding: 0.65rem 0;
-  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
-  font-size: 1rem;
+.analytics-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark, #1B2D23);
+    margin: 0 0 0.25rem;
 }
+
+.analytics-subtitle {
+    color: var(--muted, #6B7C6E);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* error message banner */
+.analytics-error {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    background: #FFF3CD;
+    border: 1px solid #E9C46A;
+    border-left: 4px solid #E76F51;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    color: #1B2D23;
+    font-size: 0.875rem;
+}
+
+.analytics-error strong {
+    font-weight: 700;
+}
+
+/* grid that holds tiles */
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+/* more columns on tablet */
+@media (min-width: 640px) {
+    .tile-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ensure full layout */
+@media (min-width: 1024px) {
+    .tile-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* individual tile */
+.tile-card {
+    background: #ffffff;
+    border: 1px solid #E2EDE6;
+    border-radius: 1rem;
+    padding: 1.25rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.06));
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* slight lift on hover */
+.tile-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+}
+
+/* highlighted tile */
+.tile-card--accent {
+    border-left: 3px solid var(--green, #2D6A4F);
+    background: linear-gradient(135deg, #ffffff 70%, #D8F3DC40);
+}
+
+.tile-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+/* text content inside tile */
+.tile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.tile-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark, #1B2D23);
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.tile-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark, #1B2D23);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.tile-sub {
+    font-size: 0.75rem;
+    color: var(--muted, #6B7C6E);
+}
+
+/* rows that contain charts */
+.charts-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+/* two charts side by side */
+@media (min-width: 768px) {
+    .charts-row {
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+}
+
+/* card that wraps a chart */
+.chart-card {
+    background: #ffffff;
+    border: 1px solid #E2EDE6;
+    border-radius: 1rem;
+    padding: 1.25rem 1.25rem 1rem;
+    box-shadow: var(--shadow, 0 4px 24px rgba(0,0,0,0.06));
+}
+
+/* chart that spans the full row */
+.chart-card--wide {
+    grid-column: 1 / -1;
+}
+
+.chart-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dark, #1B2D23);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* empty state when thers no data */
+.no-data {
+    color: var(--muted, #6B7C6E);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2.5rem 0;
+    margin: 0;
+}
+
+/* loading placeholder */
+.skeleton {
+    height: 260px;
+    border-radius: 0.5rem;
+    background: linear-gradient(90deg, #E8F0EA 25%, #F0F7F1 50%, #E8F0EA 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
+
+/* smaller skeleton used inside tiles */
+.tile-card .skeleton {
+    height: 3.5rem;
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+

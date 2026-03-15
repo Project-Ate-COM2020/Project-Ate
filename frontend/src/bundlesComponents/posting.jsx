@@ -30,6 +30,7 @@ const seller = "Cheesy Goods Incorporated";
 const price = 14.50;
 const location = "Exeter";
 const stock = 56;
+const allergens = ["Milk", "Eggs", "Cereals containing gluten"];
 
 /* --- Helper Functions --- */
 function OptionalContainer( { includedAttributes } ) {
@@ -41,6 +42,7 @@ function OptionalContainer( { includedAttributes } ) {
     let priceDisplayed;
     let locationDisplayed;
     let reserveBundleButtonDisplayed;
+    let allergensDisplayed;
 
     for (const i of includedAttributes) {
         if (i == "pickup time") {pickupTimeDisplayed = true;}
@@ -50,6 +52,7 @@ function OptionalContainer( { includedAttributes } ) {
         if (i == "location") {locationDisplayed = true;}
         if (i == "reserve bundle button") {reserveBundleButtonDisplayed = true;}
         if (i == "stock") {stockDisplayed = true;}
+        if (i == "allergens") {allergensDisplayed = true;}
     }
 
     return (
@@ -66,9 +69,16 @@ function OptionalContainer( { includedAttributes } ) {
 
             {stockDisplayed && <p>Stock: {stock}</p>}
 
+            {allergensDisplayed && (
+                <p>
+                    {allergens.length === 0
+                        ? "Contains: None declared"
+                        : "Contains: " + allergens.join(", ")}
+                </p>
+            )}
+
             {reserveBundleButtonDisplayed && <button>Reserve bundle</button>}
 
-            
         </div>
     )
 }

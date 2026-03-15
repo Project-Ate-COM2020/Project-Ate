@@ -46,10 +46,10 @@ INSTALLED_APPS = [
     "core",
     "forecasts",
     "marketplace",
+    "authentication",
     "game",
     "issue_reporting",
-    
-    
+    "maintainer",
     # For specific API development
     "rest_framework",
     "rest_framework_simplejwt",
@@ -77,6 +77,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "backend.urls"
 
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -94,6 +95,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
+AUTH_USER_MODEL = "core.User"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -104,6 +106,14 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
 
 
 # Password validation

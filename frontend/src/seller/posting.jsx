@@ -17,7 +17,7 @@ function Reservation() {
     return (
         <div>
             <NavBar user_type = {"seller"}/>
-            <Posting includedAttributes={["stock", "pickup time", "location", "price"]} backFunction={() => navigate("/seller/postings")} />
+            <Posting includedAttributes={["stock", "pickup time", "location", "price", "allergens"]} backFunction={() => navigate("/seller/postings")} />
         </div>
     )
 }

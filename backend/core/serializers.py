@@ -1,4 +1,9 @@
+from django.contrib.auth.hashers import make_password
+from rest_framework.status import HTTP_404_NOT_FOUND
+
 from .models import (
+    Allergen,
+    BundleAllergens,
     BundlePosting,
     Reservation,
     Consumer,
@@ -8,11 +13,53 @@ from .models import (
     IssueReport,
     ForecastInput,
     ForecastOutput,
+    Maintainer,
 )
 
 from argon2 import PasswordHasher
 
 from rest_framework import serializers
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = "__all__"
+
+
+class RegisterUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "email",
+            "password",
+            "username",
+            "first_name",
+            "last_name",
+        ]
+
+    def create(self, validated_data):
+        password = self.validated_data["password"]
+        groups = validated_data.pop("groups", [])
+        user_permissions = validated_data.pop("user_permissions", [])
+
+        user = self.Meta.model(**validated_data)
+
+        user.set_password(password)
+
+        user.is_active = True
+
+        user.save()
+
+        if groups:
+            user.groups.set(groups)
+
+        if user_permissions:
+            user.user_permissions.set(user_permissions)
+
+        return user
 
 
 class BadgeSerializer(serializers.ModelSerializer):
@@ -27,32 +74,61 @@ class BadgeMappingSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class MaintainerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maintainer
+        fields = ["maintainer_id"]
+
+
+class RegisterMaintainerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
+    class Meta:
+        model = Maintainer
+        fields = "maintainer_id"
+
+    def create(self, validated_data):
+        user = validated_data.pop("user_id")
+
+        user_model = get_user_model()
+
+        user = user_model.objects.get(pk=user)
+
+        seller = Seller.objects.create(user=user, **validated_data)
+
+        return seller
+
+
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = ["name", "location", "opening_hours", "contact_stub"]
 
 
-class SellerWithPasswordSerializer(serializers.ModelSerializer):
+class RegisterSellerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Seller
         fields = [
             "seller_id",
             "name",
-            "password",
             "location",
             "opening_hours",
             "contact_stub",
+            "user_id",
         ]
 
     def create(self, validated_data):
-        ph = PasswordHasher()
+        user = validated_data.pop("user_id")
 
-        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+        user_model = get_user_model()
 
-        self.Meta.model.is_active = True
+        user = user_model.objects.get(pk=user)
 
-        return super().create(validated_data)
+        seller = Seller.objects.create(user=user, **validated_data)
+
+        return seller
 
 
 class ConsumerSerializer(serializers.ModelSerializer):
@@ -61,25 +137,44 @@ class ConsumerSerializer(serializers.ModelSerializer):
         fields = ["display_name", "streak"]
 
 
-class ConsumerWithPasswordSerializer(serializers.ModelSerializer):
+class RegisterConsumerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Consumer
-        fields = ["consumer_id", "display_name", "password", "streak"]
+        fields = ["consumer_id", "display_name", "streak", "user_id"]
 
     def create(self, validated_data):
-        ph = PasswordHasher()
+        user = validated_data.pop("user_id")
 
-        validated_data["password"] = ph.hash(validated_data["password"], salt=None)
+        user_model = get_user_model()
 
-        self.Meta.model.is_active = True
+        user = user_model.objects.get(pk=user)
 
-        return super().create(validated_data)
+        consumer = Seller.objects.create(user=user, **validated_data)
+
+        return consumer
+
+
+class AllergenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allergen
+        fields = ["allergen_id", "name"]
 
 
 class BundlePostingSerializer(serializers.ModelSerializer):
+    allergens = serializers.SerializerMethodField()
+
     class Meta:
         model = BundlePosting
         fields = "__all__"
+
+    def get_allergens(self, obj):
+        return list(
+            BundleAllergens.objects.filter(bundle_id=obj)
+            .select_related("allergen_id")
+            .values_list("allergen_id__name", flat=True)
+        )
 
 
 class ReservationSerializer(serializers.ModelSerializer):
