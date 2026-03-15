@@ -755,3 +755,47 @@ class TestMaintainerOrSellerOrConsumerPermission(APITestCase):
     def test_maintainer_and_consumer_and_seller_can_access(self):
         user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
         self.expect_ok(user)
+
+
+class TestChangePasswordView(APITestCase):
+    def setUp(self):
+        self.url = reverse(UpdatePasswordView.name)
+
+    def test_can_change_own_password(self):
+        login_url = reverse("user-token")
+
+        us = setup_base_user(username="test", email="test@test.com", password="old_password")
+
+        headers=get_authorization_headers_for_user(us)
+
+        # check we can login
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "old_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # change password
+        response = self.client.post(self.url, data={
+            "new_password": "new_password",
+        }, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # test old password no longer works
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "old_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # test new password does work
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "new_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
