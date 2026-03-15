@@ -5,12 +5,13 @@ import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
-import { usePostData } from "../reusableComponents/api";
+import { postData } from "../reusableComponents/api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
+  const [accountType, setAccountType] = useState("buyer");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,12 +22,23 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    credentials = usePostData("auth/token", {"username" : identifier, "password" : password});
+    const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
 
     localStorage.setItem("access_token", credentials.access);
     localStorage.setItem("refresh_token", credentials.refresh);
 
-    
+    console.log(credentials);
+
+    const verify = await postData("auth/verify", {"token" : credentials.access});
+
+    console.log(verify);
+
+    if (accountType == "seller") {
+      navigate("/seller");
+    } if (accountType == "buyer") {
+      navigate("/user");
+    };
+
   };
 
   return (
@@ -35,8 +47,36 @@ export default function LoginPage() {
       {error && <div className="auth-error">{error}</div>}
 
       <form onSubmit={handleSubmit} className="auth-form">
+
         <label className="auth-label">
-          Email / Username
+          Account Type
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="buyer"
+                checked={accountType === "buyer"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Buyer
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="seller"
+                checked={accountType === "seller"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Seller
+            </label>
+          </div>
+        </label>
+
+        
+        <label className="auth-label">
+          Username
           <input
             className="auth-input"
             value={identifier}
