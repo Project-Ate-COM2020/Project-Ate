@@ -1,18 +1,30 @@
-/* Login needs to be changed to allow for seperate login for buyers and sellers */
+/* --- File Description --- */
 
-// jsx for the central login page
+/* This file will allow for the login of a user, type is defined on the frontend and 
+passed to the backend - simple single form submission */
+
+/* --- Current Issues and Problems --- */
+
+/* Main problem is there is no way to ensure the user picks the right account to login to - so error handling needs to be 
+improved to allow proper redirecting*/
+
+/* I also don't want to edit Harry's layout but it should be at some point */
+
+/* --- Import Statements --- */
 import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
-import { useGetData } from "../reusableComponents/api";
+import { postData } from "../reusableComponents/api";
 
+/* --- Main Page Functions --- */
 export default function LoginPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
+  const [accountType, setAccountType] = useState("buyer");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  
 
   // UI feedback state ( loading + error )
   const [isLoading, setIsLoading] = useState(false);
@@ -20,36 +32,25 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    
+    const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
 
-    try {
-      the_post_data = {
-        username : identifier,
-        password : password
-      }
-      const { data, loading } = useGetData("marketplace/seller/auth/token", the_post_data, false);
-      navigate("/seller");
-    } catch (err) {
-      // make error messages user friendly
-      console.error(err);
-      let message = "Incorrect username or password";
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh);
 
-      // handle network errors
-      if (err?.message === "Failed to fetch") {
-        message =
-          "Unable to connect to the server, please check your internet connection";
-      }
+    console.log(credentials);
 
-      // check for http status codes
-      if (err?.status === 401) message = "Incorrect username or password";
-      if (err?.status === 403) message = "You're not authorised to log in";
+    const verify = await postData("auth/verify", {"token" : credentials.access});
 
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    console.log(verify);
+
+    if (accountType == "seller") {
+      navigate("/seller/home");
+    } if (accountType == "buyer") {
+      navigate("/buyer/home");
+    };
+
+};
 
   return (
     <AuthLayout title="Log in">
@@ -57,8 +58,36 @@ export default function LoginPage() {
       {error && <div className="auth-error">{error}</div>}
 
       <form onSubmit={handleSubmit} className="auth-form">
+
         <label className="auth-label">
-          Email / Username
+          Account Type
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="buyer"
+                checked={accountType === "buyer"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Buyer
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="seller"
+                checked={accountType === "seller"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Seller
+            </label>
+          </div>
+        </label>
+
+        
+        <label className="auth-label">
+          Username
           <input
             className="auth-input"
             value={identifier}
