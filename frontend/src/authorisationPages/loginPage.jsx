@@ -45,9 +45,9 @@ export default function LoginPage() {
     console.log(verify);
 
     if (accountType == "seller") {
-      navigate("/seller");
+      navigate("/seller/home");
     } if (accountType == "buyer") {
-      navigate("/user");
+      navigate("/buyer/home");
     };
 
 };

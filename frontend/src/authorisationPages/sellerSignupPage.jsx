@@ -76,7 +76,7 @@ export default function SellerSignupPage() {
     // Testing Purposes
     console.log(createdSeller);
 
-    navigate("/seller");
+    navigate("/seller/home");
   
   };
 
