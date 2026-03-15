@@ -421,19 +421,25 @@ class TestSellerPermission(APITestCase):
         self.expect_forbidden(setup_random_user())
 
     def test_only_maintainer_cannot_access(self):
-        pass
+        user, _  = setup_random_maintainer()
+        self.expect_forbidden(user)
 
     def test_only_seller_can_access(self):
-        pass
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
 
     def test_only_consumer_cannot_access(self):
-        pass
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
 
     def test_maintainer_and_seller_can_access(self):
-        pass
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_ok(user)
+
 
     def test_maintainer_and_consumer_and_seller_can_access(self):
-        pass
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestConsumerPermission(APITestCase):
     def setUp(self):
@@ -457,19 +463,24 @@ class TestConsumerPermission(APITestCase):
         self.expect_forbidden(setup_random_user())
 
     def test_only_maintainer_cannot_access(self):
-        pass
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
 
     def test_only_seller_cannot_access(self):
-        pass
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
 
     def test_only_consumer_can_access(self):
-        pass
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
 
     def test_maintainer_and_seller_cannot_access(self):
-        pass
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_forbidden(user)
 
     def test_maintainer_and_consumer_and_seller_can_access(self):
-        pass
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestConsumerOrSellerPermission(APITestCase):
     def setUp(self):
@@ -493,19 +504,24 @@ class TestConsumerOrSellerPermission(APITestCase):
         self.expect_forbidden(setup_random_user())
 
     def test_only_maintainer_cannot_access(self):
-        pass
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
 
     def test_only_seller_can_access(self):
-        pass
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
 
     def test_only_consumer_can_access(self):
-        pass
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
 
     def test_maintainer_and_seller_can_access(self):
-        pass
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_ok(user)
 
     def test_maintainer_and_consumer_and_seller_can_access(self):
-        pass
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestConsumerAndSellerPermission(APITestCase):
     def setUp(self):
@@ -529,22 +545,28 @@ class TestConsumerAndSellerPermission(APITestCase):
         self.expect_forbidden(setup_random_user())
 
     def test_only_maintainer_cannot_access(self):
-        pass
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
 
     def test_only_seller_cannot_access(self):
-        pass
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
 
     def test_only_consumer_cannot_access(self):
-        pass
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
 
     def test_consumer_and_seller_can_access(self):
-        pass
+        user, _, _ = setup_random_consumer_and_seller()
+        self.expect_ok(user)
 
     def test_maintainer_and_seller_cannot_access(self):
-        pass
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_forbidden(user)
 
     def test_maintainer_and_consumer_and_seller_can_access(self):
-        pass
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestMaintainerOrConsumerPermission(APITestCase):
     def setUp(self):
@@ -568,16 +590,20 @@ class TestMaintainerOrConsumerPermission(APITestCase):
         self.expect_forbidden(setup_random_user())
 
     def test_only_maintainer_can_access(self):
-        pass
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
 
     def test_only_seller_cannot_access(self):
-        pass
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
 
     def test_only_consumer_can_access(self):
-        pass
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
 
     def test_maintainer_and_consumer_and_seller_can_access(self):
-        pass
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestMaintainerAndConsumerPermission(APITestCase):
     def setUp(self):
@@ -597,31 +623,24 @@ class TestMaintainerAndConsumerPermission(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_base_user_cannot_access(self):
-        self.expect_forbidden(setup_random_user())
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
 
-class TestMaintainerAndSellerPermission(APITestCase):
-    def setUp(self):
-        self.url = reverse(MaintainerAndSellerView.name)
-        pass
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
 
-    def expect_forbidden(self, user):
-        headers = get_authorization_headers_for_user(user)
-
-        response = self.client.get(self.url, headers=headers)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def expect_ok(self, user):
-        headers = get_authorization_headers_for_user(user)
-
-        response = self.client.get(self.url, headers=headers)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
 
     def test_base_user_cannot_access(self):
         self.expect_forbidden(setup_random_user())
 
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
 
 class TestMaintainerOrSellerPermission(APITestCase):
     def setUp(self):
@@ -645,6 +664,22 @@ class TestMaintainerOrSellerPermission(APITestCase):
     def test_base_user_cannot_access(self):
         self.expect_forbidden(setup_random_user())
 
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
 class TestMaintainerAndConsumerAndSellerPermission(APITestCase):
     def setUp(self):
         self.url = reverse(MaintainerAndConsumerAndSellerView.name)
@@ -667,11 +702,26 @@ class TestMaintainerAndConsumerAndSellerPermission(APITestCase):
     def test_base_user_cannot_access(self):
         self.expect_forbidden(setup_random_user())
 
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
 class TestMaintainerOrSellerOrConsumerPermission(APITestCase):
     def setUp(self):
         self.url = reverse(MaintainerOrConsumerOrSellerView.name)
         pass
-
 
     def expect_forbidden(self, user):
         headers = get_authorization_headers_for_user(user)
@@ -689,3 +739,19 @@ class TestMaintainerOrSellerOrConsumerPermission(APITestCase):
 
     def test_base_user_cannot_access(self):
         self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_can_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
