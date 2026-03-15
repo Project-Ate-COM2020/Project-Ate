@@ -1,12 +1,22 @@
-/* Login needs to be changed to allow for seperate login for buyers and sellers */
+/* --- File Description --- */
 
-// jsx for the central login page
+/* This file will allow for the login of a user, type is defined on the frontend and 
+passed to the backend - simple single form submission */
+
+/* --- Current Issues and Problems --- */
+
+/* Main problem is there is no way to ensure the user picks the right account to login to - so error handling needs to be 
+improved to allow proper redirecting*/
+
+/* I also don't want to edit Harry's layout but it should be at some point */
+
+/* --- Import Statements --- */
 import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 import { postData } from "../reusableComponents/api";
 
+/* --- Main Page Functions --- */
 export default function LoginPage() {
   const navigate = useNavigate();
 
@@ -14,6 +24,7 @@ export default function LoginPage() {
   const [accountType, setAccountType] = useState("buyer");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  
 
   // UI feedback state ( loading + error )
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +50,7 @@ export default function LoginPage() {
       navigate("/user");
     };
 
-  };
+};
 
   return (
     <AuthLayout title="Log in">

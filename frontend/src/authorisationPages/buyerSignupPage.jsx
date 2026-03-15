@@ -1,13 +1,16 @@
-// jsx for the buyer sign up page (matches LoginPage styling)
+/* --- File Description --- */
 
-// TODOS : error handling and tidying up this file
+/* Buyer Sign up page - creates a buyer user and logs the client in as that user */
 
+/* --- Problems and Issues --- */
+
+/* Need to tidy up and make the page look nicer */
+
+/* --- Import Statements --- */
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupBuyer } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 import { postData } from "../reusableComponents/api.jsx";
-import { getData } from "../reusableComponents/api.jsx";
 
 function BuyerSignupPage() {
   const navigate = useNavigate();
