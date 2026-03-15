@@ -152,7 +152,7 @@ class RegisterConsumerSerializer(serializers.ModelSerializer):
 
         user = user_model.objects.get(pk=user)
 
-        consumer = Seller.objects.create(user=user, **validated_data)
+        consumer = Consumer.objects.create(user=user, **validated_data)
 
         return consumer
 
