@@ -6,13 +6,15 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupBuyer } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
-import { postData } from "../reusableComponents/api.jsx"
+import { postData } from "../reusableComponents/api.jsx";
+import { getData } from "../reusableComponents/api.jsx";
 
 function BuyerSignupPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
   const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
@@ -26,8 +28,6 @@ function BuyerSignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     // basic password checks ( backend will do futher validation )
     if (password1 !== password2) {
@@ -42,15 +42,38 @@ function BuyerSignupPage() {
     const dataToPost = {
       "email" : email,
       "password" : password2,
-      "username": displayName,
+      "username": username,
       "first_name": firstName,
       "last_name" : lastName,
     }
 
-    const response = postData("auth/user", dataToPost, false);
+    const createdUser = await postData("auth/user", dataToPost, false);
     
     // Testing purposes
-    console.log(response);
+    console.log(createdUser);
+
+    const credentials = await postData("auth/token", {"password": password2, "username": username}, false);
+
+    // Testing purposes (POTENTIAL SECURITY RISK)
+    console.log(credentials);
+
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh);
+    
+    // Testing purposes
+    console.log("User should now be logged in");
+    console.log(localStorage.getItem("access_token"));
+    console.log(localStorage.getItem("refresh_token"));
+
+    const buyerData = {
+      "display_name" : displayName
+    }
+
+    const createdBuyer = await postData("marketplace/consumer", buyerData, true);
+
+    // Testing Purposes
+    console.log(createdBuyer);
+
 
   };
 
@@ -62,11 +85,23 @@ function BuyerSignupPage() {
 
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
-          Username
+          Display Name
           <input
             className="auth-input"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="e.g. Will Brown"
+            autoComplete="name"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Username
+          <input
+            className="auth-input"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             placeholder="e.g. WillB123"
             autoComplete="name"
             required

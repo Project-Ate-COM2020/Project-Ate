@@ -16,6 +16,9 @@ export default function SellerSignupPage() {
   const [password2, setPassword2] = useState("");
   const [location, setLocation] = useState("");
   const [openingHours, setOpeningHours] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  
   
 
   // UI feedback state ( loading + error + success )
@@ -23,38 +26,33 @@ export default function SellerSignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  async function handleSubmit() {
-    // Prevent default form submission
-    event.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Basic validation
+    // basic password checks ( backend will do futher validation )
     if (password1 !== password2) {
-      setError("Passwords do not match.");
-      setIsLoading(false);
+      setError("Passwords do not match");
+      return;
+    }
+    if (password1.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
-    try {
-      const response = await signupSeller({
-        email,
-        password: password1,
-        sellerName: businessName,
-        location,
-        openingHours,
-        
-      });
-      setSuccess("Seller account created successfully!");
-      setIsLoading(false);
-      // Optionally redirect or clear form
-      // navigate("/login");
-    } catch (err) {
-      setError("Failed to create seller account.");
-      setIsLoading(false);
+    const dataToPost = {
+      "email" : email,
+      "password" : password2,
+      "username": businessName,
+      "first_name": firstName,
+      "last_name" : lastName,
     }
-  }
+
+    const response = postData("auth/user", dataToPost, false);
+    
+    // Testing purposes
+    console.log(response);
+  
+  };
 
   return (
     <AuthLayout title="Seller sign up">
@@ -64,7 +62,7 @@ export default function SellerSignupPage() {
 
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
-          Business name
+          Business Username
           <input
             className="auth-input"
             value={businessName}
@@ -83,6 +81,30 @@ export default function SellerSignupPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. bakery@example.com"
+            autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          First Name
+          <input
+            className="auth-input"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Will"
+            autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Last Name
+          <input
+            className="auth-input"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Brown"
             autoComplete="email"
             required
           />
