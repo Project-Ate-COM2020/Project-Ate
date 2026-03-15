@@ -20,4 +20,4 @@ class ConsumerView(RetrieveUpdateDestroyAPIView):
     name = "consumer"
     queryset = Consumer.objects.all()
     serializer_class = ConsumerSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]

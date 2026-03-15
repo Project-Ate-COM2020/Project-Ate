@@ -5,6 +5,8 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework.test import force_authenticate
 from django.urls import reverse
 
+from authentication.token import UserTokenObtainPairSerializer
+
 from .models import Seller, Consumer, Reservation, BundlePosting
 from .views import (
     CreateBundleView,
@@ -13,6 +15,47 @@ from .views import (
     CreateConsumerView,
     ConsumerView,
 )
+from django.contrib.auth import get_user_model
+
+
+def create_user_get_auth_headers(username, email, password):
+    user_model = get_user_model()
+
+    user = user_model.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+    )
+
+    token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+    return user, {"AUTHORIZATION": f"Bearer {token}"}
+
+
+def make_user_a_consumer(user, display_name):
+
+    consumer = Consumer.objects.create(
+        display_name=display_name,
+        user=user,
+    )
+
+    token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+    return consumer, {"AUTHORIZATION": f"Bearer {token}"}
+
+
+def make_user_a_seller(user, name, location, opening_hours, contact_stub):
+    seller = Seller.objects.create(
+        location=location,
+        opening_hours=opening_hours,
+        contact_stub=contact_stub,
+        name=name,
+        user=user,
+    )
+
+    token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+    return seller, {"AUTHORIZATION": f"Bearer {token}"}
 
 
 # Create your tests here.
@@ -20,19 +63,19 @@ class CreateBundleViewsTests(APITestCase):
     def setUp(self):
         seller_url = reverse(CreateSellerView.name)
 
-        seller_data = {
-            "name": "lauren",
-            "location": "CF54BB",
-            "password": "pass",
-            "opening_hours": "00:00-24:00",
-            "contact_stub": "9874325655",
-        }
-
-        self.seller_creation_response = self.client.post(
-            seller_url, seller_data, format="json"
+        self.seller_user, _ = create_user_get_auth_headers(
+            username="test", email="test@test.com", password="password"
         )
 
-        self.seller_id = self.seller_creation_response.json()["id"]
+        self.seller, self.seller_auth_headers = make_user_a_seller(
+            user=self.seller_user,
+            location="CF54BB",
+            opening_hours="00:00-24:00",
+            contact_stub="9874325655",
+            name="lauren",
+        )
+
+        self.seller_id = self.seller.pk
 
         bundle_url = reverse(CreateBundleView.name)
 
@@ -43,22 +86,16 @@ class CreateBundleViewsTests(APITestCase):
             "quantity": 8,
             "price": 55,
             "pickup_window": "00:00-24:00",
-            "status": 7,
+            "status": "active",
         }
 
         self.bundle_creation_response = self.client.post(
-            bundle_url, bundle_data, format="json"
+            bundle_url, bundle_data, format="json", headers=self.seller_auth_headers
         )
 
-        self.bundle_id = self.bundle_creation_response.json()["id"]
+        self.bundle_id = self.bundle_creation_response.json()["posting_id"]
 
     def test_creation_success(self):
-        self.assertEqual(Seller.objects.count(), 1)
-
-        self.assertEqual(
-            self.seller_creation_response.status_code, status.HTTP_201_CREATED
-        )
-
         self.assertEqual(
             self.bundle_creation_response.status_code, status.HTTP_201_CREATED
         )
@@ -66,31 +103,37 @@ class CreateBundleViewsTests(APITestCase):
         self.assertEqual(BundlePosting.objects.count(), 1)
 
     def test_bundle_data_integrity(self):
-        bundle = BundlePosting.objects.get(id=self.bundle_id)
+        bundle = BundlePosting.objects.get(posting_id=self.bundle_id)
 
-        self.assertEqual(bundle.seller.id, self.seller_id)
+        self.assertEqual(bundle.seller.pk, self.seller_id)
         self.assertEqual(bundle.category, "food")
         self.assertEqual(bundle.contents, "A bagel")
         self.assertEqual(bundle.quantity, 8)
         self.assertEqual(bundle.pickup_window, "00:00-24:00")
-        self.assertEqual(bundle.status, 7)
+        self.assertEqual(bundle.status, "active")
 
 
 class CreateSellerViewTests(APITestCase):
     def setUp(self):
         url = reverse(CreateSellerView.name)
 
+        self.user, self.headers = create_user_get_auth_headers(
+            "test", "test@test.com", "password"
+        )
+
         seller_data = {
             "name": "lauren",
             "location": "CF54BB",
-            "password": "pass",
             "opening_hours": "00:00-24:00",
             "contact_stub": "9874325655",
+            "user_id": self.user.pk,
         }
 
-        self.creation_response = self.client.post(url, seller_data, format="json")
+        self.creation_response = self.client.post(
+            url, seller_data, format="json", headers=self.headers
+        )
 
-        self.seller_id = self.creation_response.json()["id"]
+        self.seller_id = self.creation_response.json()["seller_id"]
 
     def test_creation_success(self):
         self.assertEqual(Seller.objects.count(), 1)
@@ -98,7 +141,7 @@ class CreateSellerViewTests(APITestCase):
         self.assertEqual(self.creation_response.status_code, status.HTTP_201_CREATED)
 
     def test_data_integrity(self):
-        seller = Seller.objects.get(id=self.seller_id)
+        seller = Seller.objects.get(seller_id=self.seller_id)
 
         self.assertEqual(seller.name, "lauren")
         self.assertEqual(seller.location, "CF54BB")
@@ -108,21 +151,27 @@ class CreateSellerViewTests(APITestCase):
 
 class CreateReservationViewsTests(APITestCase):
     def setUp(self):
-        seller_url = reverse(CreateSellerView.name)
-
-        seller_data = {
-            "name": "lauren",
-            "location": "CF54BB",
-            "password": "pass",
-            "opening_hours": "00:00-24:00",
-            "contact_stub": "9874325655",
-        }
-
-        self.seller_creation_response = self.client.post(
-            seller_url, seller_data, format="json"
+        self.consumer_user, _ = create_user_get_auth_headers(
+            "test", "test@test.com", "password"
         )
 
-        self.seller_id = self.seller_creation_response.json()["id"]
+        self.consumer, self.consumer_auth_headers = make_user_a_consumer(
+            user=self.consumer_user, display_name="test"
+        )
+
+        self.seller_user, _ = create_user_get_auth_headers(
+            "seller", "seller@seller.com", "password"
+        )
+
+        self.seller, self.seller_auth_headers = make_user_a_seller(
+            user=self.seller_user,
+            name="lauren",
+            location="CF54BB",
+            opening_hours="00:00-24:00",
+            contact_stub="9874325655",
+        )
+
+        self.seller_id = self.seller.pk
 
         bundle_url = reverse(CreateBundleView.name)
 
@@ -133,44 +182,36 @@ class CreateReservationViewsTests(APITestCase):
             "quantity": 8,
             "price": 55,
             "pickup_window": "00:00-24:00",
-            "status": 7,
+            "status": "active",
         }
 
         self.bundle_creation_response = self.client.post(
-            bundle_url, bundle_data, format="json"
+            bundle_url, bundle_data, format="json", headers=self.seller_auth_headers
         )
 
-        self.bundle_id = self.bundle_creation_response.json()["id"]
+        self.bundle_id = self.bundle_creation_response.json()["posting_id"]
 
-        consumer_url = reverse(CreateConsumerView.name)
-
-        consumer_data = {
-            "display_name": "name",
-            "password": "pass",
-            "streak": 7,
-            "badges": "Badge",
-        }
-
-        self.consumer_creation_response = self.client.post(
-            consumer_url, consumer_data, format="json"
-        )
-
-        self.consumer_id = self.consumer_creation_response.json()["id"]
+        self.consumer_id = self.consumer.pk
 
         reservation_url = reverse(CreateReservationView.name)
 
         reservation_data = {
-            "bundle": int(self.bundle_id),
+            "posting": int(self.bundle_id),
             "consumer": int(self.consumer_id),
             "claim_code": "XXXXXX",
-            "status": 7,
+            "status": "collected",
         }
 
         self.reservation_creation_response = self.client.post(
-            reservation_url, reservation_data, format="json"
+            reservation_url,
+            reservation_data,
+            format="json",
+            headers=self.consumer_auth_headers,
         )
 
-        self.reservation_id = self.reservation_creation_response.json()["id"]
+        self.reservation_id = self.reservation_creation_response.json()[
+            "reservation_id"
+        ]
 
     def test_creation_success(self):
         self.assertEqual(Reservation.objects.count(), 1)
@@ -179,32 +220,33 @@ class CreateReservationViewsTests(APITestCase):
         )
 
     def test_data_integrity(self):
-        reservation = Reservation.objects.get(id=self.reservation_id)
+        reservation = Reservation.objects.get(reservation_id=self.reservation_id)
 
-        self.assertEqual(reservation.bundle.id, self.bundle_id)
-        self.assertEqual(reservation.consumer.id, self.consumer_id)
+        self.assertEqual(reservation.posting.pk, self.bundle_id)
+        self.assertEqual(reservation.consumer.pk, self.consumer_id)
         self.assertEqual(reservation.claim_code, "XXXXXX")
-        self.assertEqual(reservation.status, 7)
+        self.assertEqual(reservation.status, "collected")
 
 
 class CreateConsumerViewTests(APITestCase):
     def setUp(self):
         consumer_url = reverse(CreateConsumerView.name)
 
+        self.user, self.headers = create_user_get_auth_headers(
+            "test", "test@test.com", "test"
+        )
+
         consumer_data = {
             "display_name": "name",
-            "password": "pass",
             "streak": 7,
-            "badges": "Badge",
+            "user_id": self.user.pk,
         }
 
         self.consumer_creation_response = self.client.post(
-            consumer_url, consumer_data, format="json"
+            consumer_url, consumer_data, format="json", headers=self.headers
         )
 
-        self.consumer_id = self.consumer_creation_response.json()["id"]
-
-        pass
+        self.consumer_id = self.consumer_creation_response.json()["consumer_id"]
 
     def test_creation_success(self):
         self.assertEqual(Consumer.objects.count(), 1)
@@ -213,55 +255,17 @@ class CreateConsumerViewTests(APITestCase):
         )
 
     def test_data_integrity(self):
-        consumer = Consumer.objects.get(id=self.consumer_id)
+        consumer = Consumer.objects.get(consumer_id=self.consumer_id)
 
         self.assertEqual(consumer.display_name, "name")
         self.assertEqual(consumer.streak, 7)
-        self.assertEqual(consumer.badges, "Badge")
 
 
-class ConsumerPasswordHashingTests(APITestCase):
+class PasswordHashingTests(APITestCase):
     def setUp(self):
-        consumer_url = reverse(CreateConsumerView.name)
-
-        consumer_data = {
-            "display_name": "name",
-            "password": "pass",
-            "streak": 7,
-            "badges": "Badge",
-        }
-
-        self.consumer_creation_response = self.client.post(
-            consumer_url, consumer_data, format="json"
+        self.user, self.headers = create_user_get_auth_headers(
+            "test", "test@test.com", "test"
         )
 
-        self.consumer_id = self.consumer_creation_response.json()["id"]
-
     def test_password_got_hashed(self):
-        consumer = Consumer.objects.get(id=self.consumer_id)
-
-        self.assertNotEqual(consumer.password, "pass")
-
-
-class SellerPasswordHashingTests(APITestCase):
-    def setUp(self):
-        seller_url = reverse(CreateSellerView.name)
-
-        seller_data = {
-            "name": "lauren",
-            "location": "CF54BB",
-            "password": "pass",
-            "opening_hours": "00:00-24:00",
-            "contact_stub": "9874325655",
-        }
-
-        self.seller_creation_response = self.client.post(
-            seller_url, seller_data, format="json"
-        )
-
-        self.seller_id = self.seller_creation_response.json()["id"]
-
-    def test_password_got_hashed(self):
-        seller = Seller.objects.get(id=self.seller_id)
-
-        self.assertNotEqual(seller.password, "pass")
+        self.assertNotEqual(self.user.password, "test")
