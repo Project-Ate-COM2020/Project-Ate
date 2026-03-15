@@ -2,6 +2,7 @@ import random
 import string
 from typing import Tuple, Any, Dict, Union
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory
@@ -799,3 +800,9 @@ class TestChangePasswordView(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+class TestRegisterUserThrottling(APITestCase):
+    def setUp(self):
+        self.limit = settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"][UserCreationThrottling.scope]
+
+    def test_throttled_by_day(self):
+        self.assertTrue("day" in self.limit)
