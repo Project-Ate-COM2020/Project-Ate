@@ -18,22 +18,22 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
             seller = Seller.objects.get(user=user)
 
             token['seller_id'] = seller.pk
-        except Seller.DoesNotExist:
-            token['seller_id'] = -1
+        except:
+            pass
 
         try:
             consumer = Consumer.objects.get(user=user)
 
             token['consumer_id'] = consumer.pk
-        except Consumer.DoesNotExist:
-            token['consumer_id'] = -1
+        except:
+            pass
 
         try:
             maintainer = Maintainer.objects.get(user=user)
 
             token['maintainer_id'] = maintainer.pk
-        except Maintainer.DoesNotExist:
-            token['maintainer_id'] = -1
+        except:
+            pass
 
         return token
 
