@@ -113,7 +113,7 @@ async function postData(endpoint, postData, authenticate = true) {
         if (include_auth) {
             for (let i = 0; i < 2; i++) {
                 const token = localStorage.getItem("access_token");
-                response = await fetch("http://localhost:8000/"  + endpoint + "/", {
+                response = await fetch("http://localhost:8000/"  + endpoint, {
                     method: "POST",
                     headers: {
                         "Authorization": "Bearer " + token,
@@ -129,7 +129,7 @@ async function postData(endpoint, postData, authenticate = true) {
             }
         }
         else {
-            response = await fetch("http://localhost:8000/" + endpoint + "/", {
+            response = await fetch("http://localhost:8000/" + endpoint, {
                 method : "POST",
                 headers: {
                     "Content-Type": "application/json"

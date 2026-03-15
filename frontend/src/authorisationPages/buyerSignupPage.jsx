@@ -1,10 +1,14 @@
 // jsx for the buyer sign up page (matches LoginPage styling)
+
+// TODOS : error handling and tidying up this file
+
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupBuyer } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
+import { postData } from "../reusableComponents/api.jsx"
 
-export default function BuyerSignupPage() {
+function BuyerSignupPage() {
   const navigate = useNavigate();
 
   // create state variables for form inputs
@@ -12,6 +16,8 @@ export default function BuyerSignupPage() {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   // UI feedback state ( loading + error + success )
   const [isLoading, setIsLoading] = useState(false);
@@ -33,34 +39,19 @@ export default function BuyerSignupPage() {
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      // create buyer account
-      await signupBuyer({ email, password: password1, displayName });
-
-      setSuccess("Account successfully created. You can now log in.");
-      navigate("/login");
-    } catch (err) {
-      // make error messages user friendly
-      console.error(err);
-      let message = "Unable to sign up. Please try again.";
-
-      // handle network errors
-      if (err?.message === "Failed to fetch") {
-        message =
-          "Unable to connect to the server, please check your internet connection";
-      }
-
-      // requestJson throws Error(...) with message
-      if (typeof err?.message === "string" && err.message.trim()) {
-        message = err.message;
-      }
-
-      setError(message);
-    } finally {
-      setIsLoading(false);
+    const dataToPost = {
+      "email" : email,
+      "password" : password2,
+      "username": displayName,
+      "first_name": firstName,
+      "last_name" : lastName,
     }
+
+    const response = postData("auth/user", dataToPost, false);
+    
+    // Testing purposes
+    console.log(response);
+
   };
 
   return (
@@ -71,12 +62,36 @@ export default function BuyerSignupPage() {
 
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
-          Display name
+          Username
           <input
             className="auth-input"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="e.g. Will Brown"
+            placeholder="e.g. WillB123"
+            autoComplete="name"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          First Name
+          <input
+            className="auth-input"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="e.g. Will"
+            autoComplete="name"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Last Name
+          <input
+            className="auth-input"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="e.g. Brown"
             autoComplete="name"
             required
           />
@@ -140,3 +155,4 @@ export default function BuyerSignupPage() {
     </AuthLayout>
   );
 }
+export default BuyerSignupPage;
