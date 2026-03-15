@@ -11,6 +11,11 @@ urlpatterns = [
         name=UserCreateView.name,
     ),
     path(
+        "update-password",
+        UpdatePasswordView.as_view(),
+        name=UpdatePasswordView.name,
+    ),
+    path(
         "token",
         UserTokenObtainPairView.as_view(),
         name="user-token",

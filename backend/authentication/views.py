@@ -1,15 +1,31 @@
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+
 from .permissions import *
 
 from .models import User, UserSerializer, RegisterUserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 class UserCreateView(CreateAPIView):
     name = "user-create"
     queryset = User
     serializer_class = RegisterUserSerializer
+
+class UpdatePasswordView(APIView):
+    name = "update-password"
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        new_password = request.data["new_password"]
+
+        request.user.set_password(new_password)
+
+        request.user.save()
+
+        return Response({}, status=HTTP_200_OK)
+
 
 class MaintainerView(APIView):
     name = "test-maintainer"
