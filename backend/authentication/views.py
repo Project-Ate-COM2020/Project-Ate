@@ -7,9 +7,11 @@ from .models import User, UserSerializer, RegisterUserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from .throttling import UserCreationThrottling
 
 class UserCreateView(CreateAPIView):
     name = "user-create"
+    throttle_classes = [UserCreationThrottling]
     queryset = User
     serializer_class = RegisterUserSerializer
 
