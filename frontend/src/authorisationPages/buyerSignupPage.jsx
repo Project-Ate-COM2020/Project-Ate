@@ -66,7 +66,8 @@ function BuyerSignupPage() {
     console.log(localStorage.getItem("refresh_token"));
 
     const buyerData = {
-      "display_name" : displayName
+      "display_name" : displayName,
+      "user_id" : createdUser.id,
     }
 
     const createdBuyer = await postData("marketplace/consumer", buyerData, true);
