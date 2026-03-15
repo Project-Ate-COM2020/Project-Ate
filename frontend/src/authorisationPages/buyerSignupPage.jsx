@@ -75,6 +75,8 @@ function BuyerSignupPage() {
     // Testing Purposes
     console.log(createdBuyer);
 
+    navigate("/user");
+
 
   };
 
