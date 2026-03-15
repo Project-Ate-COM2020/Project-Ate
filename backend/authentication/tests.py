@@ -152,3 +152,48 @@ class TestIsSellerPermission(APITestCase):
         response = self.client.post(url, {}, format="json", headers=self.authorization_headers)
 
         self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+class TestMaintainerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestSellerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestConsumerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestConsumerOrSellerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestConsumerAndSellerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerOrConsumerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerAndConsumerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerAndSellerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerOrSellerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerAndSellerAndConsumerPermission(APITestCase):
+    def setUp(self):
+        pass
+
+class TestMaintainerOrSellerOrConsumerPermission(APITestCase):
+    def setUp(self):
+        pass
+
