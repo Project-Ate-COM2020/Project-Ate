@@ -23,4 +23,4 @@ class ReservationView(RetrieveUpdateDestroyAPIView):
     name = "reservations"
     serializer_class = ReservationSerializer
     queryset = Reservation.objects.all()
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
