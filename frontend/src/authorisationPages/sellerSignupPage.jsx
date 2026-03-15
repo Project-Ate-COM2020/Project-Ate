@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupSeller } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
+import {postData } from "../reusableComponents/api.jsx";
 
 export default function SellerSignupPage() {
   const navigate = useNavigate();
@@ -47,10 +48,35 @@ export default function SellerSignupPage() {
       "last_name" : lastName,
     }
 
-    const response = postData("auth/user", dataToPost, false);
+    const createdUser = await postData("auth/user", dataToPost, false);
     
     // Testing purposes
-    console.log(response);
+    console.log(createdUser);
+
+    const credentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+
+    // Testing purposes (POTENTIAL SECURITY RISK)
+    console.log(credentials);
+
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh);
+    
+    // Testing purposes
+    console.log("User should now be logged in");
+    console.log(localStorage.getItem("access_token"));
+    console.log(localStorage.getItem("refresh_token"));
+
+    const sellerData = {
+      "display_name" : businessName,
+      "user_id" : createdUser.id,
+    }
+
+    const createdSeller = await postData("marketplace/consumer", sellerData, true);
+
+    // Testing Purposes
+    console.log(createdSeller);
+
+    navigate("/seller");
   
   };
 
