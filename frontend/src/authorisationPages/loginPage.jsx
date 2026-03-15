@@ -5,7 +5,7 @@ import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login, fetchMe } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
-import { useGetData } from "../reusableComponents/api";
+import { usePostData } from "../reusableComponents/api";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -20,35 +20,13 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    
+    credentials = usePostData("auth/token", {"username" : identifier, "password" : password});
 
-    try {
-      the_post_data = {
-        username : identifier,
-        password : password
-      }
-      const { data, loading } = useGetData("marketplace/seller/auth/token", the_post_data, false);
-      navigate("/seller");
-    } catch (err) {
-      // make error messages user friendly
-      console.error(err);
-      let message = "Incorrect username or password";
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh);
 
-      // handle network errors
-      if (err?.message === "Failed to fetch") {
-        message =
-          "Unable to connect to the server, please check your internet connection";
-      }
-
-      // check for http status codes
-      if (err?.status === 401) message = "Incorrect username or password";
-      if (err?.status === 403) message = "You're not authorised to log in";
-
-      setError(message);
-    } finally {
-      setIsLoading(false);
-    }
+    
   };
 
   return (
