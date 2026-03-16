@@ -89,11 +89,12 @@ class RegisterMaintainerSerializer(serializers.ModelSerializer):
         fields = "maintainer_id"
 
     def create(self, validated_data):
-        user = validated_data.pop("user_id")
+        # we have context provided by generic framework
+        context = self.context
 
-        user_model = get_user_model()
+        request = context['request']
 
-        user = user_model.objects.get(pk=user)
+        user = request.user
 
         seller = Seller.objects.create(user=user, **validated_data)
 
@@ -121,11 +122,11 @@ class RegisterSellerSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        user = validated_data.pop("user_id")
+        context = self.context
 
-        user_model = get_user_model()
+        request = context['request']
 
-        user = user_model.objects.get(pk=user)
+        user = request.user
 
         seller = Seller.objects.create(user=user, **validated_data)
 
@@ -146,11 +147,9 @@ class RegisterConsumerSerializer(serializers.ModelSerializer):
         fields = ["consumer_id", "display_name", "streak", "user_id"]
 
     def create(self, validated_data):
-        user = validated_data.pop("user_id")
+        request = self.context['request']
 
-        user_model = get_user_model()
-
-        user = user_model.objects.get(pk=user)
+        user = request.user
 
         consumer = Consumer.objects.create(user=user, **validated_data)
 
