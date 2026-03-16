@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
-from django.db.models import OneToOneField
+from django.db.models import OneToOneField, Q
+from django.db.models.constraints import CheckConstraint
 
 # Create your models here.
 
@@ -161,7 +162,7 @@ class BundlePosting(models.Model):
     ]
 
     posting_id = models.AutoField(primary_key=True)
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="bundles")
     category = models.CharField(max_length=255)
     contents = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
@@ -175,6 +176,13 @@ class BundlePosting(models.Model):
     class Meta:
         db_table = "bundle_posting"
 
+        constraints = [
+            CheckConstraint(
+                name="quantity_remaining_less_than_quantity",
+                check=Q(quantity_remaining__lt=models.F("quantity")),
+            )
+        ]
+
 
 class Reservation(models.Model):
     STATUS_CHOICES = [
@@ -185,7 +193,9 @@ class Reservation(models.Model):
     ]
 
     reservation_id = models.AutoField(primary_key=True)
-    posting = models.ForeignKey(BundlePosting, on_delete=models.CASCADE)
+    posting = models.ForeignKey(
+        BundlePosting, on_delete=models.CASCADE, related_name="reservations"
+    )
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     claim_code = models.CharField(max_length=255, unique=True)

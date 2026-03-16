@@ -15,7 +15,8 @@ from marketplace.views import CreateSellerView
 from marketplace.views import CreateBundleView, CreateReservationView
 
 from .token import UserTokenObtainPairSerializer
-from core.models import User, Seller, Consumer, Maintainer
+from core.models import User, Seller, Consumer, Maintainer, BundlePosting, Reservation
+
 
 class UserTokenTest(APITestCase):
     def setUp(self):
@@ -204,6 +205,27 @@ def random_consumer_args() -> Dict[str, Any]:
 
     return consumer_args
 
+def random_bundle_args() -> Dict[str, Any]:
+    return {
+        "category": get_random_string(10),
+        "contents": get_random_string(10),
+        "quantity": random.randint(5, 10),
+        "quantity_remaining": random.randint(1, 5),
+        "price": random.randint(1, 10),
+        "pickup_window": get_random_string(10),
+        "status": "active",
+        "created_at": get_random_string(10),
+        "updated_at": get_random_string(10),
+    }
+
+def random_reservation_args() -> Dict[str, Any]:
+    return {
+        "status": "reserved",
+        "claim_code": get_random_string(10),
+        "no_show_reason": get_random_string(10),
+    }
+
+
 def random_maintainer_args() -> Dict[str, Any]:
     return {}
 
@@ -349,6 +371,44 @@ def setup_random_maintainer_and_consumer_and_seller():
     r_seller = random_seller_args()
     seller = make_user_seller(user, **r_seller)
     return user, maintainer, consumer, seller
+
+def setup_bundle(consumer: Consumer, **kwargs) -> BundlePosting:
+    return BundlePosting.objects.create(consumer=consumer, **kwargs)
+
+def setup_random_bundle() -> Tuple[User, Seller, BundlePosting]:
+    user, seller = setup_random_seller()
+    create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
+    return user, seller, create
+
+def setup_random_bundle_for_seller(seller: Seller) -> BundlePosting:
+    create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
+    return create
+
+def setup_reservation(posting: BundlePosting, consumer: Consumer, **kwargs) -> Reservation:
+    reservation = Reservation.objects.create(posting=posting, consumer=consumer, **kwargs)
+    return reservation
+
+def setup_random_reservation() -> Tuple[Tuple[User, Consumer], Tuple[User, Seller], BundlePosting, Reservation]:
+    seller_user, seller, bundle = setup_random_bundle()
+    consumer_user, consumer = setup_random_consumer()
+    create = setup_reservation(bundle, consumer, **random_reservation_args())
+    return (consumer_user, consumer), (seller_user, seller), bundle, create
+
+def setup_random_reservation_for_consumer(consumer: Consumer) -> Tuple[User, Seller, BundlePosting, Reservation]:
+    seller_user, seller, bundle = setup_random_bundle()
+    create = setup_reservation(bundle, consumer, **random_reservation_args())
+    return seller_user, seller, bundle, create
+
+def setup_random_reservation_for_seller(seller: Seller) -> Tuple[User, Consumer, BundlePosting, Reservation]:
+    bundle = setup_random_bundle_for_seller(seller)
+    user, consumer = setup_random_consumer()
+    r = random_reservation_args()
+    create = setup_reservation(bundle, consumer, **r)
+    return user, consumer, bundle, create
+
+def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle: BundlePosting) -> Reservation:
+    create = setup_reservation(bundle, consumer)
+    return create
 
 def get_authorization_headers_for_user(user):
     token = UserTokenObtainPairSerializer.get_token(user).access_token

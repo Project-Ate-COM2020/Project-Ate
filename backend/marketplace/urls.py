@@ -2,7 +2,6 @@ from django.urls import path
 from . import views
 
 from .views.bundles import AllergenListView
-from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
 urlpatterns = [
     # get all allergens (UK Food Information Regulations 2014 - 14 allergens)
@@ -145,7 +144,7 @@ urlpatterns = [
         name=views.CreateReservationView.name,
     ),
     path(
-        "reservations/<int:reservation_id>/",
+        "reservations/<int:pk>/",
         views.ReservationView.as_view(),
         name=views.ReservationView.name,
     ),
