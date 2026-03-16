@@ -5,6 +5,8 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework.test import force_authenticate
 from django.urls import reverse
 
+from authentication.tests import setup_random_seller
+
 from authentication.token import UserTokenObtainPairSerializer
 
 from .models import Seller, Consumer, Reservation, BundlePosting
