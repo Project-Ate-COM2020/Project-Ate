@@ -1,6 +1,3 @@
-from django.contrib.auth.hashers import make_password
-from rest_framework.status import HTTP_404_NOT_FOUND
-
 from .models import (
     Allergen,
     BundleAllergens,
@@ -16,10 +13,7 @@ from .models import (
     Maintainer,
 )
 
-from argon2 import PasswordHasher
-
 from rest_framework import serializers
-from django.conf import settings
 from django.contrib.auth import get_user_model
 
 
@@ -135,7 +129,6 @@ class ConsumerSerializer(serializers.ModelSerializer):
 
 
 class RegisterConsumerSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Consumer
         fields = ["consumer_id", "display_name", "streak"]
@@ -170,6 +163,31 @@ class BundlePostingSerializer(serializers.ModelSerializer):
             .values_list("allergen_id__name", flat=True)
         )
 
+class CreateReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = [
+            "reservation_id",
+            "posting",
+            "timestamp",
+            "claim_code",
+            "status",
+            "no_show_reason",
+            "collected_at"
+        ]
+
+    def create(self, validated_data):
+        context = self.context
+
+        request = context['request']
+
+        user = request.user
+
+        consumer = Consumer.objects.filter(user=user)
+
+        reservation = Reservation.objects.create(consumer=consumer, **validated_data)
+
+        return reservation
 
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
