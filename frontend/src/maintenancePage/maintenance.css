@@ -1,0 +1,91 @@
+.maintenance-page {
+    min-height: 100vh;
+    background-color: #f6faf6;
+    padding: 2rem;
+  }
+  
+  .maintenance-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .maintenance-container h1 {
+    margin-bottom: 0.75rem;
+    color: #1f4d2e;
+  }
+  
+  .maintenance-description {
+    margin-bottom: 2rem;
+    color: #4b5563;
+    line-height: 1.6;
+  }
+  
+  .maintenance-section {
+    margin-bottom: 2rem;
+  }
+  
+  .maintenance-section h2 {
+    margin-bottom: 0.75rem;
+    color: #2e7d32;
+  }
+  
+  .maintenance-textarea {
+    width: 100%;
+    min-height: 220px;
+    padding: 1rem;
+    border: 1px solid #cfd8cf;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: monospace;
+    resize: vertical;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+  }
+  
+  .maintenance-button {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0.85rem 1.4rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .maintenance-button:hover {
+    background-color: #256628;
+  }
+  
+  .maintenance-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .maintenance-results {
+    background: #111827;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .maintenance-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  
+  .maintenance-empty {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 1rem;
+    border-radius: 10px;
+  }
