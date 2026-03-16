@@ -233,3 +233,216 @@
 .game-button:hover {
   background: var(--green-light);
 }
+
+/* ── HERO BANNER ── */
+.game-banner {
+  background: linear-gradient(135deg, #1B2D23, #2D6A4F);
+  padding: 3rem 3rem 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-banner::before {
+  content: '🌍';
+  font-size: 12rem;
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.08;
+}
+
+.game-banner-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+
+.game-banner-title em {
+  font-style: italic;
+  color: var(--green-light);
+}
+
+.game-banner-sub {
+  color: var(--green-pale);
+  font-size: 1.05rem;
+  max-width: 500px;
+}
+
+.game-impact-strip {
+  max-width: 1040px;
+  margin: -3rem auto 0;
+  padding: 0 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.game-impact-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--green-pale);
+  text-align: center;
+  transition: transform 0.25s;
+}
+
+.game-impact-card:hover { transform: translateY(-3px); }
+
+.game-impact-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.game-impact-unit {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.game-impact-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.streak-banner {
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.streak-text {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.streak-sub {
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.streak-dots {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.streak-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.streak-dot.active {
+  background: white;
+  color: var(--green);
+}
+
+.streak-dot.empty {
+  background: rgba(255,255,255,0.15);
+  border: 2px dashed rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.6);
+}
+
+.co2-display {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.co2-number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+}
+
+.co2-unit {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-wrap {
+  background: var(--green-pale);
+  border-radius: 50px;
+  height: 12px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 50px;
+  transition: width 1s ease;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.badge-tile {
+  background: var(--green-pale);
+  border-radius: 16px;
+  padding: 1.2rem 0.8rem;
+  text-align: center;
+  border: 1px solid rgba(82,183,136,0.3);
+  transition: transform 0.2s;
+}
+
+.badge-tile:hover { transform: translateY(-3px); }
+
+.badge-tile--locked {
+  background: #f5f5f5;
+  border: 2px dashed #ddd;
+  opacity: 0.6;
+}
+
+.badge-emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.badge-tile-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.badge-tile--locked .badge-tile-name {
+  color: var(--muted);
+}

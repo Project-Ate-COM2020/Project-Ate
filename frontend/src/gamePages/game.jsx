@@ -83,10 +83,32 @@ export default function Game() {
     <div className="game-page">
       <NavBar />
 
+{/*Dark green banner at the top of the page */}
+      <div className="game-banner">
+        <h1 className="game-banner-title">Your <em>impact</em> matters.</h1>
+        <p className="game-banner-sub">Every bundle you rescue saves food from landfill and reduces your carbon footprint. Keep going!</p>
+      </div>
+
+      {/* Three stat cards floating over the banner */}
+      <div className="game-impact-strip">
+        <div className="game-impact-card">
+          <div className="game-impact-number">{summary.total_rescued_bundles}</div>
+          <div className="game-impact-unit">bundles</div>
+          <div className="game-impact-label">Total Rescued</div>
+        </div>
+        <div className="game-impact-card">
+          <div className="game-impact-number">{summary.estimated_co2e_saved_kg}<span style={{fontSize:"1.5rem"}}>kg</span></div>
+          <div className="game-impact-unit">CO₂e saved</div>
+          <div className="game-impact-label">Carbon Impact</div>
+        </div>
+        <div className="game-impact-card">
+          <div className="game-impact-number">{summary.current_streak_weeks}</div>
+          <div className="game-impact-unit">weeks</div>
+          <div className="game-impact-label">Current Streak</div>
+        </div>
+      </div>
+
       <div className="game-wrap">
-        <header className="game-header">
-          <h2 className="game-title">Rescue Streaks</h2>
-        </header>
 
         <div style={{ marginBottom: 14 }}>
           <span className="pill">
@@ -98,39 +120,49 @@ export default function Game() {
         </div>
 
         <div className="game-grid">
-          <section className="game-card">
-            <h3>Streak</h3>
-
-            <div className="stat-row">
-              <span className="stat-label">Current streak</span>
-              <span className="stat-value">
-                {summary.current_streak_weeks} week(s)
-              </span>
+          {/* ── STREAK TRACKER ── Visual week by week streak */}
+        <section className="game-card game-card--full">
+          <h3>Weekly Streak</h3>
+          <div className="streak-banner">
+            <div>
+              <div className="streak-text">
+                  {summary.current_streak_weeks} week streak — keep it up!
+              </div>
+              <div className="streak-sub">
+                {summary.has_rescued_this_week
+                  ? " You've rescued a bundle this week!"
+                  : " Rescue a bundle this week to keep your streak alive"}
+              </div>
             </div>
-
-            <div className="stat-row">
-              <span className="stat-label">This week</span>
-              <span className="stat-value">
-                {summary.has_rescued_this_week ? "rescued" : "not yet"}
-              </span>
+            <div className="streak-dots">
+              {Array.from({ length: 7 }, (_, i) => (
+                <div key={i} className={`streak-dot ${i < summary.current_streak_weeks ? "active" : "empty"}`}>
+                  W{i + 1}
+                </div>
+              ))}
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="game-card">
-            <h3>Personal impact</h3>
-
-            <div className="stat-row">
-              <span className="stat-label">Total rescued bundles</span>
-              <span className="stat-value">{summary.total_rescued_bundles}</span>
+          {/* ── CO2 PROGRESS ── Shows carbon impact with a progress bar */}
+        <section className="game-card game-card--full">
+          <h3>Carbon Impact</h3>
+          <div className="co2-display">
+            <div className="co2-number">{summary.estimated_co2e_saved_kg}</div>
+            <div className="co2-unit">kg of CO₂e saved so far</div>
+            <div className="progress-bar-wrap">
+              <div
+                className="progress-bar-fill"
+                style={{width: `${(summary.estimated_co2e_saved_kg / 50) * 100}%`}}
+              />
             </div>
-
-            <div className="stat-row">
-              <span className="stat-label">Estimated CO₂ saved</span>
-              <span className="stat-value">
-                {summary.estimated_co2e_saved_kg} kg
-              </span>
+            <div className="progress-label">
+              <span>0 kg</span>
+              <span>{Math.round((summary.estimated_co2e_saved_kg / 50) * 100)}% to next milestone</span>
+              <span>50 kg 🎯</span>
             </div>
-          </section>
+          </div>
+        </section>
 
           {/* ── Badges 
                ZACH TODO     : replace placeholder squares with real badge images
@@ -139,25 +171,32 @@ export default function Game() {
                  <img src={`/badges/${badge}.png`} alt={badge} className="badge-img" />
                The CSS class "badge-img" needs adding to game.css.
            */}
-          <section className="game-card game-card--full">
-            <h3>Badges</h3>
+          {/* ── BADGES ── Earned badges shown as tiles, locked badges greyed out */}
+        <section className="game-card game-card--full">
+          <h3>Badges & Achievements</h3>
 
-            {Array.isArray(summary.badges) && summary.badges.length > 0 ? (
-              <ul className="badge-list">
-                {summary.badges.map((badge) => (
-                  <li className="badge-item" key={badge}>
-                    {/* TODO: swap this placeholder div for an <img> once badge assets are ready */}
-                    <div className="badge-img-placeholder" aria-hidden="true" />
-                    <span className="badge-name">{badge}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="game-subtitle">
-                No badges yet — keep rescuing bundles to earn them.
-              </p>
-            )}
-          </section>
+          <div className="badges-grid">
+            {/* Earned badges */}
+            {Array.isArray(summary.badges) && summary.badges.map((badge) => (
+              <div className="badge-tile" key={badge}>
+                <div className="badge-tile-name">{badge}</div>
+              </div>
+            ))}
+
+            {/* Locked badges - shows what they can earn next */}
+            {[
+              {  name: "10 Week Streak" },
+              {  name: "50kg CO₂ Saved" },
+              {  name: "Top Rescuer"    },
+              {  name: "25 Bundles"     },
+            ].map((b) => (
+              <div className="badge-tile badge-tile--locked" key={b.name}>
+                <span className="badge-emoji">{b.emoji}</span>
+                <div className="badge-tile-name">{b.name}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         </div>
       </div>
