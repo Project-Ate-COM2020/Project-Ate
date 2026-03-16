@@ -167,25 +167,25 @@ export default function BuyerProfilePage() {
     <div className="profile-page">
       <NavBar />
 
-      <div className="profile-banner">
+      <div className="profile-banner" style={{background: "linear-gradient(135deg, #1B2D23, #2D6A4F)"}}>
         <div className="profile-banner-inner">
-          <div className="profile-avatar">
+          <div className="profile-avatar" style={{background: "var(--green-light)", color: "white", border: "3px solid rgba(255,255,255,0.3)"}}>
             {user.display_name ? user.display_name[0].toUpperCase() : "?"}
           </div>
 
           <div className="profile-identity">
-            <h1 className="profile-name">{user.display_name || "Unknown"}</h1>
-            <p className="profile-meta">
-              <span>Streak: {user.streak ?? 0} week{user.streak !== 1 ? "s" : ""}</span>
+            <h1 className="profile-name" style={{color: "white"}}>{user.display_name || "Unknown"}</h1>
+            <p className="profile-meta" style={{color: "var(--green-pale)"}}>              
+              <span> {user.streak ?? 0} week{user.streak !== 1 ? "s" : ""} streak — keep it up!</span>
               {USE_MOCK_DATA && <span className="profile-mock-tag">Mock data</span>}
             </p>
           </div>
 
           <div className="profile-actions">
-            <button className="profile-btn-ghost" type="button" disabled>
+            <button className="profile-btn-ghost" type="button" disabled style={{color: "white", borderColor: "rgba(255,255,255,0.3)"}}>
               Edit profile
             </button>
-            <button className="profile-btn-danger" type="button" onClick={handleLogout}>
+            <button className="profile-btn-ghost" type="button" onClick={handleLogout} style={{color: "white", borderColor: "rgba(255,255,255,0.3)"}}>
               Log out
             </button>
           </div>
@@ -195,21 +195,21 @@ export default function BuyerProfilePage() {
       <div className="profile-wrap">
         <div className="profile-stats-row">
           <div className="profile-stat">
-            <span className="profile-stat-number">{summary.total_rescued_bundles ?? 0}</span>
+            <span className="profile-stat-number" style={{color: "var(--green)"}}>{summary.total_rescued_bundles}</span>
             <span className="profile-stat-label">Bundles rescued</span>
           </div>
 
           <div className="profile-stat-divider" />
 
           <div className="profile-stat">
-            <span className="profile-stat-number">{summary.current_streak_weeks ?? 0}</span>
+            <span className="profile-stat-number" style={{color: "var(--green)"}}>{summary.current_streak_weeks}</span>
             <span className="profile-stat-label">Week streak</span>
           </div>
 
           <div className="profile-stat-divider" />
 
           <div className="profile-stat">
-            <span className="profile-stat-number">{badges.length}</span>
+            <span className="profile-stat-number" style={{color: "var(--green)"}}>{badges.length}</span>
             <span className="profile-stat-label">Badges earned</span>
           </div>
         </div>
@@ -242,11 +242,21 @@ export default function BuyerProfilePage() {
             <h2 className="profile-section-title">Badges</h2>
 
             {badges.length > 0 ? (
-              badges.map((badge) => (
-                <div key={badge} className="profile-field">
-                  <span className="profile-field-value">{badge}</span>
+              <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem"}}>
+              {badges.map((badge) => (
+                <div key={badge} style={{
+                  background: "var(--green-pale)",
+                  borderRadius: "16px",
+                  padding: "1.2rem 1rem",
+                  textAlign: "center",
+                  border: "1px solid var(--green-light)",
+                  transition: "transform 0.2s"
+                }}>
+                  <div style={{fontSize: "1.8rem", marginBottom: "0.5rem"}}>🏅</div>
+                  <div style={{fontWeight: "700", color: "var(--green)", fontSize: "0.85rem"}}>{badge}</div>
                 </div>
-              ))
+              ))}
+            </div>
             ) : (
               <p className="profile-empty">
                 No badges yet — keep rescuing bundles to earn them.
