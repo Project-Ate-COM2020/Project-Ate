@@ -21,12 +21,6 @@ class CreateSellerView(CreateAPIView):
     serializer_class = RegisterSellerSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        if request.data['user_id'] != request.user.id:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        return super().create(request, *args, **kwargs)
-
 class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
     queryset = Seller.objects.all()
