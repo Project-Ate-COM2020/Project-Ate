@@ -45,6 +45,9 @@ import CookiePolicy from "./cookiePopup/CookiePolicy";
 import FootNote from "./reusableComponents/footnote";
 import PrivacyPolicy from "./reusableComponents/privacyPolicy";
 
+/* --- Maintaner Imports ---*/
+import MaintenancePage from "./maintenancePage/maintenancePage.jsx";
+
 // simple function defining the element to be returned based on the URL
 function App() {
   return (
@@ -99,6 +102,9 @@ function App() {
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        {/* maintainer Page */}
+        <Route path="/maintenance" element={<MaintenancePage />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
