@@ -42,6 +42,8 @@ import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 import CookiesConsent from "./cookiePopup/cookiesConsent";
 import TermsAndConditions from "./cookiePopup/TermsAndConditions";
 import CookiePolicy from "./cookiePopup/CookiePolicy";
+import FootNote from "./reusableComponents/footnote";
+import PrivacyPolicy from "./reusableComponents/privacyPolicy";
 
 // simple function defining the element to be returned based on the URL
 function App() {
@@ -51,50 +53,58 @@ function App() {
       <CookiesConsent />
 
       <Routes>
+        {/* Public / auth paths */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/seller/login" element={<LoginPage />} />
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/seller/login" element={<LoginPage />} />
+        {/*<Route path="/" element={<LoginPage />} />*/}
+        {/*<Route path="/login" element={<LoginPage />} />*/}
+        {/*<Route path="/seller/login" element={<LoginPage />} />*/}
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
-        <Route path="/user" element={<UserHomePage />} />
+        <Route path="/user" element={<HomePage />} />
         <Route path="/seller" element={<SellerHomePage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/buyer-profile" element={<BuyerProfilePage />} />
+        {/*<Route path="/buyer-profile" element={<BuyerProfilePage />} />
         <Route path="/buyer-profile" element={<BuyerProfilePage />} />
-        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
-        <Route path="/buyer-profile" element={<BuyerProfilePage />} />
+        <Route path="/buyer-profile" element={<BuyerProfilePage />} /> */}
         {/* <Route path="/seller/marketplace" element={<SellerMarketplace />} /> */}
         {/* <Route path="/seller/analytics" element={<AnalyticsPage />} /> */}
         {/* <Route path="/seller/forecast" element={<ForecastPage />} /> */}
         <Route path="*" element={<PageNotFound />} />
-        {/*<Route path="/basket" element={<Basket />} />*/}
-        <Route path="/orders" element={<Orders />}/>
-        <Route path="/report-issue" element={<IssueReportingPage />} />
-        <Route path="/seller/issues" element={<SellerIssuesPage />} />
-
-        {/* Seller paths */}
-        <Route path="/seller/profile" element={<SellerProfilePage />}/>
-        <Route path="/seller/home" element={<SellerHomePage />}/>
-        <Route path="/seller/createPosting" element={<CreatePostPage />}/>
-        <Route path="/seller/reservation" element={<Reservation />}/>
-        <Route path="/seller/reservations" element={<Reservations />}/>
-        <Route path="seller/posting" element = {<Posting />} />
-        <Route path="seller/postings" element = {<Postings />} />
-        <Route path="seller/analytics" element = {<Analytics />} />
-        <Route path="/seller/issues" element={<SellerIssuesPage />} />
-
-        {/* Authorisation Paths */}
-        {/* <Route path="/seller/login" element={<SellerLoginPage />} /> */}
         <Route path="/signup/buyer" element={<BuyerSignupPage />} />
         <Route path="/signup/seller" element={<SellerSignupPage />} />
-        <Route path="/report-issue" element={<IssueReportingPage />} />
 
+        {/* Buyer paths */}
+        <Route path="/buyer/home" element={<UserHomePage />} />
+        <Route path="/buyer/profile" element={<BuyerProfilePage />} />
+        <Route path="/buyer/orders" element={<Orders />} />
+        <Route path="/buyer/report-issue" element={<IssueReportingPage />} />
+        <Route path="/game" element={<GamePage />} />
+        {/*<Route path="/basket" element={<Basket />} />*/}
+
+        {/* Seller paths */}
+        <Route path="/seller/home" element={<SellerHomePage />} />
+        <Route path="/seller/profile" element={<SellerProfilePage />} />
+        <Route path="/seller/createPosting" element={<CreatePostPage />} />
+        <Route path="/seller/reservation" element={<Reservation />} />
+        <Route path="/seller/reservations" element={<Reservations />} />
+        <Route path="/seller/posting" element={<Posting />} />
+        <Route path="/seller/postings" element={<Postings />} />
+        <Route path="/seller/analytics" element={<Analytics />} />
+        <Route path="/seller/issues" element={<SellerIssuesPage />} />
+
+        {/* Legal pages */}
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
+
+      <FootNote />
+
     </Router>
   );
 }
@@ -102,4 +112,4 @@ function App() {
 // export the app
 export default App;
 
-// TODOS: buyer/seller is inconsistent terminology, need to replace 'user' with 'buyer' everywhere
+// buyer/seller terminology is now consistent - 'user' replaced with 'buyer' throughout

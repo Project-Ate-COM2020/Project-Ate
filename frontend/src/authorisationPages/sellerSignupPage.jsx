@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signupSeller } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
+import {postData } from "../reusableComponents/api.jsx";
 
 export default function SellerSignupPage() {
   const navigate = useNavigate();
@@ -16,6 +17,9 @@ export default function SellerSignupPage() {
   const [password2, setPassword2] = useState("");
   const [location, setLocation] = useState("");
   const [openingHours, setOpeningHours] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  
   
 
   // UI feedback state ( loading + error + success )
@@ -23,38 +27,58 @@ export default function SellerSignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  async function handleSubmit() {
-    // Prevent default form submission
-    event.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Basic validation
+    // basic password checks ( backend will do futher validation )
     if (password1 !== password2) {
-      setError("Passwords do not match.");
-      setIsLoading(false);
+      setError("Passwords do not match");
+      return;
+    }
+    if (password1.length < 8) {
+      setError("Password must be at least 8 characters");
       return;
     }
 
-    try {
-      const response = await signupSeller({
-        email,
-        password: password1,
-        sellerName: businessName,
-        location,
-        openingHours,
-        
-      });
-      setSuccess("Seller account created successfully!");
-      setIsLoading(false);
-      // Optionally redirect or clear form
-      // navigate("/login");
-    } catch (err) {
-      setError("Failed to create seller account.");
-      setIsLoading(false);
+    const dataToPost = {
+      "email" : email,
+      "password" : password2,
+      "username": businessName,
+      "first_name": firstName,
+      "last_name" : lastName,
     }
-  }
+
+    const createdUser = await postData("auth/user", dataToPost, false);
+    
+    // Testing purposes
+    console.log(createdUser);
+
+    const credentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+
+    // Testing purposes (POTENTIAL SECURITY RISK)
+    console.log(credentials);
+
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh);
+    
+    // Testing purposes
+    console.log("User should now be logged in");
+    console.log(localStorage.getItem("access_token"));
+    console.log(localStorage.getItem("refresh_token"));
+
+    const sellerData = {
+      "display_name" : businessName,
+      "user_id" : createdUser.id,
+    }
+
+    const createdSeller = await postData("marketplace/consumer", sellerData, true);
+
+    // Testing Purposes
+    console.log(createdSeller);
+
+    navigate("/seller/home");
+  
+  };
 
   return (
     <AuthLayout title="Seller sign up">
@@ -64,7 +88,7 @@ export default function SellerSignupPage() {
 
       <form onSubmit={handleSubmit} className="auth-form">
         <label className="auth-label">
-          Business name
+          Business Username
           <input
             className="auth-input"
             value={businessName}
@@ -83,6 +107,30 @@ export default function SellerSignupPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="e.g. bakery@example.com"
+            autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          First Name
+          <input
+            className="auth-input"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Will"
+            autoComplete="email"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Last Name
+          <input
+            className="auth-input"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Brown"
             autoComplete="email"
             required
           />

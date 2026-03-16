@@ -1,0 +1,89 @@
+from .views import *
+from django.urls import path
+from .token import UserTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+
+urlpatterns = [
+    # USER creation
+    path(
+        "user",
+        UserCreateView.as_view(),
+        name=UserCreateView.name,
+    ),
+    path(
+        "update-password",
+        UpdatePasswordView.as_view(),
+        name=UpdatePasswordView.name,
+    ),
+    path(
+        "token",
+        UserTokenObtainPairView.as_view(),
+        name="user-token",
+    ),
+    path(
+        "refresh",
+        TokenRefreshView.as_view(),
+        name="token-refresh",
+    ),
+    path(
+        "verify",
+        TokenVerifyView.as_view(),
+        name="verify-token",
+    ),
+    path(
+        "test/seller",
+        SellerView.as_view(),
+        name=SellerView.name
+    ),
+    path(
+        "test/maintainer",
+        MaintainerView.as_view(),
+        name=MaintainerView.name
+    ),
+    path(
+        "test/consumer",
+        ConsumerView.as_view(),
+        name=ConsumerView.name
+    ),
+
+    path(
+        "test/consumer-or-seller",
+        ConsumerOrSellerView.as_view(),
+        name=ConsumerOrSellerView.name
+    ),
+    path(
+        "test/consumer-and-seller",
+        ConsumerAndSellerView.as_view(),
+        name=ConsumerAndSellerView.name
+    ),
+    path(
+        "test/maintainer-and-seller",
+        MaintainerAndSellerView.as_view(),
+        name=MaintainerAndSellerView.name
+    ),
+    path(
+        "test/maintainer-or-seller",
+        MaintainerOrSellerView.as_view(),
+        name=MaintainerOrSellerView.name
+    ),
+    path(
+        "test/maintainer-and-consumer",
+        MaintainerAndConsumerView.as_view(),
+        name=MaintainerAndConsumerView.name
+    ),
+    path(
+        "test/maintainer-or-consumer",
+        MaintainerOrConsumerView.as_view(),
+        name=MaintainerOrConsumerView.name
+    ),
+    path(
+        "test/maintainer-or-consumer-or-seller",
+        MaintainerOrConsumerOrSellerView.as_view(),
+        name=MaintainerOrConsumerOrSellerView.name
+    ),
+    path(
+        "test/maintainer-and-consumer-and-seller",
+        MaintainerAndConsumerAndSellerView.as_view(),
+        name=MaintainerAndConsumerAndSellerView.name
+    )
+]

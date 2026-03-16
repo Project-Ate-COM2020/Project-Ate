@@ -21,7 +21,7 @@ export default function HomePage() {
           <p>Discover curated food bundles designed for every lifestyle —
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
-            <NavLink to="/user" className="btn-primary">Browse Bundles</NavLink>
+            <NavLink to="/buyer/home" className="btn-primary">Browse Bundles</NavLink>
             <NavLink to="/login" className="btn-secondary">Login to order</NavLink>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <NavLink to="/user" className="view-all">View all bundles</NavLink>
+        <NavLink to="/buyer/home" className="view-all">View all bundles</NavLink>
       </section>
 
     </div>

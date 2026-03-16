@@ -1,5 +1,7 @@
 from django.shortcuts import render
 import json
+
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,6 +11,8 @@ from claimcodegeneration import generate_claim_code
 
 
 class MarkReservationAsReserveredView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         """
         Marks a reservation as reserved.
@@ -55,6 +59,8 @@ class MarkReservationAsReserveredView(APIView):
 
 
 class MarkReservationAsUnreservedView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         """
         Marks a reservation as unreserved.
@@ -86,6 +92,8 @@ class MarkReservationAsUnreservedView(APIView):
 
 
 class GetBuyerReservationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, consumer_id):
         """
         Retrieves all reservations for a given consumer.

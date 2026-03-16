@@ -1,33 +1,67 @@
 /* page background for auth screens */
 .auth-page {
   min-height: 100vh;
-  background: var(--main);
+  background: var(--cream);
 }
 
-/* centers card underneath navbar */
 .auth-container {
   min-height: calc(100vh - 64px);
   display: grid;
-  place-items: center;
-  padding: 20px;
+  grid-template-columns: 1fr 1fr;
 }
-/* white card that holds form */
+
+.auth-left {
+  background: var(--green);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
+}
+
+.auth-left-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+  margin: 0 0 2rem;
+}
+
+.auth-left-tagline {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+}
+
+.auth-left-sub {
+  font-size: 1rem;
+  color: var(--green-pale);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.auth-right {
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: #2E7D32;
-  border: 1px solid #2E7D32;
+  background: white;
+  border: 1px solid var(--green-pale);
   border-radius: 12px;
-  padding: 22px;
+  padding: 2rem;
 }
 
-/* app title */
 .auth-brand {
-  margin: 0;
-  font-size: 24px;
-  color: var(--accent4); 
-  user-select: none;
-  cursor: default;
+  margin: 0 0 1.5rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--green); 
 } 
 
 /*.auth-title {
@@ -48,16 +82,17 @@
   display: grid;
   gap: 6px;
   font-size: 14px;
-  color: var(--accent4);
+  color: var(--muted);
 }
 
 /* text inputs */
 .auth-input {
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #cfd6e4;
+  border: 1px solid var(--green-pale);
   outline: none;
   font-size: 14px;
+  color: var(--dark);
 }
 
 /* main submit button */
@@ -67,13 +102,14 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  background: #eef0f5;
+  background: var(--green);
+  color: white;
 }
 
 /* thin divider line */
 .auth-divider {
   height: 1px;
-  background: #eef0f5;
+  background: var(--green-pale);
   margin: 16px 0;
 }
 
@@ -96,10 +132,10 @@
   display: inline-block;
   padding: 8px 10px;
   border-radius: 8px;
-  border: 1px solid #eef0f5;
-  background: #eef0f5;
+  border: 1px solid var(--green-light);
+  background: var(--green-pale);
   text-decoration: none;
-  color: black;
+  color: var(--green);
   font-size: 14px;
 }
 

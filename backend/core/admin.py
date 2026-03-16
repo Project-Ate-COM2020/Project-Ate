@@ -1,5 +1,16 @@
 from django.contrib import admin
-from .models import Allergen, BundleAllergens, ForecastInput, BundlePosting, Seller, Consumer, Reservation, IssueReport, ForecastOutput
+from .models import (
+    Allergen,
+    BundleAllergens,
+    ForecastInput,
+    BundlePosting,
+    Seller,
+    Consumer,
+    Reservation,
+    IssueReport,
+    ForecastOutput,
+    Maintainer,
+)
 
 # Register your models here.
 admin.site.register(Allergen)
@@ -11,3 +22,4 @@ admin.site.register(Consumer)
 admin.site.register(Reservation)
 admin.site.register(IssueReport)
 admin.site.register(ForecastOutput)
+admin.site.register(Maintainer)

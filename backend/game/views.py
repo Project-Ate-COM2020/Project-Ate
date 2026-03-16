@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -18,7 +19,7 @@ CO2_PER_ITEM = {
     "Prepared Salads": 1.2,
     "Bakery": 0.8,
     "Desserts": 1.0,
-    "Dairy": 1.5
+    "Dairy": 1.5,
 }
 
 VARIETY_BADGES = [
@@ -37,8 +38,13 @@ IMPACT_BADGES = [
 ]
 
 TEST_CONSUMER_ID = 1
+from authentication.permissions import IsConsumer
+
 
 class GameSummaryView(APIView):
+    permission_classes = [IsConsumer]
+
+    serializer_class = ReservationSerializer
 
     def get(self, request, *args, **kwargs):
         # Mock summary data
@@ -100,6 +106,8 @@ class GameSummaryView(APIView):
     #     })
     
 class RecentRescuesView(ListAPIView):
+    permission_classes = [IsConsumer]
+
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
