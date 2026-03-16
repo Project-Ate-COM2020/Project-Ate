@@ -277,6 +277,15 @@ class CreateReservationSerializer(serializers.ModelSerializer):
 
         consumer = Consumer.objects.get(user=user)
 
+        posting: BundlePosting = validated_data.get("posting")
+
+        if posting.quantity_remaining is not None:
+            posting.quantity_remaining -= 1
+        else:
+            posting.quantity_remaining = posting.quantity
+
+        posting.save()
+
         reservation = Reservation.objects.create(consumer=consumer, **validated_data)
 
         return reservation

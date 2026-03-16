@@ -2,7 +2,15 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
-from authentication.tests import setup_random_seller, setup_random_user
+from authentication.tests import (
+    setup_random_seller,
+    setup_random_user,
+    setup_random_consumer,
+    setup_random_bundle,
+    setup_random_reservation,
+    setup_random_reservation_for_seller,
+    get_authorization_headers_for_user,
+)
 
 from authentication.token import UserTokenObtainPairSerializer
 
@@ -12,6 +20,7 @@ from .views import (
     CreateSellerView,
     CreateReservationView,
     CreateConsumerView,
+    ReservationView,
 )
 from django.contrib.auth import get_user_model
 
@@ -227,6 +236,38 @@ class CreateReservationViewsTests(APITestCase):
         self.assertEqual(reservation.consumer.pk, self.consumer_id)
         self.assertEqual(reservation.claim_code, "XXXXXX")
         self.assertEqual(reservation.status, "collected")
+
+
+class RetrieveReservationsTests(APITestCase):
+    def setUp(self):
+        pass
+
+    def get_url(self, id):
+        return reverse(ReservationView.name, kwargs={"pk": id})
+
+    # test a consumer account can retrieve a list of their reservations but not any owned by another account
+    def test_can_only_retrieve_own_reservations_consumer(self):
+        (user1, consumer1), (seller_user, seller), bundle1, reservation1 = (
+            setup_random_reservation()
+        )
+
+        headers = get_authorization_headers_for_user(user1)
+
+        user2, consumer2, bundle2, reservation2 = setup_random_reservation_for_seller(
+            seller
+        )
+
+        response = self.client.get(
+            self.get_url(reservation2.pk), format="json", headers=headers
+        )
+
+        self.assertNotEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(
+            self.get_url(reservation1.pk), format="json", headers=headers
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class CreateConsumerViewTests(APITestCase):
