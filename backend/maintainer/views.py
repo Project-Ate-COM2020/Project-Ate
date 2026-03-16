@@ -13,6 +13,7 @@ from rest_framework.response import Response
 class CreateMaintainerView(CreateAPIView):
     name = "maintainer-create"
     queryset = Maintainer.objects.all()
+    queryset = Maintainer.objects.all()
     serializer_class = RegisterMaintainerSerializer
     permission_classes = [IsMaintainer]
 
@@ -31,7 +32,6 @@ class MaintainerView(RetrieveUpdateDestroyAPIView):
     queryset = Maintainer.objects.all()
     serializer_class = MaintainerSerializer
     lookup_url_kwarg = "maintainer_id"
-
     def get_queryset(self):
         match self.request.method:
             case "GET" | "PUT" | "PATCH" | "DELETE":
