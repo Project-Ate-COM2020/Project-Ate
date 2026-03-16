@@ -7,6 +7,7 @@ from authentication.permissions import IsMaintainer
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.views import APIView
 from django.db import connection
+from rest_framework.response import Response
 
 
 class CreateMaintainerView(CreateAPIView):
@@ -49,4 +50,4 @@ class MaintainerSQLView(APIView):
             cursor.execute(query)
             result = cursor.fetchall()
 
-        return json.dumps(result)
+        return Response(result)

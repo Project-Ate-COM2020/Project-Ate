@@ -36,6 +36,10 @@ import PrivacyPolicy from "./reusableComponents/privacyPolicy";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import HomePage from "./homePage/HomePage.jsx";
 
+/* --- Maintaner Imports ---*/
+import MaintenancePage from "./maintenancePage/maintenancePage.jsx";
+
+
 // simple function defining the element to be returned based on the URL
 function App() {
   return (
@@ -71,6 +75,11 @@ function App() {
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="*" element={<PageNotFound />} />
+
+        {/* maintainer Page */}
+        <Route path="/maintenance" element={<MaintenancePage />} />
+
+        
 
       </Routes>
 
