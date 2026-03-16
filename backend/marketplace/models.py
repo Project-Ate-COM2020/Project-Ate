@@ -7,4 +7,5 @@ from core.serializers import (
     RegisterConsumerSerializer,
     ReservationSerializer,
     UserSerializer,
+    CreateReservationSerializer
 )
