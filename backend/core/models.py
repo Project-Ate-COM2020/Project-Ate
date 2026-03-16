@@ -105,6 +105,8 @@ from django.db.models import OneToOneField
 from argon2 import PasswordHasher
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+import string
+import random
 
 
 class User(AbstractUser):
@@ -219,7 +221,7 @@ class ConsumerReview(models.Model):
         db_table = "consumer_review"
 
 
-# if a seller is reported
+# if a consumer is reported
 class ConsumerReport(models.Model):
     consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
