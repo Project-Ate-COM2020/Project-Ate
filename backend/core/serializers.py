@@ -82,8 +82,6 @@ class MaintainerSerializer(serializers.ModelSerializer):
 
 
 class RegisterMaintainerSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
-
     class Meta:
         model = Maintainer
         fields = "maintainer_id"
@@ -108,8 +106,6 @@ class SellerSerializer(serializers.ModelSerializer):
 
 
 class RegisterSellerSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
-
     class Meta:
         model = Seller
         fields = [
@@ -118,7 +114,6 @@ class RegisterSellerSerializer(serializers.ModelSerializer):
             "location",
             "opening_hours",
             "contact_stub",
-            "user_id",
         ]
 
     def create(self, validated_data):
@@ -140,11 +135,10 @@ class ConsumerSerializer(serializers.ModelSerializer):
 
 
 class RegisterConsumerSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField()
 
     class Meta:
         model = Consumer
-        fields = ["consumer_id", "display_name", "streak", "user_id"]
+        fields = ["consumer_id", "display_name", "streak"]
 
     def create(self, validated_data):
         request = self.context['request']
