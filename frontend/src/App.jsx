@@ -147,6 +147,11 @@ function App() {
         <Route path="/user" element={<Navigate to="/buyer/home" replace />} />
         <Route path="*" element={<PageNotFound />} />
 
+        {/* maintainer Page */}
+        <Route path="/maintenance" element={<MaintenancePage />} />
+
+        
+
       </Routes>
 
       <FootNote />

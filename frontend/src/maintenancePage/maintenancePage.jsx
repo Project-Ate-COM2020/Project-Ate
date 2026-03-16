@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import "./MaintenancePage.css";
+import "./maintenance.css";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
 export default function MaintenancePage() {
-  const [query, setQuery] = useState("SELECT * FROM maintainer_maintainer;");
+  const [query, setQuery] = useState("SELECT * FROM bundle_posting;");
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,32 +22,42 @@ export default function MaintenancePage() {
       return;
     }
 
+    const url = `${API_BASE_URL}/maintainer/maintainer/sql`;
+
+    console.log("Running SQL query at:", url);
+
     try {
       setLoading(true);
       setError("");
       setResults([]);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/maintainer/maintainer/sql`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ query }),
-        }
-      );
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query }),
+      });
 
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        const text = await response.text();
+        console.error("Backend error:", text);
+        throw new Error(`Request failed (${response.status})`);
       }
 
       const text = await response.text();
-      const parsed = JSON.parse(text);
+
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        parsed = text;
+      }
 
       setResults(parsed);
     } catch (err) {
+      console.error("SQL request failed:", err);
       setError(err.message || "Something went wrong while running the query.");
     } finally {
       setLoading(false);
@@ -55,6 +68,7 @@ export default function MaintenancePage() {
     <main className="maintenance-page">
       <div className="maintenance-container">
         <h1>Developer Maintenance Page</h1>
+
         <p className="maintenance-description">
           This page allows authorised maintainers to run SQL queries on the
           Project-Ate database for maintenance and inspection tasks.
@@ -62,6 +76,7 @@ export default function MaintenancePage() {
 
         <section className="maintenance-section">
           <h2>SQL Query</h2>
+
           <textarea
             className="maintenance-textarea"
             value={query}
@@ -69,6 +84,7 @@ export default function MaintenancePage() {
             rows={10}
             placeholder="Enter an SQL query..."
           />
+
           <button
             className="maintenance-button"
             onClick={runQuery}
@@ -89,7 +105,7 @@ export default function MaintenancePage() {
             </div>
           )}
 
-          {results.length > 0 && (
+          {results && results.length > 0 && (
             <pre className="maintenance-results">
               {JSON.stringify(results, null, 2)}
             </pre>
