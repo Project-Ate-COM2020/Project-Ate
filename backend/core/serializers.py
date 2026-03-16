@@ -1,4 +1,5 @@
-from rest_framework.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 from .models import (
     Allergen,
@@ -15,7 +16,10 @@ from .models import (
     Maintainer,
 )
 
+from argon2 import PasswordHasher
+
 from rest_framework import serializers
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 
@@ -78,29 +82,17 @@ class MaintainerSerializer(serializers.ModelSerializer):
 
 
 class RegisterMaintainerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Maintainer
         fields = "maintainer_id"
 
     def create(self, validated_data):
+        # we have context provided by generic framework
         context = self.context
 
-        if context is None:
-            raise ValidationError(
-                {
-                    f"no context passed to {self.__class__.__name__}",
-                    "please provide context to this serializer",
-                }
-            )
-
-        request = context["request"]
-
-        if request is None:
-            raise ValidationError(
-                {
-                    f"serializer context key 'request' given to {self.__class__.__name__} is None": "please provide the request as context to this serializer"
-                }
-            )
+        request = context['request']
 
         user = request.user
 
@@ -116,6 +108,8 @@ class SellerSerializer(serializers.ModelSerializer):
 
 
 class RegisterSellerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Seller
         fields = [
@@ -124,27 +118,13 @@ class RegisterSellerSerializer(serializers.ModelSerializer):
             "location",
             "opening_hours",
             "contact_stub",
+            "user_id",
         ]
 
     def create(self, validated_data):
         context = self.context
 
-        if context is None:
-            raise ValidationError(
-                {
-                    f"no context passed to {self.__class__.__name__}",
-                    "please provide context to this serializer",
-                }
-            )
-
-        request = context["request"]
-
-        if request is None:
-            raise ValidationError(
-                {
-                    f"serializer context key 'request' given to {self.__class__.__name__} is None": "please provide the request as context to this serializer"
-                }
-            )
+        request = context['request']
 
         user = request.user
 
@@ -160,12 +140,14 @@ class ConsumerSerializer(serializers.ModelSerializer):
 
 
 class RegisterConsumerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Consumer
-        fields = ["consumer_id", "display_name", "streak"]
+        fields = ["consumer_id", "display_name", "streak", "user_id"]
 
     def create(self, validated_data):
-        request = self.context["request"]
+        request = self.context['request']
 
         user = request.user
 
@@ -178,51 +160,6 @@ class AllergenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Allergen
         fields = ["allergen_id", "name"]
-
-
-class CreateBundlePostingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BundlePosting
-        fields = [
-            "posting_id",
-            "category",
-            "contents",
-            "quantity",
-            "quantity_remaining",
-            "price",
-            "pickup_window",
-            "status",
-            "created_at",
-            "updated_at",
-        ]
-
-    def create(self, validated_data):
-        context = self.context
-
-        if context is None:
-            raise ValidationError(
-                {
-                    f"no context passed to {self.__class__.__name__}",
-                    "please provide context to this serializer",
-                }
-            )
-
-        request = context["request"]
-
-        if request is None:
-            raise ValidationError(
-                {
-                    f"serializer context key 'request' given to {self.__class__.__name__} is None": "please provide the request as context to this serializer"
-                }
-            )
-
-        user = request.user
-
-        seller = Seller.objects.filter(user=user)
-
-        posting = BundlePosting(seller=seller, **validated_data)
-
-        return posting
 
 
 class BundlePostingSerializer(serializers.ModelSerializer):
@@ -238,48 +175,6 @@ class BundlePostingSerializer(serializers.ModelSerializer):
             .select_related("allergen_id")
             .values_list("allergen_id__name", flat=True)
         )
-
-
-class CreateReservationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reservation
-        fields = [
-            "reservation_id",
-            "posting",
-            "timestamp",
-            "claim_code",
-            "status",
-            "no_show_reason",
-            "collected_at",
-        ]
-
-    def create(self, validated_data):
-        context = self.context
-
-        if context is None:
-            raise ValidationError(
-                {
-                    f"no context passed to {self.__class__.__name__}",
-                    "please provide context to this serializer",
-                }
-            )
-
-        request = context["request"]
-
-        if request is None:
-            raise ValidationError(
-                {
-                    f"serializer context key 'request' given to {self.__class__.__name__} is None": "please provide the request as context to this serializer"
-                }
-            )
-
-        user = request.user
-
-        consumer = Consumer.objects.get(user=user)
-
-        reservation = Reservation.objects.create(consumer=consumer, **validated_data)
-
-        return reservation
 
 
 class ReservationSerializer(serializers.ModelSerializer):

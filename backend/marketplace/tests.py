@@ -1,8 +1,11 @@
+from argon2 import PasswordHasher
+from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIRequestFactory
+from rest_framework.test import force_authenticate
 from django.urls import reverse
 
-from authentication.tests import setup_random_seller, setup_random_user
+from authentication.tests import setup_random_seller
 
 from authentication.token import UserTokenObtainPairSerializer
 
@@ -12,6 +15,7 @@ from .views import (
     CreateSellerView,
     CreateReservationView,
     CreateConsumerView,
+    ConsumerView,
 )
 from django.contrib.auth import get_user_model
 
@@ -113,42 +117,38 @@ class CreateBundleViewsTests(APITestCase):
 
 class CreateSellerViewTests(APITestCase):
     def setUp(self):
-        self.url = reverse(CreateSellerView.name)
+        url = reverse(CreateSellerView.name)
 
         self.user, self.headers = create_user_get_auth_headers(
             "test", "test@test.com", "password"
         )
 
-        self.seller_data = {
+        seller_data = {
             "name": "lauren",
             "location": "CF54BB",
             "opening_hours": "00:00-24:00",
             "contact_stub": "9874325655",
+            "user_id": self.user.pk,
         }
 
-    def post_create_seller(self):
         self.creation_response = self.client.post(
-            self.url, self.seller_data, format="json", headers=self.headers
+            url, seller_data, format="json", headers=self.headers
         )
 
-        return self.creation_response.json()["seller_id"]
+        self.seller_id = self.creation_response.json()["seller_id"]
 
     def test_creation_success(self):
-        self.post_create_seller()
-
         self.assertEqual(Seller.objects.count(), 1)
 
         self.assertEqual(self.creation_response.status_code, status.HTTP_201_CREATED)
 
     def test_data_integrity(self):
-        seller_id = self.post_create_seller()
+        seller = Seller.objects.get(seller_id=self.seller_id)
 
-        seller = Seller.objects.get(seller_id=seller_id)
-
-        self.assertEqual(seller.name, self.seller_data["name"])
-        self.assertEqual(seller.location, self.seller_data["location"])
-        self.assertEqual(seller.opening_hours, self.seller_data["opening_hours"])
-        self.assertEqual(seller.contact_stub, self.seller_data["contact_stub"])
+        self.assertEqual(seller.name, "lauren")
+        self.assertEqual(seller.location, "CF54BB")
+        self.assertEqual(seller.opening_hours, "00:00-24:00")
+        self.assertEqual(seller.contact_stub, "9874325655")
 
 
 class CreateReservationViewsTests(APITestCase):
@@ -199,6 +199,7 @@ class CreateReservationViewsTests(APITestCase):
 
         reservation_data = {
             "posting": int(self.bundle_id),
+            "consumer": int(self.consumer_id),
             "claim_code": "XXXXXX",
             "status": "collected",
         }
@@ -240,6 +241,7 @@ class CreateConsumerViewTests(APITestCase):
         consumer_data = {
             "display_name": "name",
             "streak": 7,
+            "user_id": self.user.pk,
         }
 
         self.consumer_creation_response = self.client.post(
