@@ -53,9 +53,9 @@ const MOCK_DATA = {
 function StatTile({ label, value, icon, sub, accent }) {
     return (
         <div className={`tile-card${accent ? ' tile-card--accent' : ''}`}>
-            <div className="tile-icon">{icon}</div>
+            {icon && <div className="tile-icon">{icon}</div>}
             <div className="tile-body">
-                <span className="tile-value">{value ?? '—'}</span>
+                <span className="tile-value">{value ?? 'N/A'}</span>
                 <span className="tile-label">{label}</span>
                 {sub && <span className="tile-sub">{sub}</span>}
             </div>
@@ -164,8 +164,8 @@ function Analytics() {
     }, [sellerId]);
 
     const fmtRevenue = (v) =>
-        v != null ? `£${Number(v).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
-    const fmtPct = (v) => (v != null ? `${Number(v).toFixed(1)}%` : '—');
+        v != null ? `£${Number(v).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'N/A';
+    const fmtPct = (v) => (v != null ? `${Number(v).toFixed(1)}%` : 'N/A');
 
     // shared Plotly config so all charts keep the same look/spacing
     const plotConfig = { displayModeBar: false, responsive: true };
@@ -253,41 +253,35 @@ function Analytics() {
                     ) : (
                         <>
                             <StatTile
-                                icon="📋"
                                 label="Listings Posted"
-                                value={stats?.listings ?? '—'}
+                                value={stats?.listings ?? 'N/A'}
                                 sub="all time"
                             />
                             <StatTile
-                                icon="📅"
                                 label="Reservations Made"
-                                value={stats?.reservations ?? '—'}
+                                value={stats?.reservations ?? 'N/A'}
                                 sub="all time"
                             />
                             <StatTile
-                                icon="💷"
                                 label="Revenue Generated"
                                 value={fmtRevenue(stats?.revenue)}
                                 sub="all time"
                             />
                             <StatTile
-                                icon="✅"
                                 label="Collection Rate"
                                 value={fmtPct(stats?.collectionRate)}
                                 sub="collected / total"
                             />
                             <StatTile
-                                icon="⚠️"
                                 label="No-show Rate"
                                 value={stats?.noShows != null && stats?.reservations
                                     ? fmtPct((stats.noShows / stats.reservations) * 100)
-                                    : '—'}
+                                    : 'N/A'}
                                 sub="of reservations"
                             />
                             <StatTile
-                                icon="🌱"
                                 label="Food Waste Saved"
-                                value={wasteProxy?.kg_saved != null ? `${wasteProxy.kg_saved} kg` : '—'}
+                                value={wasteProxy?.kg_saved != null ? `${wasteProxy.kg_saved} kg` : 'N/A'}
                                 sub={wasteProxy?.bundles_collected != null ? `${wasteProxy.bundles_collected} bundles collected` : 'all time'}
                             />
                         </>
