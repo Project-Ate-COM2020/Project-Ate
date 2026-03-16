@@ -11,7 +11,7 @@ from django.db import connection
 
 class CreateMaintainerView(CreateAPIView):
     name = "maintainer-create"
-    queryset = Maintainer
+    queryset = Maintainer.objects.all()
     serializer_class = RegisterMaintainerSerializer
     permission_classes = [IsMaintainer]
 
@@ -21,7 +21,7 @@ class MaintainerView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsMaintainer]
     queryset = Maintainer.objects.all()
     serializer_class = MaintainerSerializer
-
+    lookup_url_kwarg = "maintainer_id"
 
 class MaintainerSQLView(APIView):
     name = "maintainer-sql"
