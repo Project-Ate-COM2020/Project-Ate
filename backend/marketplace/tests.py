@@ -1,8 +1,5 @@
-from argon2 import PasswordHasher
-from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APITestCase, APIRequestFactory
-from rest_framework.test import force_authenticate
+from rest_framework.test import APITestCase
 from django.urls import reverse
 
 from authentication.tests import setup_random_seller
@@ -15,7 +12,6 @@ from .views import (
     CreateSellerView,
     CreateReservationView,
     CreateConsumerView,
-    ConsumerView,
 )
 from django.contrib.auth import get_user_model
 
@@ -128,7 +124,6 @@ class CreateSellerViewTests(APITestCase):
             "location": "CF54BB",
             "opening_hours": "00:00-24:00",
             "contact_stub": "9874325655",
-            "user_id": self.user.pk,
         }
 
         self.creation_response = self.client.post(
@@ -241,7 +236,6 @@ class CreateConsumerViewTests(APITestCase):
         consumer_data = {
             "display_name": "name",
             "streak": 7,
-            "user_id": self.user.pk,
         }
 
         self.consumer_creation_response = self.client.post(
