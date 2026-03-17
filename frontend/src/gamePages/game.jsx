@@ -1,10 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
+import { useMemo } from "react";
+
+
+/* --- TO USE REAL DATA: --- */
+import { useGetData } from "../reusableComponents/api.jsx"
 
 // toggle to false when endpoints are ready
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // local mock data
 const MOCK_SUMMARY = {
@@ -14,60 +18,57 @@ const MOCK_SUMMARY = {
   estimated_co2e_saved_kg: 28.5,
   // badges comes from GET /game/api/game/summary/ — array of badge name strings
   // TODO: swap these for real badge objects once the badge images/assets are decided
-  badges: ["First Rescue", "Eco Warrior"],
+  badges: ["Explorer", "Eco Starter"],
+};
+
+const BADGES = {
+  "Explorer": {
+    icon: "/badges/explorer.png",
+    description: "Rescued 2 different food categories."
+  },
+  "Discoverer": {
+    icon: "/badges/discoverer.png",
+    description: "Rescued 3 different food categories."
+  },
+  "Adventurer": {
+    icon: "/badges/adventurer.png",
+    description: "Rescued 4 different food categories."
+  },
+  "Master": {
+    icon: "/badges/master.png",
+    description: "Rescued all 6 food categories."
+  },
+
+  "Eco Starter": {
+    icon: "/badges/eco_starter.png",
+    description: "Saved 100kg of CO₂ by rescuing food."
+  },
+  "Eco Friend": {
+    icon: "/badges/eco_friend.png",
+    description: "Saved 500kg of CO₂ by rescuing food."
+  },
+  "Climate Hero": {
+    icon: "/badges/climate_hero.png",
+    description: "Saved 1,000kg of CO₂ by rescuing food."
+  },
+  "Planet Saver": {
+    icon: "/badges/planet_saver.png",
+    description: "Saved 10,000kg of CO₂ by rescuing food."
+  }
 };
 
 export default function Game() {
-  const [summary, setSummary] = useState(null);
-  const [error, setError] = useState(null);
 
-  const load = useCallback(async () => {
-    setError(null);
+// memoize queryParams so useEffect doesn't trigger repeatedly
+const queryParams = useMemo(() => ({}), []); // empty object, stable reference
 
-    try {
-      if (USE_MOCK_DATA) {
-        setSummary(MOCK_SUMMARY);
-        return;
-      }
+const { data: summary, loading } = USE_MOCK_DATA
+  ? { data: MOCK_SUMMARY, loading: false }
+  : useGetData("game/api/game/summary/", queryParams, false);
 
-      // If you ever get 401, check this in console after logging in:
-      // console.log("access token:", localStorage.getItem("access"));
+  /* --- USING REAL DATA --- */
 
-      const summaryResponse = await fetchGameSummary();
-      setSummary(summaryResponse);
-    } catch (e) {
-      // Make errors readable (fetch() errors, thrown API errors, etc.)
-      const message =
-        e && typeof e === "object" && "message" in e
-          ? e.message
-          : "Failed to load game data";
-
-      setError(new Error(message));
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (error) {
-    return (
-      <div className="game-page">
-        <NavBar />
-        <div className="game-state">
-          <div className="game-error">
-            <h2 className="game-title">Rescue Streaks</h2>
-            <p>{error.message}</p>
-            <button className="game-button" type="button" onClick={load}>
-              Try again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!summary) {
+  if (loading || !summary) {
     return (
       <div className="game-page">
         <NavBar />
@@ -171,32 +172,60 @@ export default function Game() {
                  <img src={`/badges/${badge}.png`} alt={badge} className="badge-img" />
                The CSS class "badge-img" needs adding to game.css.
            */}
-          {/* ── BADGES ── Earned badges shown as tiles, locked badges greyed out */}
-        <section className="game-card game-card--full">
-          <h3>Badges & Achievements</h3>
+           
+          <section className="game-card game-card--full">
+            <h3>Badges</h3>
 
-          <div className="badges-grid">
-            {/* Earned badges */}
-            {Array.isArray(summary.badges) && summary.badges.map((badge) => (
-              <div className="badge-tile" key={badge}>
-                <div className="badge-tile-name">{badge}</div>
-              </div>
-            ))}
+            <ul className="badge-list">
+              {Object.keys(BADGES).map((badge) => {
+                const hasBadge = summary.badges.includes(badge); // check if user has it
 
-            {/* Locked badges - shows what they can earn next */}
-            {[
-              {  name: "10 Week Streak" },
-              {  name: "50kg CO₂ Saved" },
-              {  name: "Top Rescuer"    },
-              {  name: "25 Bundles"     },
-            ].map((b) => (
-              <div className="badge-tile badge-tile--locked" key={b.name}>
-                <span className="badge-emoji">{b.emoji}</span>
-                <div className="badge-tile-name">{b.name}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+                // Define badge requirements
+                const badgeRequirements = {
+                  "Explorer": { type: "categories", required: 2 },
+                  "Discoverer": { type: "categories", required: 3 },
+                  "Adventurer": { type: "categories", required: 4 },
+                  "Master": { type: "categories", required: 6 },
+                  "Eco Starter": { type: "co2", required: 100 },
+                  "Eco Friend": { type: "co2", required: 500 },
+                  "Climate Hero": { type: "co2", required: 1000 },
+                  "Planet Saver": { type: "co2", required: 10000 },
+                };
+
+                // Compute current progress from summary
+                let current = 0;
+                const req = badgeRequirements[badge];
+                if (req.type === "categories") {
+                  current = summary.unique_categories_rescued; // how many unique badges earned so far
+                } else if (req.type === "co2") {
+                  current = (summary.estimated_co2e_saved_kg || 0);
+                }
+
+                const tooltipText = hasBadge
+                  ? BADGES[badge].description
+                  : req.type === "categories"
+                    ? `${current}/${req.required} unique categories.`
+                    : `${current}/${req.required}kg of CO2.`;
+
+                return (
+                  <li className="badge-item" key={badge}>
+                    <div className="badge-wrapper">
+                      <img
+                        src={BADGES[badge].icon}
+                        alt={badge}
+                        className={`badge-img ${hasBadge ? "" : "badge-greyed"}`}
+                      />
+                      <div className="badge-tooltip">{tooltipText}</div>
+                    </div>
+
+                    <span className="badge-name">{badge}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+
+          
 
         </div>
       </div>
