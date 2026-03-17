@@ -127,7 +127,7 @@ const { data: summary, loading } = USE_MOCK_DATA
           <div className="streak-banner">
             <div>
               <div className="streak-text">
-                  {summary.current_streak_weeks} week streak — keep it up!
+                  {summary.current_streak_weeks} week streak, keep it up!
               </div>
               <div className="streak-sub">
                 {summary.has_rescued_this_week

@@ -50,8 +50,8 @@ export default function Listings({ mode = "listings" }) {
               id: p.posting_id,
               name: `${p.category} bundle`,
               price: p.price,
-              company: "—",
-              collectionLocation: "—",
+              company: "N/A",
+              collectionLocation: "N/A",
               expiryDate: p.pickup_window,
               allergens: p.allergens,
               description: p.contents,
@@ -226,13 +226,13 @@ export default function Listings({ mode = "listings" }) {
             </div>
 
             <p style={{ margin: "8px 0" }}>
-              <strong>Company:</strong> {selectedBundle.company ?? "—"}
+              <strong>Company:</strong> {selectedBundle.company ?? "N/A"}
             </p>
             <p style={{ margin: "8px 0" }}>
-              <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "—"}
+              <strong>Collection location:</strong> {selectedBundle.collectionLocation ?? "N/A"}
             </p>
             <p style={{ margin: "8px 0" }}>
-              <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "—"}
+              <strong>Expiry date:</strong> {selectedBundle.expiryDate ?? "N/A"}
             </p>
             <p style={{ margin: "8px 0" }}>
               <strong>Allergens:</strong>{" "}
@@ -281,7 +281,7 @@ export default function Listings({ mode = "listings" }) {
               {isOrders ? (
                 <div style={{display: "flex",gap: 8, alignItems: "center", flexWrap: "wrap",}}>
                 <span style={{ margin: "0 0 10px 0" }}>
-                  <strong>Code:</strong> {bundle.claim_code ?? "—"}
+                  <strong>Code:</strong> {bundle.claim_code ?? "N/A"}
                 </span>
 
                 <button onClick={() => returnOrderToStock(bundle)}>

@@ -57,7 +57,7 @@ const MOCK_RESERVATIONS = [
 
 // formats api timestamps into readable dates
 function formatDate(isoString) {
-  if (!isoString) return "—";
+  if (!isoString) return "N/A";
   return new Date(isoString).toLocaleDateString(undefined, {
     day: "numeric",
     month: "short",
@@ -100,7 +100,7 @@ export default function BuyerProfilePage() {
       }
 
       // TODO: get consumerId from auth context once auth is complete
-      const consumerId = null; // placeholder — replace with real id from auth
+      const consumerId = null; // placeholder - replace with real id from auth
       if (!consumerId) throw new Error("Not authenticated");
 
       const [userData, summaryData, reservationsData] = await Promise.all([
@@ -176,7 +176,7 @@ export default function BuyerProfilePage() {
           <div className="profile-identity">
             <h1 className="profile-name" style={{color: "white"}}>{user.display_name || "Unknown"}</h1>
             <p className="profile-meta" style={{color: "var(--green-pale)"}}>              
-              <span> {user.streak ?? 0} week{user.streak !== 1 ? "s" : ""} streak — keep it up!</span>
+              <span> {user.streak ?? 0} week{user.streak !== 1 ? "s" : ""} streak, keep it up!</span>
               {USE_MOCK_DATA && <span className="profile-mock-tag">Mock data</span>}
             </p>
           </div>
@@ -220,7 +220,7 @@ export default function BuyerProfilePage() {
 
             <div className="profile-field">
               <span className="profile-field-label">Display name</span>
-              <span className="profile-field-value">{user.display_name || "—"}</span>
+              <span className="profile-field-value">{user.display_name || "N/A"}</span>
             </div>
 
             <div className="profile-field">
@@ -233,7 +233,7 @@ export default function BuyerProfilePage() {
               <span className="profile-field-value">
                 {summary.estimated_co2e_saved_kg != null
                   ? `${summary.estimated_co2e_saved_kg} kg`
-                  : "—"}
+                  : "N/A"}
               </span>
             </div>
           </section>
@@ -259,7 +259,7 @@ export default function BuyerProfilePage() {
             </div>
             ) : (
               <p className="profile-empty">
-                No badges yet — keep rescuing bundles to earn them.
+                No badges yet. Keep rescuing bundles to earn them.
               </p>
             )}
           </section>
@@ -283,8 +283,8 @@ export default function BuyerProfilePage() {
                     {reservations.map((r) => (
                       <tr key={r.reservation_id}>
                         <td>{formatDate(r.created_at)}</td>
-                        <td>{r.claim_code || "—"}</td>
-                        <td>{r.posting_id || "—"}</td>
+                        <td>{r.claim_code || "N/A"}</td>
+                        <td>{r.posting_id || "N/A"}</td>
                         <td>
                           {r.status && (
                             <span className="profile-status-badge">{r.status}</span>
