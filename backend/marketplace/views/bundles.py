@@ -1,5 +1,6 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
+from django.template.context_processors import request
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -54,9 +55,9 @@ class ListBundlesView(ListAPIView):
         # sellers do not need to see other sellers bundles if they are not consumers
         if is_seller and not is_consumer:
             seller = Seller.objects.get(user=self.request.user)
-            return BundlePosting.objects.filter(seller=seller)
+            return BundlePosting.objects.filter(seller=seller).order_by('posting_id')
         else:
-            return BundlePosting.objects.all()
+            return BundlePosting.objects.all().order_by('posting_id')
 
 
 # get all bundles
