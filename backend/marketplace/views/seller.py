@@ -1,11 +1,18 @@
+import django
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.settings import APISettings
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.generics import (
+    RetrieveUpdateDestroyAPIView,
+    CreateAPIView,
+    ListAPIView,
+)
 from rest_framework.response import Response
 from argon2 import PasswordHasher
 
+from authentication.permissions import IsSeller, IsConsumerOrSeller, IsConsumer
+from core.models import Consumer
 from ..models import (
     Seller,
     SellerSerializer,
@@ -21,72 +28,59 @@ class CreateSellerView(CreateAPIView):
     serializer_class = RegisterSellerSerializer
     permission_classes = [IsAuthenticated]
 
+
+class ListSellerView(ListAPIView):
+    name = "seller-list"
+    serializer_class = SellerSerializer
+    permission_classes = [IsConsumerOrSeller]
+
+    # list sellers who consumers have reservations with
+    def get_consumer_queryset(self) -> django.db.models.QuerySet:
+        consumer = Consumer.objects.get(user=self.request.user)
+        return Seller.objects.filter(bundles__reservations__consumer=consumer)
+
+    def get_seller_queryset(self) -> django.db.models.QuerySet:
+        seller = Seller.objects.filter(user=self.request.user)
+        return seller
+
+    def get_queryset(self):
+        is_seller = IsSeller().has_permission(self.request, self)
+        is_consumer = IsConsumer().has_permission(self.request, self)
+
+        if is_seller and not is_consumer:
+            return self.get_seller_queryset()
+        elif is_consumer and not is_seller:
+            return self.get_consumer_queryset()
+        elif is_seller and is_consumer:
+            return self.get_seller_queryset().union(self.get_consumer_queryset())
+        else:
+            return Consumer.objects.none()
+
+
+class ListSellerBundlesView(ListAPIView):
+    name = "seller-list-bundles"
+    serializer_class = BundlePostingSerializer
+    permission_classes = [IsConsumerOrSeller]
+
+    def get_queryset(self):
+        pk = self.request.GET.get("pk")
+
+        return BundlePosting.objects.filter(seller=pk)
+
+
 class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeller]
 
-
-# get all bundles by a seller
-class SellerBundlesView(APIView):
-    name: str = "seller-bundles"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        try:
-            seller = Seller.objects.get(pk=seller_id)
-
-            bundle = BundlePosting.objects.get(seller=seller)
-
-            serializer = BundlePostingSerializer(bundle)
-
-            return Response(serializer.data)
-        except BundlePosting.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-# get newest bundles
-class SellerBundleNewestView(APIView):
-    name = "seller-bundles-newest"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        count = request.GET.get("count", 20)
-
-
-# get oldest bundles
-class SellerBundleOldestView(APIView):
-    name = "seller-bundles-oldest"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        count = request.GET.get("count", 20)
-
-
-# get bundles made between date range bundles
-class SellerBundleBetweenView(APIView):
-    name = "seller-bundles-between"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        date_from = request.GET.get("from")
-        date_to = request.GET.get("to")
-
-
-# get bundles made between date range bundles
-class SellerBundleOlderView(APIView):
-    name = "seller-bundles-older"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        date = request.GET.get("date")
-
-
-# get bundles newer than a specified date
-class SellerBundleNewerView(APIView):
-    name = "seller-bundles-newer"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, seller_id):
-        date = request.GET.get("date")
+    def get_queryset(self):
+        match self.request.method:
+            case "GET":
+                # anyone might need to query seller info
+                return Seller.objects.all()
+            case "PUT" | "PATCH" | "DELETE":
+                # only owning user should be able to update or delete seller status
+                return Seller.objects.filter(user=self.request.user)
+            case _:
+                return Seller.objects.none()

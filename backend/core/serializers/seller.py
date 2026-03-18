@@ -7,7 +7,7 @@ from core.models import Seller
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
-        fields = ["name", "location", "opening_hours", "contact_stub"]
+        fields = ["seller_id", "name", "location", "opening_hours", "contact_stub"]
 
 
 class RegisterSellerSerializer(serializers.ModelSerializer):

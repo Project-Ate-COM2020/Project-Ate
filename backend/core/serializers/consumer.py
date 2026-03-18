@@ -6,7 +6,7 @@ from core.models import Consumer
 class ConsumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consumer
-        fields = ["display_name", "streak"]
+        fields = ["consumer_id", "display_name", "streak"]
 
 
 class RegisterConsumerSerializer(serializers.ModelSerializer):
