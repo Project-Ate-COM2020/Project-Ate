@@ -380,6 +380,18 @@ def setup_random_bundle() -> Tuple[User, Seller, BundlePosting]:
     create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
     return user, seller, create
 
+def setup_n_random_bundles(n) -> Tuple[User, Seller, List[BundlePosting]]:
+    user, seller = setup_random_seller()
+
+    bundles = []
+
+    for x in range(n):
+        bundle = setup_random_bundle_for_seller(seller)
+
+        bundles.append(bundle)
+
+    return user, seller, bundles
+
 def setup_random_bundle_for_seller(seller: Seller) -> BundlePosting:
     create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
     return create
