@@ -40,6 +40,7 @@ REST_FRAMEWORK = {
         "user": "1000/day",
         "user_creation": "50/day",
     },
+    "PAGE_SIZE": 20
 }
 
 # Application definition

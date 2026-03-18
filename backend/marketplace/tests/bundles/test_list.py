@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
@@ -23,15 +25,24 @@ class ListBundleViewsTests(APITestCase):
 
         suser, seller, bundle = setup_random_bundle()
 
+        bundles = [bundle]
+
         for x in range(5):
-            _ = setup_random_bundle_for_seller(seller)
+            bundle = setup_random_bundle_for_seller(seller)
+
+            bundles.append(bundle)
 
         response = self.client.get(
-            self.url, {"page": 0}, format="json", headers=headers
+            self.url, {"page": 1}, format="json", headers=headers
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = response.json()
 
-        self.assertEqual(len(response), 6)
+        self.assertEqual(response["count"], 6)
+
+        self.assertEqual(len(response["results"]), 6)
+
+        for i, bundle in enumerate(bundles):
+            self.assertEqual(bundle.pk, response["results"][i]["posting_id"])
