@@ -1,7 +1,11 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    ListAPIView,
+)
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -37,8 +41,9 @@ class CreateBundleView(CreateAPIView):
     permission_classes = [IsSeller]
 
 
-class ListBundlesView(APIView):
+class ListBundlesView(ListAPIView):
     name = "bundle-list"
+    serializer_class = BundlePostingSerializer
     permission_classes = [IsConsumerOrSeller]
     pagination_class = PageNumberPagination
 

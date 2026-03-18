@@ -44,7 +44,7 @@ class SellerUpdateSerializer(UpdateSerializer):
         pass
 
 
-class OldUpdateSerializer(serializers.ModelSerializer):
+class OldUpdateSerializer(UpdateSerializer, serializers.ModelSerializer):
     allergens = serializers.SerializerMethodField()
 
     class Meta:
