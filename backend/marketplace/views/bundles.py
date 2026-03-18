@@ -68,7 +68,15 @@ class BundlesView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         if self.request.method == "GET":
-            return BundlePosting.objects.all()
+            is_seller = IsSeller().has_permission(self.request, self)
+            is_consumer = IsConsumer().has_permission(self.request, self)
+
+            # sellers do not need to see other sellers bundles if they are not consumers
+            if is_seller and not is_consumer:
+                seller = Seller.objects.get(user=self.request.user)
+                return BundlePosting.objects.filter(seller=seller)
+            else:
+                return BundlePosting.objects.all()
         elif (
             self.request.method == "PATCH"
             or self.request.method == "PUT"
