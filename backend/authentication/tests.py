@@ -1,6 +1,6 @@
 import random
 import string
-from typing import Tuple, Any, Dict, Union
+from typing import Tuple, Any, Dict, Union, List
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -422,7 +422,7 @@ def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle:
     create = setup_reservation(bundle, consumer)
     return create
 
-def get_authorization_headers_for_user(user):
+def get_authorization_headers_for_user(user: User):
     token = UserTokenObtainPairSerializer.get_token(user).access_token
 
     return {"Authorization": f"Bearer {token}"}
