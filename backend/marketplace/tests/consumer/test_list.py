@@ -3,20 +3,20 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from authentication.tests import (
-    setup_random_seller,
+    setup_random_consumer,
     get_authorization_headers_for_user,
-    setup_random_reservation,
-    setup_random_reservation_for_consumer,
+    setup_random_seller,
+    setup_random_reservation_for_seller,
 )
-from marketplace.views import ListSellerView
+from marketplace.views import ListConsumerView
 
 
-class ListSellerViewTests(APITestCase):
+class ListConsumerViewTest(APITestCase):
     def setUp(self):
-        self.url = reverse(ListSellerView.name)
+        self.url = reverse(ListConsumerView.name)
 
     def test_can_list_self(self):
-        user, seller = setup_random_seller()
+        user, _ = setup_random_consumer()
 
         headers = get_authorization_headers_for_user(user)
 
@@ -28,13 +28,13 @@ class ListSellerViewTests(APITestCase):
 
         self.assertEqual(len(response), 1)
 
-    def test_does_not_list_other_users(self):
-        user, seller = setup_random_seller()
-
-        headers = get_authorization_headers_for_user(user)
+    def test_cannot_list_other_consumer(self):
+        user, _ = setup_random_consumer()
 
         for x in range(5):
-            _, _ = setup_random_seller()
+            _, _ = setup_random_consumer()
+
+        headers = get_authorization_headers_for_user(user)
 
         response = self.client.get(self.url, headers=headers)
 
@@ -44,13 +44,13 @@ class ListSellerViewTests(APITestCase):
 
         self.assertEqual(len(response), 1)
 
-    def test_consumers_can_list_sellers_who_they_have_reservations_with(self):
-        (cuser, consumer), (_, _), _, _ = setup_random_reservation()
+    def test_seller_can_list_consumers_who_have_reserved_bundles(self):
+        user, seller = setup_random_seller()
 
         for x in range(5):
-            setup_random_reservation_for_consumer(consumer)
+            _, _, _, _ = setup_random_reservation_for_seller(seller)
 
-        headers = get_authorization_headers_for_user(cuser)
+        headers = get_authorization_headers_for_user(user)
 
         response = self.client.get(self.url, headers=headers)
 
@@ -58,4 +58,4 @@ class ListSellerViewTests(APITestCase):
 
         response = response.json()
 
-        self.assertEqual(len(response), 6)
+        self.assertEqual(len(response), 5)

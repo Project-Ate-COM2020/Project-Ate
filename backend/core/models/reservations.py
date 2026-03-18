@@ -16,7 +16,9 @@ class Reservation(models.Model):
     posting = models.ForeignKey(
         BundlePosting, on_delete=models.CASCADE, related_name="reservations"
     )
-    consumer = models.ForeignKey(Consumer, on_delete=models.CASCADE)
+    consumer = models.ForeignKey(
+        Consumer, on_delete=models.CASCADE, related_name="reservations"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     claim_code = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
