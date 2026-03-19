@@ -40,7 +40,7 @@ async function refreshTokens() {
                 "Content-Type": "application/json"
             },
             body : JSON.stringify({
-                "refresh": localStorage.getItem("refresh_token")
+                "token": localStorage.getItem("refresh_token")
             })
             
         });
@@ -51,7 +51,7 @@ async function refreshTokens() {
                 "Content-Type": "application/json"
             },
             body : JSON.stringify({
-                "refresh": localStorage.getItem("refresh_token")
+                "token": localStorage.getItem("refresh_token")
             })
             
         });
