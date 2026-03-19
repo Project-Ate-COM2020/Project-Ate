@@ -16,7 +16,7 @@ from .analytics import (
     get_popular_categories,
     get_best_pickup_windows,
 )
-from core.models import BundlePosting
+from core.models import BundlePosting, Seller
 from authentication.permissions import IsSeller
 
 
@@ -24,8 +24,10 @@ class TotalListingsView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
+
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             df = pd.DataFrame.from_records(BundlePosting.objects.values())
             if df.empty:
                 return Response({"error": "No data available"}, status=400)
@@ -39,8 +41,10 @@ class TotalRevenueView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
+
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             df = pd.DataFrame.from_records(BundlePosting.objects.values())
             if df.empty:
                 return Response({"error": "No data available"}, status=400)
@@ -54,8 +58,9 @@ class TotalReservationsView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -71,8 +76,9 @@ class FoodWasteReductionView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -88,8 +94,9 @@ class TotalNoShowsView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -105,8 +112,9 @@ class GetCollectedReservationsView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -125,8 +133,9 @@ class SellThroughBreakdownView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -141,8 +150,9 @@ class WasteProxyView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -157,8 +167,9 @@ class PricingEffectivenessView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -173,8 +184,9 @@ class PopularCategoriesView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},
@@ -189,8 +201,9 @@ class BestPickupWindowsView(APIView):
     permission_classes = [IsSeller]
 
     def get(self, request):
+        seller = Seller.objects.get(user=request.user)
         try:
-            seller_id = request.query_params.get("seller_id")
+            seller_id = seller.pk
             if not seller_id:
                 return Response(
                     {"error": "seller_id query parameter is required"},

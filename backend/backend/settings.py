@@ -12,18 +12,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+import os
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-f93hw7hoalq(7dl*7-!coj*&z32)c^pwz^*5%o@sj75j8vxz0w"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
@@ -40,6 +42,7 @@ REST_FRAMEWORK = {
         "user": "1000/day",
         "user_creation": "50/day",
     },
+    "PAGE_SIZE": 20
 }
 
 # Application definition
@@ -108,12 +111,25 @@ AUTH_USER_MODEL = "core.User"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+
+if os.getenv("DB_ENGINE") == "mysql":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backend.mysql",
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST"),
+            "PORT": os.getenv("DB_PORT"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
@@ -171,9 +187,18 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+
+frontend_api = os.getenv("FRONTEND_DOMAIN")
+
+if frontend_api is not None:
+    CORS_ALLOWED_ORIGINS.append(frontend_api)
+    CSRF_TRUSTED_ORIGINS.append(frontend_api)

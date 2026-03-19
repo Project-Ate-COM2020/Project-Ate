@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -107,27 +108,25 @@ class GameSummaryView(APIView):
     
 class RecentRescuesView(ListAPIView):
     permission_classes = [IsConsumer]
-
+    pagination_class = PageNumberPagination
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
-        consumer = Consumer.objects.get(consumer_id=TEST_CONSUMER_ID)
-        limit = int(self.request.query_params.get("limit", 10))
-        # sets the limit at 10 so only the last 10 records are shown
+        user = self.request.user
+        consumer = Consumer.objects.get(user=user)
 
-        return (
-            Reservation.objects.filter(Consumer=consumer, status="collected").order_by("collected_at")[:limit]
-            # gets all the records that are "collected" and the limit is set
-        )
+        return Reservation.objects.filter(Consumer=consumer, status="collected").order_by("collected_at")
 
 class ConsumerBadgesView(APIView):
     authentication_classes = []
-    permission_classes = [AllowAny]
+    permission_classes = [IsConsumer]
 
     def get(self, request):
-        consumer = Consumer.objects.get(consumer_id=TEST_CONSUMER_ID)
+        user = request.user
+        consumer = Consumer.objects.get(user=user)
 
         badges = consumer.badges
+
         if badges:
             badges = json.loads(badges)
         else:
@@ -139,7 +138,3 @@ class ConsumerBadgesView(APIView):
         })
         
 
-# test view
-class TestView(APIView):
-    def get(self, request):
-        return Response({"ok": True})

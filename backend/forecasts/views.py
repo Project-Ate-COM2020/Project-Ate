@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
-from core.models import ForecastInput
+from core.models import ForecastInput, Seller
 from .forecasting import (
     calculate_recommended_price,
     evaluate_baselines,
@@ -29,6 +29,10 @@ class ForecastPredictionView(APIView):
         try:
             data = request.data
 
+            user = request.user
+
+            seller = Seller.objects.get(user=user)
+
             # Required inputs
             category = data.get("category")
             day_of_week = data.get("day_of_week")
@@ -45,7 +49,7 @@ class ForecastPredictionView(APIView):
             # Optional inputs
             weather = data.get("weather")
             no_bundles = int(data.get("no_bundles", 1))
-            seller_id = data.get("seller_id")
+            seller_id = seller.pk
             price = data.get("price")  # posted price (for price-sensitivity)
 
             # Load historical data
