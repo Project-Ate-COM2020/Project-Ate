@@ -1,6 +1,6 @@
 import random
 import string
-from typing import Tuple, Any, Dict, Union, List
+from typing import Tuple, Any, Dict, Union, List, Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -164,6 +164,22 @@ class TestIsSellerPermission(APITestCase):
 def get_random_string(k=10) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=k))
 
+
+def merge_dict(base: Optional[Dict[Any, Any]], overlay: Optional[Dict[Any, Any]]) -> Dict[Any, Any]:
+    if base is None:
+        return overlay
+
+    if overlay is None:
+        return base
+
+    merged = base.copy()
+
+    for key, val in overlay:
+        if key in merged:
+            merged[key] = val
+
+    return merged
+
 def random_user_args() -> Dict[str, Any]:
     random_string = get_random_string(10)
 
@@ -219,16 +235,26 @@ def random_bundle_args() -> Dict[str, Any]:
     }
 
 def random_reservation_args() -> Dict[str, Any]:
+    claim_code = get_random_string(10)
+
+    while Reservation.objects.filter(claim_code=claim_code).exists():
+        claim_code = get_random_string(10)
+
     return {
         "status": "reserved",
-        "claim_code": get_random_string(10),
+        "claim_code": claim_code,
         "no_show_reason": get_random_string(10),
     }
 
 def random_reservation_args_for_bundle(bundle: int) -> Dict[str, any]:
+    claim_code = get_random_string(10)
+
+    while Reservation.objects.filter(claim_code=claim_code).exists():
+        claim_code = get_random_string(10)
+
     return {
         "status": "reserved",
-        "claim_code": get_random_string(10),
+        "claim_code": claim_code,
         "no_show_reason": get_random_string(10),
         "posting": bundle
     }
@@ -312,44 +338,53 @@ def setup_maintainer_and_consumer_and_seller(user_args: Union[Dict[str, Any], Ra
     seller = make_user_seller(user, **seller_args)
     return user, maintainer, consumer, seller
 
-def setup_random_user():
-    return setup_base_user(**random_user_args())
+def setup_random_user(**kwargs):
+    r = random_user_args()
+    m = merge_dict(r, kwargs)
+    return setup_base_user(**m)
 
-def setup_random_seller() -> Tuple[User, Seller]:
-    user = setup_random_user()
+def setup_random_seller(user_override={}, seller_override=None) -> Tuple[User, Seller]:
+    user = setup_random_user(**user_override)
     r = random_seller_args()
-    seller = make_user_seller(user, **r)
+    m = merge_dict(r, seller_override)
+    seller = make_user_seller(user, **m)
     return user, seller
 
-def setup_random_consumer() -> Tuple[User, Consumer]:
-    user = setup_random_user()
+def setup_random_consumer(user_override={}, consumer_override=None) -> Tuple[User, Consumer]:
+    user = setup_random_user(**user_override)
     r = random_consumer_args()
-    consumer = make_user_consumer(user, **r)
+    m = merge_dict(r, consumer_override)
+    consumer = make_user_consumer(user, **m)
     return user, consumer
 
-def setup_random_maintainer() -> Tuple[User, Maintainer]:
-    user = setup_random_user()
+def setup_random_maintainer(user_override={}, maintainer_override=None) -> Tuple[User, Maintainer]:
+    user = setup_random_user(**user_override)
     r = random_maintainer_args()
-    maintainer = make_user_maintainer(user, **r)
+    m = merge_dict(r, maintainer_override)
+    maintainer = make_user_maintainer(user, **m)
     return user, maintainer
 
 def setup_random_consumer_or_seller():
     return setup_random_consumer(), setup_random_seller()
 
-def setup_random_consumer_and_seller():
-    user = setup_random_user()
+def setup_random_consumer_and_seller(user_override={}, seller_override=None, consumer_override=None) -> Tuple[User, Consumer, Seller]:
+    user = setup_random_user(**user_override)
     r_consumer = random_consumer_args()
-    consumer = make_user_consumer(user, **r_consumer)
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
     r_seller = random_seller_args()
-    seller = make_user_seller(user, **r_seller)
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
     return user, consumer, seller
 
-def setup_random_maintainer_and_seller():
-    user = setup_random_user()
+def setup_random_maintainer_and_seller(user_override={}, seller_override=None, maintainer_override=None):
+    user = setup_random_user(**user_override)
     r_maintainer = random_maintainer_args()
-    maintainer = make_user_maintainer(user, **r_maintainer)
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
     r_seller = random_seller_args()
-    seller = make_user_seller(user, **r_seller)
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
     return user, maintainer, seller
 
 def setup_random_maintainer_or_seller():
@@ -358,25 +393,30 @@ def setup_random_maintainer_or_seller():
 def setup_random_maintainer_or_consumer():
     return setup_random_maintainer(), setup_random_consumer()
 
-def setup_random_maintainer_and_consumer():
-    user = setup_random_user()
+def setup_random_maintainer_and_consumer(user_override={}, maintainer_override=None, consumer_override=None):
+    user = setup_random_user(**user_override)
     r_consumer = random_consumer_args()
-    consumer = make_user_consumer(user, **r_consumer)
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
     r_maintainer = random_maintainer_args()
-    maintainer = make_user_maintainer(user, **r_maintainer)
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
     return user, maintainer, consumer
 
 def setup_random_maintainer_or_consumer_or_seller():
     return setup_random_maintainer(), setup_random_consumer(), setup_random_seller()
 
-def setup_random_maintainer_and_consumer_and_seller():
-    user = setup_random_user()
+def setup_random_maintainer_and_consumer_and_seller(user_override={}, seller_override=None, maintainer_override=None, consumer_override=None):
+    user = setup_random_user(**user_override)
     r_consumer = random_consumer_args()
-    consumer = make_user_consumer(user, **r_consumer)
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
     r_maintainer = random_maintainer_args()
-    maintainer = make_user_maintainer(user, **r_maintainer)
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
     r_seller = random_seller_args()
-    seller = make_user_seller(user, **r_seller)
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
     return user, maintainer, consumer, seller
 
 def setup_bundle(consumer: Consumer, **kwargs) -> BundlePosting:
@@ -424,6 +464,11 @@ def setup_random_reservation_for_seller(seller: Seller) -> Tuple[User, Consumer,
     r = random_reservation_args()
     create = setup_reservation(bundle, consumer, **r)
     return user, consumer, bundle, create
+
+def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle: BundlePosting) -> Reservation:
+    r = random_reservation_args()
+    create = setup_reservation(bundle, consumer, **r)
+    return create
 
 def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle: BundlePosting) -> Reservation:
     create = setup_reservation(bundle, consumer)
