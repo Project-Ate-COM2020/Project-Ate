@@ -4,7 +4,7 @@ from django.db import models
 
 class Seller(models.Model):
     seller_id = models.AutoField(primary_key=True)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seller')
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     opening_hours = models.TextField(null=True, blank=True)

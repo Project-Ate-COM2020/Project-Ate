@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GameSummaryView, RecentRescuesView, TestView, ConsumerBadgesView
+from .views import GameSummaryView, RecentRescuesView, ConsumerBadgesView
 
 urlpatterns = [
     path("summary/", GameSummaryView.as_view(), name="game-summary"),
