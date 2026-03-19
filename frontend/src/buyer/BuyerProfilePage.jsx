@@ -1,60 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchConsumerProfile, fetchConsumerReservations } from "../api-legacy/marketplace";
-import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./BuyerProfilePage.css";
-import { useGetData, getData, postData } from "../reusableComponents/api.jsx"
-
-// toggle to false when auth is complete and endpoints are ready
-const USE_MOCK_DATA = true;
-
-// mock consumer profile - matches GET /marketplace/consumer/<id>/ response shape
-const MOCK_USER = {
-  consumer_id: 1,
-  display_name: "Will Brown",
-  streak: 5,
-};
-
-// mock game summary - matches GET /game/api/game/summary/ response shape
-const MOCK_SUMMARY = {
-  total_rescued_bundles: 12,
-  estimated_co2e_saved_kg: 28.5,
-  current_streak_weeks: 3,
-  badges: ["First Rescue", "Eco Warrior"],
-};
-
-// mock reservations - matches GET /buyer/getreservations/<id>/ response shape
-const MOCK_RESERVATIONS = [
-  {
-    reservation_id: 1,
-    posting_id: 101,
-    claim_code: "ABC123",
-    status: "collected",
-    created_at: "2026-03-08T17:31:00Z",
-  },
-  {
-    reservation_id: 2,
-    posting_id: 102,
-    claim_code: "DEF456",
-    status: "collected",
-    created_at: "2026-03-05T12:10:00Z",
-  },
-  {
-    reservation_id: 3,
-    posting_id: 103,
-    claim_code: "GHI789",
-    status: "reserved",
-    created_at: "2026-02-28T18:45:00Z",
-  },
-  {
-    reservation_id: 4,
-    posting_id: 104,
-    claim_code: "JKL012",
-    status: "no-show",
-    created_at: "2026-02-20T09:15:00Z",
-  },
-];
+import { getData } from "../reusableComponents/api.jsx";
 
 // formats api timestamps into readable dates
 function formatDate(isoString) {
@@ -66,19 +14,32 @@ function formatDate(isoString) {
   });
 }
 
+function getConsumerIdFromToken() {
+  const token = localStorage.getItem("access_token");
+  if (!token) return null;
+
+  try {
+    const payloadPart = token.split(".")[1];
+    if (!payloadPart) return null;
+
+    const base64 = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+    const payload = JSON.parse(atob(padded));
+
+    return payload?.user_id ?? payload?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default function BuyerProfilePage() {
   const navigate = useNavigate();
 
-  const summary = getData("game/summary", {}, true);
-
-  const test = postData("auth/verify", {"token": localStorage.getItem("access_token")}, false);
-
-  console.log(test);
-
-  console.log(summary);
-
   // consumer profile from api
   const [user, setUser] = useState(null);
+
+  // game summary from api
+  const [summary, setSummary] = useState(null);
 
   // reservation history
   const [reservations, setReservations] = useState([]);
@@ -98,24 +59,24 @@ export default function BuyerProfilePage() {
     setError(null);
 
     try {
-      if (USE_MOCK_DATA) {
-        setUser(MOCK_USER);
-        setReservations(MOCK_RESERVATIONS);
-        return;
-      }
-
-      // TODO: get consumerId from auth context once auth is complete
-      const consumerId = null; // placeholder - replace with real id from auth
+      const consumerId = getConsumerIdFromToken();
       if (!consumerId) throw new Error("Not authenticated");
 
       const [userData, summaryData, reservationsData] = await Promise.all([
-        fetchConsumerProfile(consumerId),
-        fetchGameSummary(),
-        fetchConsumerReservations(consumerId),
+        getData(`marketplace/consumer/${consumerId}/`, {}, true),
+        getData("game/summary/", {}, true),
+        getData(`marketplace/reservations/${consumerId}/`, {}, true),
       ]);
 
       setUser(userData);
-      setSummary(summaryData);
+      setSummary({
+        current_streak_weeks: summaryData?.current_streak_weeks ?? 0,
+        has_rescued_this_week: !!summaryData?.has_rescued_this_week,
+        total_rescued_bundles: summaryData?.total_rescued_bundles ?? 0,
+        estimated_co2e_saved_kg: summaryData?.estimated_co2e_saved_kg ?? null,
+        badges: Array.isArray(summaryData?.badges) ? summaryData.badges : [],
+        unique_categories_rescued: summaryData?.unique_categories_rescued ?? 0,
+      });
       setReservations(
         Array.isArray(reservationsData?.reservations)
           ? reservationsData.reservations
@@ -181,8 +142,10 @@ export default function BuyerProfilePage() {
           <div className="profile-identity">
             <h1 className="profile-name" style={{color: "white"}}>{user.display_name || "Unknown"}</h1>
             <p className="profile-meta" style={{color: "var(--green-pale)"}}>              
-              <span> {user.streak ?? 0} week{user.streak !== 1 ? "s" : ""} streak, keep it up!</span>
-              {USE_MOCK_DATA && <span className="profile-mock-tag">Mock data</span>}
+              <span>
+                {summary.current_streak_weeks ?? 0} week{summary.current_streak_weeks !== 1 ? "s" : ""} streak
+                {summary.has_rescued_this_week ? " • rescued this week" : " • no rescue this week yet"}
+              </span>
             </p>
           </div>
 
@@ -214,8 +177,8 @@ export default function BuyerProfilePage() {
           <div className="profile-stat-divider" />
 
           <div className="profile-stat">
-            <span className="profile-stat-number" style={{color: "var(--green)"}}>{badges.length}</span>
-            <span className="profile-stat-label">Badges earned</span>
+            <span className="profile-stat-number" style={{color: "var(--green)"}}>{summary.unique_categories_rescued}</span>
+            <span className="profile-stat-label">Categories rescued</span>
           </div>
         </div>
 
@@ -230,7 +193,7 @@ export default function BuyerProfilePage() {
 
             <div className="profile-field">
               <span className="profile-field-label">Streak</span>
-              <span className="profile-field-value">{user.streak ?? 0} weeks</span>
+              <span className="profile-field-value">{summary.current_streak_weeks ?? 0} weeks</span>
             </div>
 
             <div className="profile-field">
@@ -240,6 +203,16 @@ export default function BuyerProfilePage() {
                   ? `${summary.estimated_co2e_saved_kg} kg`
                   : "N/A"}
               </span>
+            </div>
+
+            <div className="profile-field">
+              <span className="profile-field-label">Rescued this week</span>
+              <span className="profile-field-value">{summary.has_rescued_this_week ? "Yes" : "No"}</span>
+            </div>
+
+            <div className="profile-field">
+              <span className="profile-field-label">Unique categories rescued</span>
+              <span className="profile-field-value">{summary.unique_categories_rescued}</span>
             </div>
           </section>
 

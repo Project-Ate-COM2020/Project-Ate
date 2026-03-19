@@ -74,7 +74,7 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
 
         let response = null;
         if (include_auth) {
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
                 response = await fetch("http://localhost:8000/" + endpoint + queryString, {
                     headers: {
@@ -83,7 +83,7 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
                     },
                 });
 
-                if (response.status !== 401) break;
+                if (response.status !== 401 && response.status !== 403) break;
 
                 const refreshed = await refreshTokens();
                 if (!refreshed) break;
@@ -111,7 +111,7 @@ async function postData(endpoint, postData, authenticate = true) {
 
         // Tries to access data, if tokens invalid then refreshes and tries again
         if (include_auth) {
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
                 response = await fetch("http://localhost:8000/"  + endpoint, {
                     method: "POST",
@@ -122,7 +122,11 @@ async function postData(endpoint, postData, authenticate = true) {
                     body: JSON.stringify(postData),
                 });
 
-                if (response.status !== 401) break;
+                if (response.status !== 401 && response.status !== 403) {
+                    console.log("THIS API THINKS RESPONSE IS CORRECT");
+                    break;
+                }
+                console.log("THIS API THINKS RESPONSE IS INCORRECT");
 
                 const refreshed = await refreshTokens();
                 if (!refreshed) break;
@@ -170,7 +174,7 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
                 let response = null;
                 const include_auth = (token != null) && (authenticate == true);
                 if (include_auth) {
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 4; i++) {
                         const token = localStorage.getItem('access_token');
                         response = await fetch("http://localhost:8000/" + endpoint + queryString, {
                             headers: { 
@@ -179,7 +183,7 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
                             },
                         });
 
-                        if (response.status !== 401) break;
+                        if (response.status !== 401 && response.status !== 403) break;
 
                         const refreshed = await refreshTokens();
                         if (!refreshed) break;
@@ -229,7 +233,7 @@ function usePostData(endpoint, postData, authenticate = true ) {
                 let response = null;
                 const include_auth = (token != null) && (authenticate == true);
                 if (include_auth) {
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 4; i++) {
                         const token = localStorage.getItem('access_token');
                         response = await fetch("http://localhost:8000/" + endpoint + "/", {
                             method: "POST",
@@ -240,7 +244,7 @@ function usePostData(endpoint, postData, authenticate = true ) {
                             body: JSON.stringify(postData)                           
                         });
                         
-                        if (response.status !== 401) break;
+                        if (response.status !== 401 && response.status !== 403) break;
 
                         const refreshed = await refreshTokens();
                         if (!refreshed) break;
