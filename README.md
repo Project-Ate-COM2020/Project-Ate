@@ -127,10 +127,29 @@ Base URL: `http://127.0.0.1:8000/`
 
 Representative endpoints:
 
+for bundles:
+
 - `POST /marketplace/bundle/` create a marketplace bundle
 - `GET /marketplace/bundle/list` retrieve a list of bundles by page
 - `GET or PUT or PATCH or Delete /marketplace/bundle/<bundle_id>/` retrieve, update or delete bundle by primary key
-- `POST /marketplace/reservations`
+
+for consumers:
+
+- `POST /marketplace/consumer/` create a marketplace consumer from a user
+- `GET /marketplace/consumer/list` retrieve a list of consumers
+- `GET or PUT or PATCH or Delete /marketplace/consumer/<consumer_id>/` retrieve, update or delete consumer by primary key
+
+for sellers:
+
+- `POST /marketplace/seller/` create a marketplace seller from a user
+- `GET /marketplace/seller/list` retrieve a list of sellers
+- `GET or PUT or PATCH or Delete /marketplace/seller/<seller_id>/` retrieve, update or delete seller by primary key
+
+for reservations:
+
+- `POST /marketplace/reservations/` create a marketplace reservation
+- `GET /marketplace/reservations/list` retrieve a list of reservations
+- `GET or PUT or PATCH or Delete /marketplace/reservation/<reservation_id>/` retrieve, update or delete reservation by primary key
 
 ### Forecasting (`/forecast/`)
 
