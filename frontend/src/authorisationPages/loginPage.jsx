@@ -48,7 +48,9 @@ export default function LoginPage() {
       navigate("/seller/home");
     } if (accountType == "buyer") {
       navigate("/buyer/home");
-    };
+    } if (accountType == "maintainer"){
+      navigate("/maintenance")
+    }
 
 };
 
