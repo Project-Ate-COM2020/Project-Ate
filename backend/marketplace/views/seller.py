@@ -70,7 +70,6 @@ class ListSellerBundlesView(ListAPIView):
 
 class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
-    queryset = Seller.objects.all()
     serializer_class = SellerSerializer
     permission_classes = [IsConsumerOrSeller]
 
