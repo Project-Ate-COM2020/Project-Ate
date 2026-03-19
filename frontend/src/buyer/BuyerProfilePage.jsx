@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import NavBar from "../reusableComponents/navBar";
 import "./BuyerProfilePage.css";
 import { getData } from "../reusableComponents/api.jsx";
@@ -19,13 +20,7 @@ function getConsumerIdFromToken() {
   if (!token) return null;
 
   try {
-    const payloadPart = token.split(".")[1];
-    if (!payloadPart) return null;
-
-    const base64 = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
-    const payload = JSON.parse(atob(padded));
-
+    const payload = jwtDecode(token);
     return payload?.user_id ?? payload?.id ?? null;
   } catch {
     return null;
