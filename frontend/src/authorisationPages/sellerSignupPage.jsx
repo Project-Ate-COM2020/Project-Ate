@@ -69,9 +69,11 @@ export default function SellerSignupPage() {
     const sellerData = {
       "display_name" : businessName,
       "user_id" : createdUser.id,
+      "name": businessName,
+      "location": location,
     }
 
-    const createdSeller = await postData("marketplace/consumer", sellerData, true);
+    const createdSeller = await postData("marketplace/seller", sellerData, true);
 
     // Testing Purposes
     console.log(createdSeller);
