@@ -5,7 +5,7 @@ from django.urls import reverse
 from authentication.tests import (
     get_authorization_headers_for_user,
     setup_random_consumer,
-    setup_random_seller,
+    setup_random_seller, random_reservation_args, random_reservation_args_for_bundle,
 )
 from core.models import Reservation
 from marketplace.views import CreateBundleView, CreateReservationView
@@ -32,6 +32,7 @@ class CreateReservationViewsTests(APITestCase):
             "category": "food",
             "contents": "A bagel",
             "quantity": 8,
+            "quantity_remaining": 7,
             "price": 55,
             "pickup_window": "00:00-24:00",
             "status": "active",
@@ -47,11 +48,7 @@ class CreateReservationViewsTests(APITestCase):
 
         reservation_url = reverse(CreateReservationView.name)
 
-        reservation_data = {
-            "posting": int(self.bundle_id),
-            "claim_code": "XXXXXX",
-            "status": "collected",
-        }
+        reservation_data = random_reservation_args_for_bundle(self.bundle_id)
 
         self.reservation_creation_response = self.client.post(
             reservation_url,
@@ -75,5 +72,4 @@ class CreateReservationViewsTests(APITestCase):
 
         self.assertEqual(reservation.posting.pk, self.bundle_id)
         self.assertEqual(reservation.consumer.pk, self.consumer_id)
-        self.assertEqual(reservation.claim_code, "XXXXXX")
-        self.assertEqual(reservation.status, "collected")
+        self.assertEqual(reservation.status, "reserved")

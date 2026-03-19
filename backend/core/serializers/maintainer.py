@@ -7,13 +7,13 @@ from core.models import Maintainer, Seller
 class MaintainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintainer
-        fields = ["maintainer_id"]
+        fields = ["maintainer_id", "created_at"]
 
 
 class RegisterMaintainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Maintainer
-        fields = "maintainer_id"
+        fields = ["maintainer_id", "created_at"]
 
     def create(self, validated_data):
         context = self.context

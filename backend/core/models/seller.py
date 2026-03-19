@@ -9,6 +9,7 @@ class Seller(models.Model):
     location = models.CharField(max_length=255)
     opening_hours = models.TextField(null=True, blank=True)
     contact_stub = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "seller"

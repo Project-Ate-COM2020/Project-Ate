@@ -209,7 +209,7 @@ def random_bundle_args() -> Dict[str, Any]:
     return {
         "category": get_random_string(10),
         "contents": get_random_string(10),
-        "quantity": random.randint(5, 10),
+        "quantity": random.randint(6, 10),
         "quantity_remaining": random.randint(1, 5),
         "price": random.randint(1, 10),
         "pickup_window": get_random_string(10),
@@ -225,6 +225,13 @@ def random_reservation_args() -> Dict[str, Any]:
         "no_show_reason": get_random_string(10),
     }
 
+def random_reservation_args_for_bundle(bundle: int) -> Dict[str, any]:
+    return {
+        "status": "reserved",
+        "claim_code": get_random_string(10),
+        "no_show_reason": get_random_string(10),
+        "posting": bundle
+    }
 
 def random_maintainer_args() -> Dict[str, Any]:
     return {}
