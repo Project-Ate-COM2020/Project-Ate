@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import the files for each URL endpoint
 import Orders from "./buyer/orders.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
-import GamePage from "./gamePages/game.jsx";
+import GamePage from "./buyer/game.jsx";
 import MarketplacePage from "./buyer/marketplace.jsx";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import UserHomePage from "./homePage/userHomePage.jsx";

@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import "./reusableComponents/root.css";
 
-import('dotenv').config()
+// import('dotenv').config()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

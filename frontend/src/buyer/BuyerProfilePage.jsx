@@ -4,7 +4,7 @@ import { fetchConsumerProfile, fetchConsumerReservations } from "../api-legacy/m
 import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./BuyerProfilePage.css";
-im
+import { useGetData, getData, postData } from "../reusableComponents/api.jsx"
 
 // toggle to false when auth is complete and endpoints are ready
 const USE_MOCK_DATA = true;
@@ -69,11 +69,16 @@ function formatDate(isoString) {
 export default function BuyerProfilePage() {
   const navigate = useNavigate();
 
+  const summary = getData("game/summary", {}, true);
+
+  const test = postData("auth/verify", {"token": localStorage.getItem("access_token")}, false);
+
+  console.log(test);
+
+  console.log(summary);
+
   // consumer profile from api
   const [user, setUser] = useState(null);
-
-  // game stats and badges
-  const [summary, setSummary] = useState(null);
 
   // reservation history
   const [reservations, setReservations] = useState([]);
@@ -83,7 +88,7 @@ export default function BuyerProfilePage() {
 
   // clears JWT tokens and returns to login
   const handleLogout = useCallback(() => {
-    localStorage.removeItem("access");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("refresh");
     navigate("/login");
   }, [navigate]);
@@ -95,7 +100,6 @@ export default function BuyerProfilePage() {
     try {
       if (USE_MOCK_DATA) {
         setUser(MOCK_USER);
-        setSummary(MOCK_SUMMARY);
         setReservations(MOCK_RESERVATIONS);
         return;
       }
