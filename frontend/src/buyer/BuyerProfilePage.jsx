@@ -4,6 +4,7 @@ import { fetchConsumerProfile, fetchConsumerReservations } from "../api-legacy/m
 import { fetchGameSummary } from "../api-legacy/game";
 import NavBar from "../reusableComponents/navBar";
 import "./BuyerProfilePage.css";
+im
 
 // toggle to false when auth is complete and endpoints are ready
 const USE_MOCK_DATA = true;
