@@ -1,12 +1,11 @@
 import NavBar from "../reusableComponents/navBar.jsx";
-import Listings from "../reusableComponents/listings.jsx";
+import Postings from "../bundlesComponents/postings.jsx";
 
 function UserHomePage(){
     return(
     <>
         <NavBar />
-        <Listings/>
-        {/*<div>Home page works</div>*/}
+        <Postings includedAttributes = {["price", "more info button"]} numberOfBundles = {50}/>
     </>
     );
 
