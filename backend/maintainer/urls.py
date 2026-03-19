@@ -5,7 +5,7 @@ from .views import CreateMaintainerView, MaintainerView, MaintainerSQLView
 urlpatterns = [
     path("create", CreateMaintainerView.as_view(), name="maintainer-create"),
     path(
-        "retrieve-update-delete/<int:maintainer_id>",
+        "retrieve-update-delete/<int:pk>",
         MaintainerView.as_view(),
         name="maintainer-retrieve-update-delete",
     ),
