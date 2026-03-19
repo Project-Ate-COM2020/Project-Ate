@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 .env
 backend/.env
+fronend/.env
 
 # Django
 db.sqlite3

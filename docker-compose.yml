@@ -8,6 +8,8 @@ services:
     ports:
       - '8000:8000'
   frontend:
+    env_file:
+      - ./frontend/.env
     build:
       context: ./frontend
       dockerfile: Dockerfile
