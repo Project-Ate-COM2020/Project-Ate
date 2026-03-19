@@ -72,13 +72,29 @@ class SellerView(RetrieveUpdateDestroyAPIView):
     name = "seller"
     queryset = Seller.objects.all()
     serializer_class = SellerSerializer
-    permission_classes = [IsSeller]
+    permission_classes = [IsConsumerOrSeller]
+
+    def get_consumer_queryset(self) -> django.db.models.QuerySet:
+        return Seller.objects.all()
+
+    def get_seller_queryset(self) -> django.db.models.QuerySet:
+        seller = Seller.objects.filter(user=self.request.user)
+        return seller
 
     def get_queryset(self):
         match self.request.method:
             case "GET":
-                # anyone might need to query seller info
-                return Seller.objects.all()
+                is_seller = IsSeller().has_permission(self.request, self)
+                is_consumer = IsConsumer().has_permission(self.request, self)
+
+                if is_seller and not is_consumer:
+                    return self.get_seller_queryset()
+                elif is_consumer and not is_seller:
+                    return self.get_consumer_queryset()
+                elif is_seller and is_consumer:
+                    return self.get_seller_queryset().union(self.get_consumer_queryset())
+                else:
+                    return Consumer.objects.none()
             case "PUT" | "PATCH" | "DELETE":
                 # only owning user should be able to update or delete seller status
                 return Seller.objects.filter(user=self.request.user)
