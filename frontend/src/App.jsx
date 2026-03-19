@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 // import the files for each URL endpoint
-import Orders from "./orders/orders.jsx";
+import Orders from "./buyer/orders.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
-import GamePage from "./gamePages/game.jsx";
-import MarketplacePage from "./marketplacePages/marketplace";
+import GamePage from "./buyer/game.jsx";
+import MarketplacePage from "./buyer/marketplace.jsx";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import UserHomePage from "./homePage/userHomePage.jsx";
 import HomePage from "./homePage/HomePage.jsx";
@@ -33,8 +33,8 @@ import Analytics from "./seller/analytics.jsx";
 /* --- Buyer Imports --- */
 // import BuyerProfilePage from "./buyer/profilePage.jsx";
 // import BuyerHomePage from "./buyer/homePage";
-import BuyerProfilePage from "./profile/BuyerProfilePage.jsx";
-import IssueReportingPage from "./issueReportingPages/issueReportingPage.jsx";
+import BuyerProfilePage from "./buyer/BuyerProfilePage.jsx";
+import IssueReportingPage from "./buyer/issueReportingPage.jsx";
 import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
 
 /* --- Webpage Imports --- */
