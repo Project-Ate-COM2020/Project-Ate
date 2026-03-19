@@ -56,7 +56,10 @@ export default function LoginPage() {
     } if (accountType == "buyer") {
       navigate("/buyer/home");
       localStorage.setItem("user_type", "buyer");
-    };
+    } if (accountType == "maintainer"){
+      localStorage.setItem("user_type", "maintainer");
+      navigate("/maintenance")
+    }
 
 };
 
@@ -89,6 +92,16 @@ export default function LoginPage() {
                 onChange={(e) => setAccountType(e.target.value)}
               />
               Seller
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="maintainer"
+                checked={accountType === "maintainer"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Maintenence
             </label>
           </div>
         </label>
