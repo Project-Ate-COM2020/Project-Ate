@@ -9,9 +9,8 @@ from rest_framework import status
 from django.utils import timezone
 from decimal import Decimal
 
-from authentication.tests import setup_consumer, setup_random_consumer, setup_random_seller, \
-    get_authorization_headers_for_user
-from core.models import Consumer, Seller, BundlePosting, Reservation
+from authentication.tests import setup_random_consumer, setup_random_seller, get_authorization_headers_for_user
+from core.models import BundlePosting, Reservation
 
 class BaseAuthenticatedTest(APITestCase):
 

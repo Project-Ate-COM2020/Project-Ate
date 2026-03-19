@@ -11,4 +11,5 @@ urlpatterns = [
     path("auth/", include("authentication.urls")),
     path("maintainer/", include("maintainer.urls")),
     path("auth/", include("authentication.urls")),
+    path("issues/", include("issue_reporting.urls"))
 ]
