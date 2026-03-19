@@ -45,9 +45,11 @@ export default function LoginPage() {
     console.log(verify);
 
     if (accountType == "seller") {
+      localStorage.setItem("user_type", "seller");
       navigate("/seller/home");
     } if (accountType == "buyer") {
       navigate("/buyer/home");
+      localStorage.setItem("user_type", "buyer");
     };
 
 };
