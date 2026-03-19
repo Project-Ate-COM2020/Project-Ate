@@ -1,8 +1,11 @@
+from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count, Q
-from core.models import BundlePosting, IssueReport, Reservation
+
+from authentication.permissions import IsConsumer, IsSeller, IsConsumerOrSeller
+from core.models import BundlePosting, IssueReport, Reservation, Consumer, Seller
 from .serializers import IssueReportSerializer
 
 
@@ -14,13 +17,19 @@ def _seller_issue_queryset(seller_id):
 
 
 class ConsumerCreateIssueView(APIView):
+    name = "consumer-create-issue"
+    permission_classes = [IsConsumer]
+
     def post(self, request):
-        consumer_id = request.data.get("consumer_id")
+        user = request.user
+        consumer = Consumer.objects.get(user=user)
+
+        consumer_id = consumer.pk
         posting_id = request.data.get("posting")
         issue_type = request.data.get("type")
         description = request.data.get("description")
 
-        if not consumer_id or not posting_id:
+        if not posting_id:
             return Response(
                 {"error": "consumer_id and posting are required"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -59,7 +68,13 @@ class ConsumerCreateIssueView(APIView):
 
 
 class ConsumerIssuesView(APIView):
-    def get(self, request, consumer_id):
+    name = "consumer-issues"
+    permission_classes = [IsConsumer]
+
+    def get(self, request):
+        user = request.user
+        consumer = Consumer.objects.get(user=user)
+        consumer_id = consumer.pk
         issues = (
             IssueReport.objects
             .filter(consumer__consumer_id=consumer_id)
@@ -70,7 +85,13 @@ class ConsumerIssuesView(APIView):
 
 
 class ConsumerReportablePostingsView(APIView):
-    def get(self, request, consumer_id):
+    name = "consumer-reportable-postings"
+    permission_classes = [IsConsumer]
+
+    def get(self, request):
+        user = request.user
+        consumer = Consumer.objects.get(user=user)
+        consumer_id = consumer.pk
         reservations = (
             Reservation.objects
             .select_related("posting")
@@ -97,7 +118,12 @@ class ConsumerReportablePostingsView(APIView):
 
 
 class SellerIssueRespondView(APIView):
-    def patch(self, request, seller_id, issue_id):
+    name = "seller-issue-response"
+
+    def patch(self, request, issue_id):
+        user = request.user
+        seller = Seller.objects.get(user=user)
+        seller_id = seller.pk
         try:
             issue = _seller_issue_queryset(seller_id).get(issue_id=issue_id)
         except IssueReport.DoesNotExist:
@@ -117,7 +143,15 @@ class SellerIssueRespondView(APIView):
 
 
 class SellerIssuesOverviewView(APIView):
+    name = "seller-issues-overview"
+    permission_classes = [IsConsumerOrSeller]
+
     def get(self, request, seller_id):
+        is_seller = IsSeller().has_permission(request, self)
+
+        if is_seller and seller_id != request.user.seller.pk:
+            return Response(HTTP_403_FORBIDDEN)
+
         qs = _seller_issue_queryset(seller_id)
         counts = qs.aggregate(
             total=Count("issue_id"),
@@ -135,6 +169,9 @@ class SellerIssuesOverviewView(APIView):
 
 
 class SellerIssuesView(APIView):
+    name = "seller-issues"
+    permission_classes = [IsConsumer]
+
     def get(self, request, seller_id):
         issues = (
             _seller_issue_queryset(seller_id)

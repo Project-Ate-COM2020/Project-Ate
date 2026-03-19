@@ -9,14 +9,14 @@ from .views import (
 )
 
 urlpatterns = [
-    path("buyer/<int:consumer_id>/", ConsumerIssuesView.as_view(), name="consumer-issues"),
+    path("consumer/", ConsumerIssuesView.as_view(), name=ConsumerIssuesView.name),
     path(
-        "buyer/<int:consumer_id>/reportable-postings/",
+        "comsumer/reportable",
         ConsumerReportablePostingsView.as_view(),
-        name="consumer-reportable-postings",
+        name=ConsumerReportablePostingsView.name
     ),
-    path("seller/<int:seller_id>/", SellerIssuesView.as_view(), name="seller-issues"),
-    path("seller/<int:seller_id>/overview/", SellerIssuesOverviewView.as_view(), name="seller-issues-overview"),
-    path("seller/<int:seller_id>/<int:issue_id>/respond/", SellerIssueRespondView.as_view(), name="seller-issue-respond"),
-    path("report/", ConsumerCreateIssueView.as_view(), name="consumer-create-issue"),
+    path("seller/<int:seller_id>/issues", SellerIssuesView.as_view(), name=SellerIssuesView.name),
+    path("seller/<int:seller_id>/overview/", SellerIssuesOverviewView.as_view(), name=SellerIssuesOverviewView.name),
+    path("seller/<int:issue_id>/respond/", SellerIssueRespondView.as_view(), name=SellerIssueRespondView.name),
+    path("report/", ConsumerCreateIssueView.as_view(), name=ConsumerCreateIssueView.name),
 ]
