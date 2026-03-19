@@ -56,8 +56,22 @@ Project-Ate/
 
 ### 1) Backend Setup
 
+the backend expects your current directory to be in the backend directory:
+
 ```bash
 cd backend
+```
+
+you must configure environment variables to run the backend. You may copy the example file for a quickstart. 
+These are intentionally designed to be insecure, please do not use them for production environments:
+
+```bash
+cp .env.example .env
+```
+
+then create a virtual environment. Install the dependencies, create the database and run the webserver.
+
+```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
