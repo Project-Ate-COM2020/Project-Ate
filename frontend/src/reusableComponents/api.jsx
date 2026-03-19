@@ -31,27 +31,29 @@ function buildQueryString(queryParams = {}) {
 }
 
 async function refreshTokens() {
+    console.log("STARTING TOKEN REFRESHING");
     const user_type = localStorage.getItem("user_type");
+    console.log(user_type);
     let response = null;
     if (user_type === "seller") {
-        response = await fetch("http://localhost:8000/marketplace/seller/auth/token/refresh", {
+        response = await fetch("http://localhost:8000//auth/refresh", {
             method : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body : JSON.stringify({
-                "token": localStorage.getItem("refresh_token")
+                "refresh": localStorage.getItem("refresh_token")
             })
             
         });
     } else if (user_type === "buyer") {
-        response = await fetch("http://localhost:8000/marketplace/consumer/auth/token/refresh", {
+        response = await fetch("http://localhost:8000/auth/refresh", {
             method : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body : JSON.stringify({
-                "token": localStorage.getItem("refresh_token")
+                "refresh": localStorage.getItem("refresh_token")
             })
             
         });
@@ -59,8 +61,12 @@ async function refreshTokens() {
 
     const tokens = await response.json();
 
-    if (tokens.access) localStorage.setItem("access_token", tokens.access);
-    if (tokens.refresh) localStorage.setItem("refresh_token", tokens.refresh);
+    console.log("TOKEN BEING REFRESHED");
+
+    if (tokens.access) {
+        localStorage.setItem("access_token", tokens.access)
+        console.log("TOKEN REFRESHED");
+        };
 
     return !!tokens.access;
 }
@@ -83,7 +89,11 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
                     },
                 });
 
-                if (response.status !== 401 && response.status !== 403) break;
+                if (response.status !== 401 && response.status !== 403) {
+                    console.log("THIS API THINKS RESPONSE IS CORRECT");
+                    break;
+                }
+                console.log("THIS API THINKS RESPONSE IS INCORRECT");
 
                 const refreshed = await refreshTokens();
                 if (!refreshed) break;

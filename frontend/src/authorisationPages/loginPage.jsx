@@ -48,15 +48,15 @@ export default function LoginPage() {
       localStorage.setItem("refresh_token", credentials.refresh);
       localStorage.setItem("user_type", accountType);
 
-      if (accountType === "seller") {
-        navigate("/seller/home");
-      } else {
-        navigate("/buyer/home");
-      }
-    } catch {
-      setError("Something went wrong. Please try again.");
-      setIsLoading(false);
-    }
+    console.log(verify);
+
+    if (accountType == "seller") {
+      localStorage.setItem("user_type", "seller");
+      navigate("/seller/home");
+    } if (accountType == "buyer") {
+      navigate("/buyer/home");
+      localStorage.setItem("user_type", "buyer");
+    };
 
 };
 
