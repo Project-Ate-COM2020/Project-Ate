@@ -9,7 +9,7 @@ import LoginPage from "./authorisationPages/loginPage.jsx";
 import GamePage from "./buyer/game.jsx";
 import MarketplacePage from "./buyer/marketplace.jsx";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
-import UserHomePage from "./homePage/userHomePage.jsx";
+import UserHomePage from "./buyer/userHomePage.jsx";
 import HomePage from "./homePage/HomePage.jsx";
 //import Basket from "./Basket/basket.jsx";
 
