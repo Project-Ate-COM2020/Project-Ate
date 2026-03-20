@@ -8,6 +8,10 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsConsumerOrSeller, IsSeller
 from core.models import User, BundlePosting, Consumer, Seller
+from core.serializers import (
+    SellerUpdateReservationSerializer,
+    ConsumerUpdateReservationSerializer,
+)
 
 from ..models import ReservationSerializer, Reservation, CreateReservationSerializer
 
@@ -55,5 +59,17 @@ class ListReservationView(RestrictsQuerysetToOwned, ListAPIView):
 
 class ReservationView(RestrictsQuerysetToOwned, RetrieveUpdateDestroyAPIView):
     name = "reservations"
-    serializer_class = ReservationSerializer
     permission_classes = [IsConsumerOrSeller]
+
+    def get_serializer_class(self):
+        is_seller = IsSeller().has_permission(self.request, self)
+
+        match self.request.method:
+            case "PUT" | "PATCH":
+                match is_seller:
+                    case True:
+                        return SellerUpdateReservationSerializer
+                    case _:
+                        return ConsumerUpdateReservationSerializer
+            case _:
+                return ReservationSerializer

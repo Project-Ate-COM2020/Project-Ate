@@ -5,7 +5,9 @@ from django.urls import reverse
 from authentication.tests import (
     get_authorization_headers_for_user,
     setup_random_consumer,
-    setup_random_seller, random_reservation_args, random_reservation_args_for_bundle,
+    setup_random_seller,
+    random_reservation_args,
+    random_reservation_args_for_bundle,
 )
 from core.models import Reservation
 from marketplace.views import CreateBundleView, CreateReservationView
@@ -29,7 +31,7 @@ class CreateReservationViewsTests(APITestCase):
 
         bundle_data = {
             "seller": int(self.seller_id),
-            "category": "food",
+            "category": "dairy",
             "contents": "A bagel",
             "quantity": 8,
             "quantity_remaining": 7,
