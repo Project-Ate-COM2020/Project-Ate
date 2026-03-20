@@ -51,7 +51,7 @@ function GuestOnlyRoute({ children }) {
   return children;
 }
 
-// Requires authentication; optionally restricts to a specific user type
+// Requires authentication
 function ProtectedRoute({ children, requiredType }) {
   const token = localStorage.getItem("access_token");
   const userType = localStorage.getItem("user_type");
