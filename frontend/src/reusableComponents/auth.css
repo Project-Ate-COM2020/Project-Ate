@@ -4,8 +4,25 @@
   background: var(--cream);
 }
 
+/* logo-only header on auth pages */
+.auth-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  background: white;
+  border-bottom: 1px solid var(--green-pale);
+}
+
+.auth-header-logo {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--green);
+  text-decoration: none;
+}
+
 .auth-container {
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 56px);
   display: grid;
   grid-template-columns: 1fr 1fr;
 }

@@ -4,6 +4,11 @@ add in the links to the different webpages needed and badges*/
 import "./navBar.css";
 import { NavLink } from "react-router-dom";
 
+function clearAuth() {
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_type");
+}
 
 // Adding new user type - this method will be updated to using the user_type cookie when auth is finished
 export default function NavBar() {
