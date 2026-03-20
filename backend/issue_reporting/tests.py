@@ -63,7 +63,7 @@ class IssueReportingAPITestBase(APITestCase):
 class ConsumerCreateIssueViewTests(IssueReportingAPITestBase):
     def test_create_issue_success_for_collected_bundle(self):
         self._create_reservation(self.consumer_1, self.posting_1, "collected", "C100")
-        url = reverse(ConsumerIssuesView.name)
+        url = reverse(ConsumerCreateIssueView.name)
 
         response = self.client.post(
             url,
@@ -183,8 +183,8 @@ class SellerIssuesViewTests(IssueReportingAPITestBase):
         own = self._create_issue(self.posting_1, self.consumer_1, desc="Own seller")
         self._create_issue(self.posting_3, self.consumer_1, desc="Other seller")
 
-        url = reverse(SellerIssuesView.name, kwargs={"seller_id": self.seller_1.pk})
-        response = self.client.get(url, headers=self.consumer_user_1_headers)
+        url = reverse(SellerIssuesView.name)
+        response = self.client.get(url, headers=self.seller_user_1_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
@@ -194,7 +194,7 @@ class SellerIssuesViewTests(IssueReportingAPITestBase):
         self._create_issue(self.posting_1, self.consumer_1, desc="Seller one")
         own = self._create_issue(self.posting_3, self.consumer_1, desc="Seller two")
 
-        url = reverse(SellerIssuesView.name, kwargs={"seller_id": self.seller_2.pk})
+        url = reverse(SellerIssuesView.name)
         response = self.client.get(url, headers=self.seller_user_2_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -203,12 +203,12 @@ class SellerIssuesViewTests(IssueReportingAPITestBase):
 
     def test_orders_seller_issues_by_created_at_desc(self):
         older = self._create_issue(self.posting_1, self.consumer_1, desc="Older")
-        newer = self._create_issue(self.posting_2, self.consumer_1, desc="Newer")
+        newer = self._create_issue(self.posting_1, self.consumer_2, desc="Newer")
         now = timezone.now()
         IssueReport.objects.filter(issue_id=older.issue_id).update(created_at=now - timedelta(days=2))
         IssueReport.objects.filter(issue_id=newer.issue_id).update(created_at=now - timedelta(days=1))
 
-        url = reverse(SellerIssuesView.name, kwargs={"seller_id": self.seller_2.pk})
+        url = reverse(SellerIssuesView.name)
         response = self.client.get(url, headers=self.seller_user_1_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -216,7 +216,7 @@ class SellerIssuesViewTests(IssueReportingAPITestBase):
         self.assertEqual(response.data[1]["issue_id"], older.issue_id)
 
     def test_returns_empty_when_seller_has_no_issues(self):
-        url = reverse(SellerIssuesView.name, kwargs={"seller_id": self.seller_1.pk})
+        url = reverse(SellerIssuesView.name)
         response = self.client.get(url, headers=self.seller_user_1_headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, [])
@@ -226,7 +226,7 @@ class SellerIssuesOverviewViewTests(IssueReportingAPITestBase):
     def test_returns_correct_status_counts(self):
         self._create_issue(self.posting_1, self.consumer_1, "open")
         self._create_issue(self.posting_1, self.consumer_1, "responded")
-        self._create_issue(self.posting_2, self.consumer_1, "resolved")
+        self._create_issue(self.posting_1, self.consumer_1, "resolved")
 
         url = reverse(SellerIssuesOverviewView.name, kwargs={"seller_id": self.seller_1.pk})
         response = self.client.get(url, headers=self.seller_user_1_headers)
@@ -241,7 +241,7 @@ class SellerIssuesOverviewViewTests(IssueReportingAPITestBase):
         self._create_issue(self.posting_1, self.consumer_1, "open")
         self._create_issue(self.posting_3, self.consumer_1, "responded")
 
-        url = reverse(SellerIssuesOverviewView.name, kwargs={"seller_id": self.seller_1.pk})
+        url = reverse(SellerIssuesOverviewView.name, kwargs={"seller_id": self.seller_2.pk})
         response = self.client.get(url, headers=self.seller_user_2_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -310,7 +310,6 @@ class SellerIssueRespondViewTests(IssueReportingAPITestBase):
         self.assertEqual(issue.description, "Original")
         self.assertEqual(issue.status, "resolved")
 
-    def test_patch_returns_404_if_issue_does_not_belong_to_seller(self):
         issue = self._create_issue(self.posting_3, self.consumer_1, "open")
         url = reverse(
             SellerIssueRespondView.name,
