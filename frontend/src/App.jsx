@@ -107,12 +107,14 @@ function App() {
         <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
         {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}
 
-        {/* Buyer paths */}
-        <Route path="/buyer/home" element={<UserHomePage />} />
-        <Route path="/buyer/profile" element={<BuyerProfilePage />} />
-        <Route path="/buyer/orders" element={<Orders />} />
-        <Route path="/buyer/report-issue" element={<IssueReportingPage />} />
-        <Route path="/buyer/game" element={<GamePage />} />
+        {/* Buyer-only paths */}
+        <Route path="/buyer/home" element={<ProtectedRoute requiredType="buyer"><UserHomePage /></ProtectedRoute>} />
+        <Route path="/buyer/profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
+        <Route path="/buyer/orders" element={<ProtectedRoute requiredType="buyer"><Orders /></ProtectedRoute>} />
+        <Route path="/buyer/report-issue" element={<ProtectedRoute requiredType="buyer"><IssueReportingPage /></ProtectedRoute>} />
+        <Route path="/game" element={<ProtectedRoute requiredType="buyer"><GamePage /></ProtectedRoute>} />
+        <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
+        {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}
 
         {/* Seller paths */}
         <Route path="/seller/home" element={<SellerHomePage />} />
