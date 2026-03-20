@@ -60,6 +60,7 @@ export default function SellerSignupPage() {
 
     localStorage.setItem("access_token", credentials.access);
     localStorage.setItem("refresh_token", credentials.refresh);
+    localStorage.setItem("user_type", "seller");
     
     // Testing purposes
     console.log("User should now be logged in");
@@ -69,9 +70,11 @@ export default function SellerSignupPage() {
     const sellerData = {
       "display_name" : businessName,
       "user_id" : createdUser.id,
+      "name": businessName,
+      "location": location,
     }
 
-    const createdSeller = await postData("marketplace/consumer", sellerData, true);
+    const createdSeller = await postData("marketplace/seller", sellerData, true);
 
     // Testing Purposes
     console.log(createdSeller);

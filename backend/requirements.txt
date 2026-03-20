@@ -3,6 +3,8 @@ djangorestframework==3.16.1
 django-cors-headers==4.9.0
 django-debug-toolbar==6.1.0
 djangorestframework-simplejwt
+python-dotenv
+gunicorn
 argon2-cffi
 pandas
 numpy

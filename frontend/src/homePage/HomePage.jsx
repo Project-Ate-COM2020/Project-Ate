@@ -9,7 +9,7 @@ export default function HomePage() {
 
       {/* Navbar */}
       <nav className="home-nav">
-        <NavLink to="/" className="home-nav-logo">Project-Ate</NavLink>
+        <NavLink to="/buyer/home" className="home-nav-logo">Project-Ate</NavLink>
         <NavLink to="/login" className="btn-primary">Login</NavLink>
       </nav>
 
@@ -18,7 +18,7 @@ export default function HomePage() {
         <div className="Web-content">
           <span className="tag-line">Fresh bundles weekly</span>
           <h1>Eat <em>well,</em><br />play better.</h1>
-          <p>Discover curated food bundles designed for every lifestyle —
+          <p>Discover curated food bundles designed for every lifestyle,
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
             <NavLink to="/buyer/home" className="btn-primary">Browse Bundles</NavLink>
@@ -66,7 +66,7 @@ export default function HomePage() {
         <div className="principle-grid">
           {[
             { title: "Bundles for every goal",
-              desc: "Whether it's low-carb, family-friendly, or high protein — we've curated the perfect bundle for your lifestyle." },
+              desc: "Whether it's low-carb, family-friendly, or high protein, we've curated the perfect bundle for your lifestyle." },
             { title: "Earn rewards as you eat",
               desc: "Use the in-app game to rack up points with every order. Turn healthy habits into real rewards." },
             { title: "Quick & easy ordering",
