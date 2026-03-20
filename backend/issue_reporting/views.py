@@ -1,3 +1,4 @@
+from django.template.context_processors import request
 from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from .serializers import IssueReportSerializer
 
 def _seller_issue_queryset(seller_id):
     seller_posting_ids = BundlePosting.objects.filter(
-        seller__seller_id=seller_id
+        seller_id=seller_id
     ).values_list("posting_id", flat=True)
     return IssueReport.objects.filter(posting_id__in=seller_posting_ids)
 
@@ -72,9 +73,7 @@ class ConsumerIssuesView(APIView):
     permission_classes = [IsConsumer]
 
     def get(self, request):
-        user = request.user
-        consumer = Consumer.objects.get(user=user)
-        consumer_id = consumer.pk
+        consumer_id = request.user.consumer.pk
         issues = (
             IssueReport.objects
             .filter(consumer__consumer_id=consumer_id)
@@ -154,13 +153,12 @@ class SellerIssuesOverviewView(APIView):
 
         qs = _seller_issue_queryset(seller_id)
         counts = qs.aggregate(
-            total=Count("issue_id"),
             open=Count("issue_id", filter=Q(status="open")),
             responded=Count("issue_id", filter=Q(status="responded")),
             resolved=Count("issue_id", filter=Q(status="resolved")),
         )
         return Response({
-            "total_issues": counts["total"],
+            "total_issues": qs.count(),
             "open": counts["open"],
             "responded": counts["responded"],
             "resolved": counts["resolved"],
@@ -170,11 +168,11 @@ class SellerIssuesOverviewView(APIView):
 
 class SellerIssuesView(APIView):
     name = "seller-issues"
-    permission_classes = [IsConsumer]
+    permission_classes = [IsSeller]
 
-    def get(self, request, seller_id):
+    def get(self, request):
         issues = (
-            _seller_issue_queryset(seller_id)
+            _seller_issue_queryset(request.user.seller.pk)
             .order_by("-created_at")
         )
         serializer = IssueReportSerializer(issues, many=True)
