@@ -39,6 +39,9 @@ import CookiePolicy from "./cookiePopup/CookiePolicy";
 import FootNote from "./reusableComponents/footnote";
 import PrivacyPolicy from "./reusableComponents/privacyPolicy";
 
+/* --- Maintaner Imports ---*/
+import MaintenancePage from "./maintenancePage/maintenancePage.jsx";
+
 /* --- Route Guards --- */
 
 // Redirects logged-in users away from guest-only pages (login, signup, landing)
@@ -104,6 +107,9 @@ function App() {
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+        {/* maintainer Page */}
+        <Route path="/maintenance" element={<MaintenancePage />} />
 
         {/* Catch-all */}
         <Route path="/user" element={<Navigate to="/buyer/home" replace />} />
