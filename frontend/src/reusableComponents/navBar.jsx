@@ -14,6 +14,7 @@ export default function NavBar({ user_type }) {
   if (user_type === "seller") {
     return (
       <nav>
+        {/* use NavLink instead of <a href> so react router handles navigation (no page reload) */}
         <NavLink to="/seller/home">Project-Ate</NavLink>
         <ul>
           <li><NavLink to="/seller/analytics">Analytics</NavLink></li>
