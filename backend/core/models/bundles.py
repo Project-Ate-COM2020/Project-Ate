@@ -12,9 +12,18 @@ class BundlePosting(models.Model):
         ("cancelled", "Cancelled"),
     ]
 
+    CATEGORY_CHOICES = [
+        ("bakery", "Bakery"),
+        ("dairy", "Dairy"),
+        ("desserts", "Desserts"),
+        ("fresh_produce", "Fresh_Produce"),
+        ("hot_meals", "Hot_Meals"),
+        ("prepared_salads", "Prepared_Salads"),
+    ]
+
     posting_id = models.AutoField(primary_key=True)
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="bundles")
-    category = models.CharField(max_length=255)
+    category = models.CharField(max_length=255, choices=CATEGORY_CHOICES)
     contents = models.TextField(null=True, blank=True)
     quantity = models.IntegerField()
     quantity_remaining = models.IntegerField(null=True, blank=True)
@@ -30,7 +39,7 @@ class BundlePosting(models.Model):
         constraints = [
             CheckConstraint(
                 name="quantity_remaining_less_than_quantity",
-                check=Q(quantity_remaining__lt=models.F("quantity")),
+                check=Q(quantity_remaining__lte=models.F("quantity")),
             )
         ]
 

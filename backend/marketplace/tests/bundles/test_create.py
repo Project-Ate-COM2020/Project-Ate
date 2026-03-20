@@ -25,7 +25,7 @@ class CreateBundleViewsTests(APITestCase):
 
         bundle_data = {
             "seller": int(self.seller_id),
-            "category": "food",
+            "category": "dairy",
             "contents": "A bagel",
             "quantity": 8,
             "price": 55,
@@ -50,7 +50,7 @@ class CreateBundleViewsTests(APITestCase):
         bundle = BundlePosting.objects.get(posting_id=self.bundle_id)
 
         self.assertEqual(bundle.seller.pk, self.seller_id)
-        self.assertEqual(bundle.category, "food")
+        self.assertEqual(bundle.category, "dairy")
         self.assertEqual(bundle.contents, "A bagel")
         self.assertEqual(bundle.quantity, 8)
         self.assertEqual(bundle.pickup_window, "00:00-24:00")
