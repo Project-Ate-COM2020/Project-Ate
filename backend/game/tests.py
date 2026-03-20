@@ -175,8 +175,6 @@ class TestConsumerBadgeView(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = response.json()
-
         returned_ids = []
 
         for badge in response:
