@@ -60,6 +60,7 @@ export default function SellerSignupPage() {
 
     localStorage.setItem("access_token", credentials.access);
     localStorage.setItem("refresh_token", credentials.refresh);
+    localStorage.setItem("user_type", "seller");
     
     // Testing purposes
     console.log("User should now be logged in");

@@ -85,17 +85,19 @@
 
 .button {
   margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
+  margin-right: 0.5rem;
+  padding: 0.6rem 1rem;
   border-radius: 0.75rem;
-  border: 0.0625rem solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
-  color: inherit;
+  border: 0.0625rem solid var(--green);
+  background: var(--green);
+  color: white;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .button:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(35, 240, 199, 0.3);
+  background: var(--green-light);
+  border-color: var(--green-light);
 }
 
