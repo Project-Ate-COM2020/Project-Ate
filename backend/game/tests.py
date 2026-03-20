@@ -15,155 +15,204 @@ from authentication.tests import (
     setup_random_consumer,
     setup_random_seller,
     get_authorization_headers_for_user,
-    setup_random_reservation,
-    setup_random_bundle_for_seller,
-    setup_random_reservation_for_consumer_and_bundle,
 )
-from core.models import (
-    Consumer,
-    Seller,
-    BundlePosting,
-    Reservation,
-    Badges,
-    BadgeMapping,
-)
-from marketplace.views import ReservationView
-from .constants import get_co2_per_item
-from math import ceil
-
-from .views import ConsumerBadgesView
-
-CO2_PER_ITEM = get_co2_per_item()
+from core.models import Consumer, Seller, BundlePosting, Reservation
 
 
-class TestReservationUpdatesBadges(APITestCase):
+class BaseAuthenticatedTest(APITestCase):
+
     def setUp(self):
         pass
 
-    def get_url(self, pk):
-        return reverse(ReservationView.name, kwargs={"pk": pk})
+        self.headers = get_authorization_headers_for_user(self.user)
 
-    def _collect_reservation(self, suser: User, reservation: Reservation):
-        headers = get_authorization_headers_for_user(suser)
 
-        response = self.client.patch(
-            self.get_url(reservation.pk),
-            data={"status": "collected"},
-            headers=headers,
+class GameSummaryViewTests(BaseAuthenticatedTest):
+
+    def create_posting(self, category, quantity):
+        return BundlePosting.objects.create(
+            seller=self.seller,
+            category=category,
+            quantity=quantity,
+            quantity_remaining=quantity,
+            price=Decimal("10.00"),
+            pickup_window="9:00-17:00",
+            status="active",
         )
+
+    def create_reservation(self, posting, code, status="collected"):
+        return Reservation.objects.create(
+            posting=posting,
+            consumer=self.consumer,
+            claim_code=code,
+            status=status,
+            collected_at=timezone.now() if status == "collected" else None,
+        )
+
+    def test_summary_calculates_correct_values(self):
+        posting1 = self.create_posting("Hot Meals", 2)
+        posting2 = self.create_posting("Fresh Produce", 4)
+
+        # Pass explicit hardcoded claim codes
+        self.create_reservation(posting1, "XB9YO1")
+        self.create_reservation(posting2, "AB12CD")
+
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_can_earn_all_badges(self):
-        # work out the maximum value
-        # helps set market conditions for fastest way to achieve badges
-        m = max(CO2_PER_ITEM.values())
+        # CO2 calculation
+        # Hot Meals: 2.5 * 2 = 5
+        # Fresh Produce: 0.5 * 4 = 2
+        # Total = 7
+        self.assertEqual(response.data["current_streak_weeks"], 5)
+        self.assertEqual(response.data["total_rescued_bundles"], 2)
+        self.assertEqual(response.data["estimated_co2e_saved_kg"], 7.0)
 
-        max_category = None
+    def test_ignores_non_collected(self):
+        posting = self.create_posting("Hot Meals", 2)
+        self.create_reservation(posting, "FOOD99", status="reserved")
 
-        for k, v in CO2_PER_ITEM.items():
-            if v == m:
-                max_category = k
+        response = self.client.get(reverse("game-summary"))
 
-        max_badges = Badges.objects.all().aggregate(co2=Max("min_co2"))
+        self.assertEqual(response.data["total_rescued_bundles"], 0)
+        self.assertEqual(response.data["estimated_co2e_saved_kg"], 0)
 
-        max_co2 = max_badges["co2"]
 
-        number_of_bundles_needed = ceil(max_co2 / m)
+class RecentRescuesViewTests(BaseAuthenticatedTest):
 
-        # setup market
-        cuser, consumer = setup_random_consumer()
-        suser, seller = setup_random_seller()
-
-        bundles = []
-
-        for x in range(number_of_bundles_needed):
-            b = setup_random_bundle_for_seller(seller, {"category": max_category})
-
-            bundles.append(b)
-
-        for category in BundlePosting.CATEGORY_CHOICES:
-            b = setup_random_bundle_for_seller(seller, {"category": category[0]})
-            bundles.append(b)
-
-        for bundle in bundles:
-            setup_random_reservation_for_consumer_and_bundle(consumer, bundle)
-
-        # collect all bundles as a user
-        for bundle in bundles:
-            self._collect_reservation(suser, bundle)
-
-        consumer.refresh_from_db()
-
-        # test user obtained all badges
-        self.assertEqual(
-            BadgeMapping.objects.filter(consumer_id=consumer).count(),
-            Badges.objects.count(),
+    def create_posting(self):
+        return BundlePosting.objects.create(
+            seller=self.seller,
+            category="Bakery",
+            quantity=1,
+            quantity_remaining=1,
+            price=Decimal("5.00"),
+            pickup_window="9:00-17:00",
+            status="active",
         )
 
-
-class TestConsumerBadgeView(APITestCase):
-    def setUp(self):
-        self.url = reverse(ConsumerBadgesView.name)
-
-    def get_url(self, pk):
-        return reverse(ReservationView.name, kwargs={"pk": pk})
-
-    def _collect_reservation(self, suser: User, reservation: Reservation):
-        headers = get_authorization_headers_for_user(suser)
-
-        response = self.client.patch(
-            self.get_url(reservation.pk),
-            data={"status": "collected"},
-            headers=headers,
+    def create_reservation(self, posting, code):
+        return Reservation.objects.create(
+            posting=posting,
+            consumer=self.consumer,
+            claim_code=code,
+            status="collected",
+            collected_at=timezone.now(),
         )
+
+    def test_default_limit_is_10(self):
+        posting = self.create_posting()
+
+        claim_codes = [
+            "CODE01",
+            "CODE02",
+            "CODE03",
+            "CODE04",
+            "CODE05",
+            "CODE06",
+            "CODE07",
+            "CODE08",
+            "CODE09",
+            "CODE10",
+            "CODE11",
+        ]
+
+        for code in claim_codes:
+            self.create_reservation(posting, code)
+
+        response = self.client.get(reverse("game-recent"), headers=self.headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_no_badges(self):
-        user, _ = setup_random_consumer()
+        self.assertEqual(len(response.data), 10)
 
-        headers = get_authorization_headers_for_user(user)
 
-        response = self.client.get(self.url, headers=headers)
+class GameSummaryBadgeTests(BaseAuthenticatedTest):
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def create_posting(self, category, quantity):
+        return BundlePosting.objects.create(
+            seller=self.seller,
+            category=category,
+            quantity=quantity,
+            quantity_remaining=quantity,
+            price=Decimal("10.00"),
+            pickup_window="9:00-17:00",
+            status="active",
+        )
 
-    def test_some_badges(self):
-        # work out the maximum value
-        # helps set market conditions for fastest way to achieve badges
-        m = max(CO2_PER_ITEM.values())
+    def create_reservation(self, posting, code, status="collected"):
+        return Reservation.objects.create(
+            posting=posting,
+            consumer=self.consumer,
+            claim_code=code,
+            status=status,
+            collected_at=timezone.now() if status == "collected" else None,
+        )
 
-        max_category = None
+    def test_variety_badges(self):
+        # 1 unique categories  should not earn any badges
+        posting = self.create_posting("Hot Meals", 1)
+        self.create_reservation(posting, "HOT100")
 
-        for k, v in CO2_PER_ITEM.items():
-            if v == m:
-                max_category = k
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
 
-        max_badges = Badges.objects.all().aggregate(co2=Max("min_co2"))
+        self.assertNotIn("Explorer", response.data["badges"])
+        self.assertNotIn("Discoverer", response.data["badges"])
+        self.assertNotIn("Adventurer", response.data["badges"])
+        self.assertNotIn("Master", response.data["badges"])
 
-        max_co2 = max_badges["co2"]
+        # add 1 more category - should earn Explorer
+        posting = self.create_posting("Fresh Produce", 1)
+        self.create_reservation(posting, "FRESH100")
 
-        number_of_bundles_needed = ceil(max_co2 / m)
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
+        self.assertIn("Explorer", response.data["badges"])
+        self.assertNotIn("Discoverer", response.data["badges"])
+        self.assertNotIn("Adventurer", response.data["badges"])
+        self.assertNotIn("Master", response.data["badges"])
 
-        # setup market
-        cuser, consumer = setup_random_consumer()
-        suser, seller = setup_random_seller()
-        headers = get_authorization_headers_for_user(cuser)
+        # add 1 more category - should earn Discoverer
+        posting = self.create_posting("Bakery", 1)
+        self.create_reservation(posting, "BAKERY10")
 
-        bundles = []
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
+        self.assertIn("Explorer", response.data["badges"])
+        self.assertIn("Discoverer", response.data["badges"])
+        self.assertNotIn("Adventurer", response.data["badges"])
+        self.assertNotIn("Master", response.data["badges"])
 
-        for x in range(number_of_bundles_needed):
-            b = setup_random_bundle_for_seller(seller, {"category": max_category})
+        # add 1 more category - should earn Adventurer
+        posting = self.create_posting("Dairy", 1)
+        self.create_reservation(posting, "DAIRY100")
 
-            bundles.append(b)
+        response = self.client.get(reverse("game-summary"))
+        self.assertIn("Explorer", response.data["badges"])
+        self.assertIn("Discoverer", response.data["badges"])
+        self.assertIn("Adventurer", response.data["badges"])
+        self.assertNotIn("Master", response.data["badges"])
 
-        for category in BundlePosting.CATEGORY_CHOICES:
-            b = setup_random_bundle_for_seller(seller, {"category": category[0]})
-            bundles.append(b)
+        # add 2 more categories - should earn Master
+        categories = ["Prepared Salads", "Desserts"]
+        for i, cat in enumerate(categories):
+            posting = self.create_posting(cat, 1)
+            self.create_reservation(posting, f"CODE{i}")
 
-        for bundle in bundles:
-            setup_random_reservation_for_consumer_and_bundle(consumer, bundle)
+        response = self.client.get(reverse("game-summary"))
+        self.assertIn("Explorer", response.data["badges"])
+        self.assertIn("Discoverer", response.data["badges"])
+        self.assertIn("Adventurer", response.data["badges"])
+        self.assertIn("Master", response.data["badges"])
+
+    def test_impact_badges(self):
+        # Total CO2 < 100 - no badges
+        posting = self.create_posting("Hot Meals", 1)  # CO2 = 2.5
+        self.create_reservation(posting, "IMPACT1")
+        response = self.client.get(reverse("game-summary"))
+        self.assertNotIn("Eco Starter", response.data["badges"])
+        self.assertNotIn("Eco Friend", response.data["badges"])
+        self.assertNotIn("Climate Hero", response.data["badges"])
+        self.assertNotIn("Planet Saver", response.data["badges"])
 
         # collect all bundles as a user
         for bundle in bundles:
