@@ -62,6 +62,7 @@ function BuyerSignupPage() {
 
     localStorage.setItem("access_token", credentials.access);
     localStorage.setItem("refresh_token", credentials.refresh);
+    localStorage.setItem("user_type", "buyer");
     
     // Testing purposes
     console.log("User should now be logged in");

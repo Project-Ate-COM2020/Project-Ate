@@ -9,7 +9,7 @@ export default function HomePage() {
 
       {/* Navbar */}
       <nav className="home-nav">
-        <NavLink to="/" className="home-nav-logo">Project-Ate</NavLink>
+        <NavLink to="/buyer/home" className="home-nav-logo">Project-Ate</NavLink>
         <NavLink to="/login" className="btn-primary">Login</NavLink>
       </nav>
 

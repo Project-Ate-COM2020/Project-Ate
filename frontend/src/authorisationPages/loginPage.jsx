@@ -11,7 +11,7 @@ improved to allow proper redirecting*/
 /* I also don't want to edit Harry's layout but it should be at some point */
 
 /* --- Import Statements --- */
-import React, {useState} from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../reusableComponents/authLayout";
 import { postData } from "../reusableComponents/api";
@@ -32,23 +32,31 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
+    setError("");
+    setIsLoading(true);
 
-    localStorage.setItem("access_token", credentials.access);
-    localStorage.setItem("refresh_token", credentials.refresh);
+    try {
+      const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
 
-    console.log(credentials);
+      if (!credentials || !credentials.access) {
+        setError("Invalid username or password.");
+        setIsLoading(false);
+        return;
+      }
 
-    const verify = await postData("auth/verify", {"token" : credentials.access});
+      localStorage.setItem("access_token", credentials.access);
+      localStorage.setItem("refresh_token", credentials.refresh);
+      localStorage.setItem("user_type", accountType);
 
-    console.log(verify);
-
-    if (accountType == "seller") {
-      navigate("/seller/home");
-    } if (accountType == "buyer") {
-      navigate("/buyer/home");
-    };
+      if (accountType === "seller") {
+        navigate("/seller/home");
+      } else {
+        navigate("/buyer/home");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+      setIsLoading(false);
+    }
 
 };
 
