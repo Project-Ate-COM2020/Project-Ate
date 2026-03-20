@@ -9,8 +9,14 @@ from rest_framework import status
 from django.utils import timezone
 from decimal import Decimal
 
-from authentication.tests import setup_random_consumer, setup_random_seller, get_authorization_headers_for_user
-from core.models import BundlePosting, Reservation
+from authentication.tests import (
+    setup_consumer,
+    setup_random_consumer,
+    setup_random_seller,
+    get_authorization_headers_for_user,
+)
+from core.models import Consumer, Seller, BundlePosting, Reservation
+
 
 class BaseAuthenticatedTest(APITestCase):
 
@@ -32,7 +38,7 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
             quantity_remaining=quantity,
             price=Decimal("10.00"),
             pickup_window="9:00-17:00",
-            status="active"
+            status="active",
         )
 
     def create_reservation(self, posting, code, status="collected"):
@@ -41,7 +47,7 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
             consumer=self.consumer,
             claim_code=code,
             status=status,
-            collected_at=timezone.now() if status == "collected" else None
+            collected_at=timezone.now() if status == "collected" else None,
         )
 
     def test_summary_calculates_correct_values(self):
@@ -52,11 +58,9 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
         self.create_reservation(posting1, "XB9YO1")
         self.create_reservation(posting2, "AB12CD")
 
-        response = self.client.get(reverse("game-summary"))
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        response = response.json()
 
         # CO2 calculation
         # Hot Meals: 2.5 * 2 = 5
@@ -72,8 +76,6 @@ class GameSummaryViewTests(BaseAuthenticatedTest):
 
         response = self.client.get(reverse("game-summary"))
 
-        response.json()
-
         self.assertEqual(response.data["total_rescued_bundles"], 0)
         self.assertEqual(response.data["estimated_co2e_saved_kg"], 0)
 
@@ -88,7 +90,7 @@ class RecentRescuesViewTests(BaseAuthenticatedTest):
             quantity_remaining=1,
             price=Decimal("5.00"),
             pickup_window="9:00-17:00",
-            status="active"
+            status="active",
         )
 
     def create_reservation(self, posting, code):
@@ -97,7 +99,7 @@ class RecentRescuesViewTests(BaseAuthenticatedTest):
             consumer=self.consumer,
             claim_code=code,
             status="collected",
-            collected_at=timezone.now()
+            collected_at=timezone.now(),
         )
 
     def test_default_limit_is_10(self):
@@ -120,13 +122,12 @@ class RecentRescuesViewTests(BaseAuthenticatedTest):
         for code in claim_codes:
             self.create_reservation(posting, code)
 
-        response = self.client.get(reverse("game-recent"))
+        response = self.client.get(reverse("game-recent"), headers=self.headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        response = response.json()
-
         self.assertEqual(len(response.data), 10)
+
 
 class GameSummaryBadgeTests(BaseAuthenticatedTest):
 
@@ -138,7 +139,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
             quantity_remaining=quantity,
             price=Decimal("10.00"),
             pickup_window="9:00-17:00",
-            status="active"
+            status="active",
         )
 
     def create_reservation(self, posting, code, status="collected"):
@@ -147,7 +148,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
             consumer=self.consumer,
             claim_code=code,
             status=status,
-            collected_at=timezone.now() if status == "collected" else None
+            collected_at=timezone.now() if status == "collected" else None,
         )
 
     def test_variety_badges(self):
@@ -155,9 +156,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         posting = self.create_posting("Hot Meals", 1)
         self.create_reservation(posting, "HOT100")
 
-        response = self.client.get(reverse("game-summary"))
-
-        response = response.json()
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
 
         self.assertNotIn("Explorer", response.data["badges"])
         self.assertNotIn("Discoverer", response.data["badges"])
@@ -168,7 +167,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         posting = self.create_posting("Fresh Produce", 1)
         self.create_reservation(posting, "FRESH100")
 
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
         self.assertIn("Explorer", response.data["badges"])
         self.assertNotIn("Discoverer", response.data["badges"])
         self.assertNotIn("Adventurer", response.data["badges"])
@@ -178,7 +177,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         posting = self.create_posting("Bakery", 1)
         self.create_reservation(posting, "BAKERY10")
 
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"), headers=self.headers)
         self.assertIn("Explorer", response.data["badges"])
         self.assertIn("Discoverer", response.data["badges"])
         self.assertNotIn("Adventurer", response.data["badges"])
@@ -188,7 +187,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         posting = self.create_posting("Dairy", 1)
         self.create_reservation(posting, "DAIRY100")
 
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Explorer", response.data["badges"])
         self.assertIn("Discoverer", response.data["badges"])
         self.assertIn("Adventurer", response.data["badges"])
@@ -200,7 +199,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
             posting = self.create_posting(cat, 1)
             self.create_reservation(posting, f"CODE{i}")
 
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Explorer", response.data["badges"])
         self.assertIn("Discoverer", response.data["badges"])
         self.assertIn("Adventurer", response.data["badges"])
@@ -210,25 +209,25 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         # Total CO2 < 100 - no badges
         posting = self.create_posting("Hot Meals", 1)  # CO2 = 2.5
         self.create_reservation(posting, "IMPACT1")
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertNotIn("Eco Starter", response.data["badges"])
         self.assertNotIn("Eco Friend", response.data["badges"])
         self.assertNotIn("Climate Hero", response.data["badges"])
         self.assertNotIn("Planet Saver", response.data["badges"])
 
         # Total CO2 >= 100 - earns Eco Starter
-        posting = self.create_posting("Hot Meals", 50)  # 50 * 2.5 = 125 
+        posting = self.create_posting("Hot Meals", 50)  # 50 * 2.5 = 125
         self.create_reservation(posting, "IMPACT125")
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Eco Starter", response.data["badges"])
         self.assertNotIn("Eco Friend", response.data["badges"])
         self.assertNotIn("Climate Hero", response.data["badges"])
         self.assertNotIn("Planet Saver", response.data["badges"])
 
         # Total CO2 >= 500 - earns Eco Friend
-        posting = self.create_posting("Hot Meals", 200)  # 200 * 2.5 = 500 
+        posting = self.create_posting("Hot Meals", 200)  # 200 * 2.5 = 500
         self.create_reservation(posting, "IMPACT500")
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Eco Starter", response.data["badges"])
         self.assertIn("Eco Friend", response.data["badges"])
         self.assertNotIn("Climate Hero", response.data["badges"])
@@ -237,7 +236,7 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         # Total CO2 >= 1000 - earns Climate Friend
         posting = self.create_posting("Hot Meals", 201)  # 201 * 2.5 = 502.5
         self.create_reservation(posting, "IMPACT502")
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Eco Starter", response.data["badges"])
         self.assertIn("Eco Friend", response.data["badges"])
         self.assertIn("Climate Hero", response.data["badges"])
@@ -246,9 +245,8 @@ class GameSummaryBadgeTests(BaseAuthenticatedTest):
         # Total CO2 >= 10000 - earns Planet Saver
         posting = self.create_posting("Hot Meals", 4000)  # 4000 * 2.5 = 10000
         self.create_reservation(posting, "IMPACT10000")
-        response = self.client.get(reverse("game-summary")).json()
+        response = self.client.get(reverse("game-summary"))
         self.assertIn("Eco Starter", response.data["badges"])
         self.assertIn("Eco Friend", response.data["badges"])
         self.assertIn("Climate Hero", response.data["badges"])
         self.assertIn("Planet Saver", response.data["badges"])
-

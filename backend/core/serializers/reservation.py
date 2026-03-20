@@ -1,7 +1,8 @@
+from django.db.models.aggregates import Count
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from core.models import Reservation, Consumer, BundlePosting
+from core.models import Reservation, Consumer, BundlePosting, Seller
 
 
 class CreateReservationSerializer(serializers.ModelSerializer):
@@ -53,6 +54,53 @@ class CreateReservationSerializer(serializers.ModelSerializer):
         reservation = Reservation.objects.create(consumer=consumer, **validated_data)
 
         return reservation
+
+
+from game.constants import CO2_PER_ITEM
+
+
+class ConsumerUpdateReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = []
+
+
+class SellerUpdateReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = ["status"]
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        seller = Seller.objects.get(user=user)
+
+        new_status = validated_data.get("status")
+
+        match new_status:
+            case "collected":
+                instance.status = "collected"
+
+                instance.save()
+
+                # user collected a bundle
+                posting: BundlePosting = instance.posting
+                consumer = instance.consumer
+
+                categories = Reservation.objects.filter(
+                    status="collected", consumer=consumer
+                ).aggregate(num=Count("posting__category", distinct=True))
+
+                consumer.categories_collected = categories["num"]
+
+                consumer.co2_saved += CO2_PER_ITEM[posting.category.lower()]
+
+                consumer.save()
+
+                return instance
+            case "no-show":
+                pass
+
+        return instance
 
 
 class ReservationSerializer(serializers.ModelSerializer):

@@ -223,7 +223,7 @@ def random_consumer_args() -> Dict[str, Any]:
 
 def random_bundle_args() -> Dict[str, Any]:
     return {
-        "category": get_random_string(10),
+        "category": random.choice(random.choice(BundlePosting.CATEGORY_CHOICES)),
         "contents": get_random_string(10),
         "quantity": random.randint(6, 10),
         "quantity_remaining": random.randint(1, 5),
