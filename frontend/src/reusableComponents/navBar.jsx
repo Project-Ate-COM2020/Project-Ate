@@ -16,7 +16,6 @@ export default function NavBar({ user_type }) {
       <nav>
         <NavLink to="/seller/home">Project-Ate</NavLink>
         <ul>
-          <li><NavLink to="/seller/home">Home</NavLink></li>
           <li><NavLink to="/seller/analytics">Analytics</NavLink></li>
           <li><NavLink to="/seller/reservations">Reservations</NavLink></li>
           <li><NavLink to="/seller/postings">Postings</NavLink></li>
