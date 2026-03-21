@@ -16,6 +16,7 @@ from .serializers import ReservationSerializer
 import json
 
 # Create your views here.
+from .constants import VARIETY_BADGES, IMPACT_BADGES
 
 try:
     for b in VARIETY_BADGES + IMPACT_BADGES:
