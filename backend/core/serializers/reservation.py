@@ -153,6 +153,32 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
 
                 consumer.save()
 
+                consumer.refresh_from_db()
+
+                # create new badge mappings
+                badges_can_have = Badges.objects.filter(
+                    min_categories__lte=consumer.categories_collected,
+                    min_co2__lte=consumer.co2_saved,
+                )
+                # print("can have ", badges_can_have)
+
+                already_have = Badges.objects.filter(
+                    consumers_who_have_earned__consumer_id=consumer,
+                )
+
+                # print("already have", already_have)
+
+                badges_to_add = badges_can_have.difference(already_have)
+
+                # print("badges to add:", badges_to_add)
+
+                join = [
+                    BadgeMapping(consumer_id=consumer, badge_id=b)
+                    for b in badges_to_add
+                ]
+
+                BadgeMapping.objects.bulk_create(join)
+
                 return instance
             case "no-show":
                 pass
