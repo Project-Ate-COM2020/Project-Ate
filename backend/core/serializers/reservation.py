@@ -1,7 +1,18 @@
+from datetime import timedelta
+
+from django.db.models.aggregates import Count
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from core.models import Reservation, Consumer, BundlePosting
+from core.models import (
+    Reservation,
+    Consumer,
+    BundlePosting,
+    Seller,
+    Badges,
+    BadgeMapping,
+)
 
 
 class CreateReservationSerializer(serializers.ModelSerializer):
@@ -53,6 +64,100 @@ class CreateReservationSerializer(serializers.ModelSerializer):
         reservation = Reservation.objects.create(consumer=consumer, **validated_data)
 
         return reservation
+
+
+from game.constants import get_co2_per_item
+
+CO2_PER_ITEM = get_co2_per_item()
+
+
+class ConsumerUpdateReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Consumer
+        fields = []
+
+
+class SellerUpdateReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = ["status"]
+
+    def update(self, instance, validated_data):
+        user = self.context["request"].user
+        seller = Seller.objects.get(user=user)
+
+        new_status = validated_data.get("status")
+
+        match new_status:
+            case "collected":
+                instance.status = "collected"
+                instance.collected_at = timezone.now()
+
+                instance.save()
+
+                # user collected a bundle
+                posting: BundlePosting = instance.posting
+                consumer = instance.consumer
+
+                # update consumer states
+                categories = Reservation.objects.filter(
+                    status="collected", consumer=consumer
+                ).aggregate(num=Count("posting__category", distinct=True))
+
+                consumer.categories_collected = categories["num"]
+
+                number_to_add = CO2_PER_ITEM[posting.category.lower()]
+
+                consumer.co2_saved += number_to_add
+
+                consumer.save()
+
+                consumer.refresh_from_db()
+
+                # create new badge mappings
+                badges_can_have = Badges.objects.filter(
+                    min_categories__lte=consumer.categories_collected,
+                    min_co2__lte=consumer.co2_saved,
+                )
+
+                already_have = Badges.objects.filter(
+                    consumers_who_have_earned__consumer_id=consumer,
+                )
+
+                badges_to_add = badges_can_have.difference(already_have)
+
+                join = [
+                    BadgeMapping(consumer_id=consumer, badge_id=b)
+                    for b in badges_to_add
+                ]
+
+                BadgeMapping.objects.bulk_create(join)
+
+                last_collected = (
+                    Reservation.objects.filter(status="collected")
+                    .order_by("-collected_at")
+                    .first()
+                )
+
+                if last_collected is not None:
+                    # check
+                    timestamp = last_collected.collected_at
+                    now = instance.collected_at
+
+                    satisfies_streak = now.date() == (
+                        timestamp.date() + timedelta(days=1)
+                    )
+
+                    if satisfies_streak:
+                        consumer.streak += 1
+
+                consumer.save()
+
+                return instance
+            case "no-show":
+                pass
+
+        return instance
 
 
 class ReservationSerializer(serializers.ModelSerializer):

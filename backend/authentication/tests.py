@@ -174,7 +174,7 @@ def merge_dict(base: Optional[Dict[Any, Any]], overlay: Optional[Dict[Any, Any]]
 
     merged = base.copy()
 
-    for key, val in overlay:
+    for key, val in overlay.items():
         if key in merged:
             merged[key] = val
 
@@ -223,7 +223,7 @@ def random_consumer_args() -> Dict[str, Any]:
 
 def random_bundle_args() -> Dict[str, Any]:
     return {
-        "category": get_random_string(10),
+        "category": random.choice(random.choice(BundlePosting.CATEGORY_CHOICES)),
         "contents": get_random_string(10),
         "quantity": random.randint(6, 10),
         "quantity_remaining": random.randint(1, 5),
@@ -439,8 +439,10 @@ def setup_n_random_bundles(n) -> Tuple[User, Seller, List[BundlePosting]]:
 
     return user, seller, bundles
 
-def setup_random_bundle_for_seller(seller: Seller) -> BundlePosting:
-    create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
+def setup_random_bundle_for_seller(seller: Seller, bundle_override={}) -> BundlePosting:
+    r = random_bundle_args()
+    m = merge_dict(r, bundle_override)
+    create = BundlePosting.objects.create(seller=seller, **m)
     return create
 
 def setup_reservation(posting: BundlePosting, consumer: Consumer, **kwargs) -> Reservation:
@@ -470,9 +472,6 @@ def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle:
     create = setup_reservation(bundle, consumer, **r)
     return create
 
-def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle: BundlePosting) -> Reservation:
-    create = setup_reservation(bundle, consumer)
-    return create
 
 def get_authorization_headers_for_user(user: User):
     token = UserTokenObtainPairSerializer.get_token(user).access_token
