@@ -1,49 +1,23 @@
+/* --- File Description --- */
+
+/* The seller issues page, made by Lucas */
+
+/* --- Current Problems and TODOS --- */
+
+// Not much I don't think
+
+/* --- Import Statements --- */
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar";
-import { fetchSellerIssues, updateSellerIssue } from "../api-legacy/issueReporting";
-import "./sellerIssuesPage.css";
+import "./issuesPage.css";
 
+// defining constant
 const STATUS_OPTIONS = ["open", "responded", "resolved"];
 
+
+/* --- Main Page Function --- */
 export default function SellerIssuesPage() {
-  const [issues, setIssues] = useState([
-    {
-      issue_id: 1,
-      posting_id: 101,
-      posting_category: "Bakery",
-      consumer_name: "Sarah Johnson",
-      consumer_id: 5,
-      type: "Product quality",
-      description: "The bread I received was stale and hard. It was not fresh at all. I expected fresh bakery items based on the listing description.",
-      status: "open",
-      seller_response: null,
-      created_at: "2026-03-08T14:30:00",
-    },
-    {
-      issue_id: 2,
-      posting_id: 102,
-      posting_category: "Vegetables",
-      consumer_name: "Mike Chen",
-      consumer_id: 12,
-      type: "Order issue",
-      description: "I ordered 2kg of tomatoes but only received 1kg. The package felt light when I picked it up.",
-      status: "responded",
-      seller_response: "I apologize for the mix-up. I've checked our records and found the error. We will provide a refund or replacement. Please let us know your preference.",
-      created_at: "2026-03-07T10:15:00",
-    },
-    {
-      issue_id: 3,
-      posting_id: 103,
-      posting_category: "Dairy",
-      consumer_name: "Emma Wilson",
-      consumer_id: 8,
-      type: "Delivery issue",
-      description: "The milk arrived 30 minutes after the pickup window ended. I had to wait much longer than expected.",
-      status: "resolved",
-      seller_response: "We sincerely apologize for the delay. This was due to traffic issues on that day. We've implemented better scheduling to prevent this in the future.",
-      created_at: "2026-03-06T16:45:00",
-    },
-  ]);
+  const [issues, setIssues] = useState([]);
   const [isLoadingIssues, setIsLoadingIssues] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -60,7 +34,7 @@ export default function SellerIssuesPage() {
     setIsLoadingIssues(true);
     try {
       const data = await fetchSellerIssues(sellerId);
-      setIssues(Array.isArray(data) ? data : []);
+      setIssues(data ?? []);
     } catch (err) {
       setIssues([]);
       setError("Failed to load issues");
@@ -70,8 +44,7 @@ export default function SellerIssuesPage() {
   };
 
   useEffect(() => {
-    // Uncomment to load real issues from backend
-    // loadIssues();
+    loadIssues();
   }, []);
 
   const handleSelectIssue = (issue) => {
@@ -119,9 +92,15 @@ export default function SellerIssuesPage() {
   const currentIssue = issues.find((issue) => issue.issue_id === selectedIssueId);
 
   return (
-    <div className="seller-issues-page">
+    <div className="buyer-page seller-issues-page">
       <NavBar user_type={"seller"}/>
-      <div className="seller-issues-container">
+      <section className="buyer-hero">
+        <p className="buyer-hero-label">Support</p>
+        <h1 className="buyer-hero-title">Customer Queries</h1>
+        <p className="buyer-hero-subtitle">Manage and respond to customer inquiries and issues.</p>
+      </section>
+      <div className="buyer-container">
+        <div className="seller-issues-container">
         <section className="seller-issues-list-panel">
           <h1 className="seller-issues-title">Customer Queries</h1>
           <p className="seller-issues-subtitle">Open queries from customers</p>
@@ -319,6 +298,7 @@ export default function SellerIssuesPage() {
             </div>
           )}
         </aside>
+      </div>
       </div>
     </div>
   );

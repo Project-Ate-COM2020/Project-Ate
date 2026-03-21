@@ -1,54 +1,20 @@
+/* --- File Description --- */
+
+/* This is the seller analytics page, uses poltly for some cool graphs*/
+
+/* --- Current Issues and TODOS --- */
+
+// Nothing currently
+
+/* --- Import Statements --- */
+
 import { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import NavBar from '../reusableComponents/navBar';
 import { getData } from '../reusableComponents/api.jsx';
 import './analytics.css';
 
-// toggle to false when backend endpoints are ready
-const USE_MOCK_DATA = true;
-
-// local mock data
-const MOCK_DATA = {
-    stats: {
-        listings: 142,
-        reservations: 97,
-        revenue: 2436.50,
-        collectionRate: 84.0,
-        noShows: 11,
-    },
-    wasteProxy: {
-        bundles_collected: 81,
-        kg_saved: 48.6,
-        assumed_weight_kg_per_bundle: 0.6,
-    },
-    sellThrough: {
-        collected: 81,
-        no_show: 11,
-        expired: 3,
-        reserved: 2,
-        total: 97,
-        sell_through_rate: 83.5,
-    },
-    categories: [
-        { category: 'Bakery', total_reservations: 34 },
-        { category: 'Deli', total_reservations: 22 },
-        { category: 'Produce', total_reservations: 18 },
-        { category: 'Dairy', total_reservations: 14 },
-        { category: 'Hot Food', total_reservations: 9 },
-    ],
-    pickupWindows: [
-        { pickup_window: '08:00–10:00', total_reservations: 28 },
-        { pickup_window: '12:00–14:00', total_reservations: 35 },
-        { pickup_window: '17:00–19:00', total_reservations: 22 },
-        { pickup_window: '19:00–21:00', total_reservations: 12 },
-    ],
-    pricing: [
-        { price_range: '£0-£3', total_reservations: 18, collected: 12, sell_through_rate: 66.7 },
-        { price_range: '£3-£6', total_reservations: 41, collected: 36, sell_through_rate: 87.8 },
-        { price_range: '£6-£10', total_reservations: 27, collected: 24, sell_through_rate: 88.9 },
-        { price_range: '£10+', total_reservations: 11, collected: 9, sell_through_rate: 81.8 },
-    ],
-};
+/* --- Helper Functions --- */
 
 function StatTile({ label, value, icon, sub, accent }) {
     return (
@@ -76,6 +42,8 @@ function Skeleton() {
     return <div className="skeleton" />;
 }
 
+/* --- Main Page Function --- */
+
 function Analytics() {
     const sellerId = localStorage.getItem("seller_id") || localStorage.getItem("sellerId") || "1";
 
@@ -92,17 +60,6 @@ function Analytics() {
         setError(null);
         setLoading(true);
 
-        if (USE_MOCK_DATA) {
-            setStats(MOCK_DATA.stats);
-            setWasteProxy(MOCK_DATA.wasteProxy);
-            setSellThrough(MOCK_DATA.sellThrough);
-            setCategories(MOCK_DATA.categories);
-            setPickupWindows(MOCK_DATA.pickupWindows);
-            setPricing(MOCK_DATA.pricing);
-            setLoading(false);
-            return;
-        }
-
         const params = { seller_id: sellerId };
 
         async function fetchAll() {
@@ -118,20 +75,17 @@ function Analytics() {
                     pickupData,
                     pricingData,
                     wasteProxyData,
-                    // authenticate: false
-                    // analytics endpoints are public at the moment, so skip the token
-                    // this helps avoid 401s from stale local auth during development
                 ] = await Promise.all([
-                    getData('analytics/total-listings/', params, false),
-                    getData('analytics/total-reservations/', params, false),
-                    getData('analytics/total-revenue/', params, false),
-                    getData('analytics/food-waste-reduction/', params, false),
-                    getData('analytics/total-no-shows/', params, false),
-                    getData('analytics/sell-through/', params, false),
-                    getData('analytics/popular-categories/', params, false),
-                    getData('analytics/best-pickup-windows/', params, false),
-                    getData('analytics/pricing-effectiveness/', params, false),
-                    getData('analytics/waste-proxy/', params, false),
+                    getData('analytics/total-listings/', params, true),
+                    getData('analytics/total-reservations/', params, true),
+                    getData('analytics/total-revenue/', params, true),
+                    getData('analytics/food-waste-reduction/', params, true),
+                    getData('analytics/total-no-shows/', params, true),
+                    getData('analytics/sell-through/', params, true),
+                    getData('analytics/popular-categories/', params, true),
+                    getData('analytics/best-pickup-windows/', params, true),
+                    getData('analytics/pricing-effectiveness/', params, true),
+                    getData('analytics/waste-proxy/', params, true),
                 ]);
 
                 // getData() returns undefined on network errors / backend unreachable
@@ -232,9 +186,13 @@ function Analytics() {
         : null;
 
     return (
-        <div className="analytics-page">
+        <div className="buyer-page analytics-page">
             <NavBar user_type="seller" />
-
+            <section className="buyer-hero">
+                <p className="buyer-hero-label">Performance</p>
+                <h1 className="buyer-hero-title">Analytics</h1>
+                <p className="buyer-hero-subtitle">Insights into your listings, reservations, and food waste impact.</p>
+            </section>
             <div className="analytics-container">
                 <div className="analytics-header">
                     <h1 className="analytics-title">Analytics</h1>
@@ -371,4 +329,5 @@ function Analytics() {
     );
 }
 
+/* --- Export --- */
 export default Analytics;

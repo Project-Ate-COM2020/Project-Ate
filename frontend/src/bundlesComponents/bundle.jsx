@@ -22,18 +22,20 @@ hard to add once the backend is ready */
 import "./bundle.css";
 
 /* --- Test Data Declarations --- */
-const bundleName = "Big Cheese Bundle";
-const bundleCategory = "Dairy";
-const imgPath = "/../../Dairy.jpg";
-const pickupTime = "11:00 - 12:00";
-const seller = "Cheesy Goods Incorporated";
-const buyer = "Bobby";
-const collectionCode = "QWERTY";
-const price = 14.50;
-const location = "Exeter";
+const defaultBundleData = {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    buyer: "Bobby",
+    collectionCode: "QWERTY",
+    price: 14.50,
+    location: "Exeter",
+};
 
 /* --- Helper Functions --- */
-function OptionalContainer( { includedAttributes } ) {
+function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunction, markCollectedFunction }) {
 
     let pickupTimeDisplayed;
     let bundleCategoryDisplayed;
@@ -59,23 +61,23 @@ function OptionalContainer( { includedAttributes } ) {
 
     return (
         <div className = "infoContainer">
-            {pickupTimeDisplayed && <p>pickup time: {pickupTime}</p>}
+            {pickupTimeDisplayed && <p>pickup time: {bundleData.pickupTime}</p>}
 
-            {bundleCategoryDisplayed && <p>Bundle Category: {bundleCategory}</p>}
+            {bundleCategoryDisplayed && <p>Bundle Category: {bundleData.bundleCategory}</p>}
 
-            {sellerDisplayed && <p>Seller: {seller}</p>}
+            {sellerDisplayed && <p>Seller: {bundleData.seller}</p>}
 
-            {buyerDisplayed && <p>Buyer: {buyer}</p>}
+            {buyerDisplayed && <p>Buyer: {bundleData.buyer}</p>}
 
-            {collectionCodeDisplayed && <p>Collection Code: {collectionCode}</p>}
+            {collectionCodeDisplayed && <p>Collection Code: {bundleData.collectionCode}</p>}
 
-            {priceDisplayed && <p>Price: £{price}</p>}
+            {priceDisplayed && <p>Price: £{bundleData.price}</p>}
 
-            {locationDisplayed && <p>Location: {location}</p>}
+            {locationDisplayed && <p>Location: {bundleData.location}</p>}
 
-            {markCollectedButtonDisplayed && <button>Mark Bundle as collected</button>}
+            {markCollectedButtonDisplayed && <button onClick = {markCollectedFunction}>Mark Bundle as collected</button>}
 
-            {unreserveBundleButtonDisplayed && <button>Unreserve bundle</button>}
+            {unreserveBundleButtonDisplayed && <button onClick = {unreserveBundleFunction}>Unreserve bundle</button>}
 
             
         </div>
@@ -83,18 +85,18 @@ function OptionalContainer( { includedAttributes } ) {
 }
 
 /* --- Main Function --- */
-function Bundle( {includedAttributes = [], backfunction} ) {
+function Bundle({ includedAttributes = [], backfunction, bundleData = defaultBundleData, unreserveBundleFunction, markCollectedFunction }) {
 
     return (
         <div className = "bundleDisplay">
-            <button onClick={backfunction}>X</button>
+            <button className="bundleCloseButton" onClick={backfunction}>X</button>
             <div className = "bundleTitle">
-                <h3>{bundleName}</h3>
+                <h3>{bundleData.bundleName}</h3>
             </div>
             <hr />
             <div className = "bundleBody">
-                <img src = {imgPath} />
-                <OptionalContainer includedAttributes={includedAttributes} />
+                <img src = {bundleData.imgPath} alt={bundleData.bundleName} />
+                <OptionalContainer includedAttributes={includedAttributes} bundleData={bundleData} unreserveBundleFunction={unreserveBundleFunction} markCollectedFunction={markCollectedFunction}/>
             </div>
             
         </div>

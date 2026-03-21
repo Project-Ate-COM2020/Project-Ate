@@ -1,35 +1,42 @@
 .seller-issues-page {
   min-height: 100vh;
-  background: var(--main);
+  background: var(--cream);
 }
 
 .seller-issues-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 16px;
   align-items: start;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.buyer-page .seller-issues-container {
+  padding: 1.5rem 0;
 }
 
 .seller-issues-list-panel,
 .seller-issues-response-panel {
-  background: #fff;
+  background: white;
+  border: 1px solid var(--green-pale);
+  box-shadow: var(--shadow);
   border-radius: 12px;
   padding: 18px;
 }
 
 .seller-issues-title {
   margin: 0;
-  color: var(--accent4);
+  color: var(--dark);
   font-size: 24px;
 }
 
 .seller-issues-subtitle {
   margin-top: 8px;
   margin-bottom: 14px;
-  color: #555;
+  color: var(--muted);
 }
 
 .seller-issues-empty-state {
@@ -50,13 +57,13 @@
 }
 
 .seller-issue-card:hover {
-  border-color: var(--accent4);
+  border-color: var(--green-light);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .seller-issue-card.selected {
-  border-color: var(--accent4);
-  background: #f9f9fb;
+  border-color: var(--green-light);
+  background: var(--green-pale);
 }
 
 .seller-issue-card-header {
@@ -72,7 +79,7 @@
 
 .seller-issue-card-header h3 {
   margin: 0;
-  color: var(--main);
+  color: var(--dark);
   font-size: 16px;
 }
 
@@ -107,7 +114,7 @@
 
 .seller-issue-card-category {
   margin: 8px 0 6px;
-  color: var(--accent4);
+  color: var(--green);
   font-size: 13px;
 }
 
@@ -132,9 +139,9 @@
   margin-top: 10px;
   padding: 8px 14px;
   border-radius: 6px;
-  border: none;
-  background: var(--accent4);
-  color: white;
+  border: 1px solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -142,7 +149,9 @@
 }
 
 .seller-issue-reply-btn:hover {
-  opacity: 0.9;
+  opacity: 1;
+  background: var(--green-light);
+  border-color: var(--green);
 }
 
 .seller-issues-response-panel {
@@ -157,7 +166,7 @@
   margin-bottom: 14px;
 }
 
-.seller-issues-response-title {
+.seller-issues-darke-title {
   margin: 0;
   color: var(--accent4);
   font-size: 18px;
@@ -176,7 +185,7 @@
   align-items: center;
   justify-content: center;
 }
-
+dark
 .seller-issues-close-btn:hover {
   color: var(--main);
 }
@@ -198,7 +207,7 @@
   margin-bottom: 0;
 }
 
-.seller-issue-detail-label {
+.seller-issue-dgreenabel {
   font-weight: 500;
   color: var(--accent4);
   font-size: 13px;
@@ -215,7 +224,7 @@
 
 .seller-issue-message-label {
   margin: 0 0 6px;
-  color: var(--accent4);
+  color: var(--green);
   font-size: 13px;
   font-weight: 500;
 }
@@ -260,7 +269,7 @@
   display: grid;
   gap: 6px;
   font-size: 14px;
-  color: var(--accent4);
+  color: var(--green);
 }
 
 .seller-issue-input {
@@ -273,7 +282,7 @@
 }
 
 .seller-issue-input:focus {
-  border-color: var(--accent4);
+  border-color: var(--green-light);
 }
 
 .seller-issue-textarea {
@@ -284,10 +293,10 @@
 .seller-issue-submit-btn {
   padding: 10px 12px;
   border-radius: 8px;
-  border: none;
+  border: 1px solid var(--green);
   cursor: pointer;
   font-size: 14px;
-  background: var(--accent4);
+  background: var(--green);
   color: white;
   font-weight: 500;
   transition: opacity 0.2s ease;
@@ -323,7 +332,7 @@
 
 .seller-issues-stats-title {
   margin: 0;
-  color: var(--accent4);
+  color: var(--dark);
   font-size: 18px;
 }
 
@@ -353,7 +362,7 @@
 .seller-issues-stat-number {
   font-size: 28px;
   font-weight: 600;
-  color: var(--main);
+  color: var(--dark);
   margin-bottom: 4px;
   
 }

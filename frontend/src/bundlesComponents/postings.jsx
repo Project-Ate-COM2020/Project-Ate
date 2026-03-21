@@ -209,17 +209,21 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
 
             {stockDisplayed && <p>Stock: {bundleData.stock}</p>}
 
-            {moreInfoButtonDisplayed && <button onClick={moreInfoButtonFunction}>More Info</button>}
+            {moreInfoButtonDisplayed && (
+                <button onClick={() => moreInfoButtonFunction?.(bundleData)}>More Info</button>
+            )}
 
         </div>
     )
 }
 
 /* --- Main Page Function --- */
-function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
+function Bundles({bundles: bundlesProp = [], includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
+    const bundlesToDisplay = bundlesProp.length > 0 ? bundlesProp : bundles;
+
     return (
         <div className = "postingsContainer">
-            {bundles.slice(0, numberOfBundles).map((bundle, index) => (
+            {bundlesToDisplay.slice(0, numberOfBundles).map((bundle, index) => (
                 <SingleBundle
                     key={`${bundle.bundleName}-${index}`}
                     bundleData={bundle}

@@ -1,0 +1,12 @@
+@import "./buyerShared.css";
+
+.buyer-postings-content {
+  padding-top: 1.4rem;
+}
+
+.buyer-postings-loading {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+  color: var(--muted);
+}

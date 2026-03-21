@@ -2,7 +2,7 @@
 
 .analytics-page {
     min-height: 100vh;
-    background: var(--cream, #F8FAF5);
+    background: var(--cream);
 }
 
 /* main container  */

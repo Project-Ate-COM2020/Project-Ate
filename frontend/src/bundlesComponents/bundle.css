@@ -11,6 +11,22 @@
   margin-right: auto;
 }
 
+.bundleCloseButton {
+  margin-left: auto;
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.625rem;
+  border: 0.0625rem solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
+  cursor: pointer;
+}
+
+.bundleCloseButton:hover {
+  background: var(--green-light);
+  border-color: var(--green);
+}
+
 .bundleTitle {
   display: flex;
   align-items: center;
@@ -67,18 +83,18 @@
   padding-top: 0.125rem;
 }
 
-button {
+.bundleDisplay .infoContainer button {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   border: 0.0625rem solid var(--green-pale);
-  background: rvar(--green-pale);
+  background: var(--green-pale);
   color: var(--dark);
   cursor: pointer;
   font-size: 0.95rem;
 }
 
-button:hover {
+.bundleDisplay .infoContainer button:hover {
   background: var(--green-light);
   border-color: var(--green);
 }

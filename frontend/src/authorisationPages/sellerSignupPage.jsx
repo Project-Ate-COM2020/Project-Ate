@@ -3,7 +3,6 @@
 // jsx for the seller sign up page ( matches LoginPage + BuyerSignupPage styling )
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupSeller } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 import {postData } from "../reusableComponents/api.jsx";
 
@@ -60,6 +59,7 @@ export default function SellerSignupPage() {
 
     localStorage.setItem("access_token", credentials.access);
     localStorage.setItem("refresh_token", credentials.refresh);
+    localStorage.setItem("user_type", "seller");
     
     // Testing purposes
     console.log("User should now be logged in");

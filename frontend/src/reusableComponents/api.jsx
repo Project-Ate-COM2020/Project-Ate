@@ -36,7 +36,7 @@ async function refreshTokens() {
     console.log(user_type);
     let response = null;
     if (user_type === "seller") {
-        response = await fetch("http://localhost:8000//auth/refresh", {
+        response = await fetch("http://localhost:8000/auth/refresh", {
             method : "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -159,12 +159,108 @@ async function postData(endpoint, postData, authenticate = true) {
     }
 }
 
+async function putData(endpoint, putData, authenticate = true) {
+    try {
+        const token = localStorage.getItem('access_token');
+        const include_auth = (token != null) && (authenticate == true);
+        let response = null;
+
+        // Tries to access data, if tokens invalid then refreshes and tries again
+        if (include_auth) {
+            for (let i = 0; i < 4; i++) {
+                const token = localStorage.getItem("access_token");
+                response = await fetch("http://localhost:8000/"  + endpoint, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(putData),
+                });
+
+                if (response.status !== 401 && response.status !== 403) {
+                    console.log("THIS API THINKS RESPONSE IS CORRECT");
+                    break;
+                }
+                console.log("THIS API THINKS RESPONSE IS INCORRECT");
+
+                const refreshed = await refreshTokens();
+                if (!refreshed) break;
+            }
+        }
+        else {
+            response = await fetch("http://localhost:8000/" + endpoint, {
+                method : "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(putData)
+            });
+        }
+    
+    return await response.json();
+
+    } catch (err) {
+        console.log("ERROR - Could not fetch API Data (check arguments calling get.jsx)");
+    }
+}
+
+async function deleteData(endpoint, authenticate = true) {
+    try {
+        const token = localStorage.getItem('access_token');
+        const include_auth = (token != null) && (authenticate == true);
+        let response = null;
+
+        // Tries to access data, if tokens invalid then refreshes and tries again
+        if (include_auth) {
+            for (let i = 0; i < 4; i++) {
+                const token = localStorage.getItem("access_token");
+                response = await fetch("http://localhost:8000/"  + endpoint, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (response.status !== 401 && response.status !== 403) {
+                    console.log("THIS API THINKS RESPONSE IS CORRECT");
+                    break;
+                }
+                console.log("THIS API THINKS RESPONSE IS INCORRECT");
+
+                const refreshed = await refreshTokens();
+                if (!refreshed) break;
+            }
+        }
+        else {
+            response = await fetch("http://localhost:8000/" + endpoint, {
+                method : "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+        }
+
+    if (response.status === 204) {
+        return null;
+    }
+
+    return await response.json();
+
+    } catch (err) {
+        console.log("ERROR - Could not fetch API Data (check arguments calling get.jsx)");
+    }
+}
+
+
 
 /* --- Get/Post Hooks --- */
 function useGetData(endpoint, queryParams = {}, authenticate = true ) {
     // define variables with state
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const queryString = buildQueryString(queryParams);
 
     /* --- Defining the UseEffect Hook --- */
     useEffect(function() {
@@ -172,8 +268,6 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
         // uses proper URI encoding to prevent any invalid queries that could threaten security
 
         setLoading(true);
-
-        const queryString = buildQueryString(queryParams);
 
         /* --- Async Function to Fetch Data --- */
         async function fetchData() {
@@ -216,7 +310,7 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
             }
         }
         fetchData();
-    }, [endpoint, queryParams]);
+    }, [endpoint, queryString, authenticate]);
 
     return { data, loading };
 }
@@ -285,4 +379,4 @@ function usePostData(endpoint, postData, authenticate = true ) {
 }
 
 /* --- Final Exports --- */
-export { getData, useGetData, postData, usePostData };
+export { getData, postData, putData, deleteData, usePostData, useGetData };

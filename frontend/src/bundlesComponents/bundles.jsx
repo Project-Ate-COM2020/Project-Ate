@@ -74,19 +74,23 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
 
             {locationDisplayed && <p>Location: {bundleData.location}</p>}
 
-            {moreInfoButtonDisplayed && <button onClick={moreInfoButtonFunction}>More Info</button>}
+            {moreInfoButtonDisplayed && (
+                <button onClick={() => moreInfoButtonFunction?.(bundleData)}>More Info</button>
+            )}
 
         </div>
     )
 }
 
 /* --- Main Page Function --- */
-function Bundles({includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
+function Bundles({bundles: bundlesProp = [], includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
+    const bundlesToDisplay = bundlesProp.length > 0 ? bundlesProp : bundles;
+
     return (
         <div className = "bundlesContainer">
-            {bundles.slice(0, numberOfBundles).map((bundle) => (
+            {bundlesToDisplay.slice(0, numberOfBundles).map((bundle) => (
                 <SingleBundle
-                    key={bundle.collectionCode}
+                    key={bundle.collectionCode ?? `${bundle.bundleName}-${bundle.pickupTime}`}
                     bundleData={bundle}
                     includedAttributes={includedAttributes}
                     moreInfoButtonFunction={moreInfoButtonFunction}

@@ -1,4 +1,5 @@
 // Imports
+import NavBar from "../reusableComponents/navBar";
 import { NavLink } from "react-router-dom";
 import "./HomePage.css";
 
@@ -8,10 +9,7 @@ export default function HomePage() {
     <div className="home-page">
 
       {/* Navbar */}
-      <nav className="home-nav">
-        <NavLink to="/" className="home-nav-logo">Project-Ate</NavLink>
-        <NavLink to="/login" className="btn-primary">Login</NavLink>
-      </nav>
+      <NavBar />
 
       {/* Description */}
       <section className="Website-Description">
