@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.db.models.aggregates import Count
 from django.utils import timezone
 from django.db.models.aggregates import Count
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -165,8 +166,6 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
                 already_have = Badges.objects.filter(
                     consumers_who_have_earned__consumer_id=consumer,
                 )
-
-                # print("already have", already_have)
 
                 badges_to_add = badges_can_have.difference(already_have)
 

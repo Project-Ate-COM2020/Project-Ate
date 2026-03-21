@@ -28,8 +28,12 @@ from core.models import (
     BadgeMapping,
 )
 from marketplace.views import ReservationView
-from .constants import CO2_PER_ITEM
+from .constants import get_co2_per_item
 from math import ceil
+
+from .views import ConsumerBadgesView
+
+CO2_PER_ITEM = get_co2_per_item()
 
 
 class TestReservationUpdatesBadges(APITestCase):

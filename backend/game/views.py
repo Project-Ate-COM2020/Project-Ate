@@ -18,20 +18,6 @@ from django.utils import timezone
 from .serializers import ReservationSerializer
 import json
 
-# Create your views here.
-from .constants import VARIETY_BADGES, IMPACT_BADGES
-
-try:
-    for b in VARIETY_BADGES + IMPACT_BADGES:
-        if not Badges.objects.filter(name=b["name"]).exists():
-            Badges.objects.create(
-                name=b["name"],
-                min_co2=b["min_co2"],
-                min_categories=b["min_categories"],
-            )
-except:
-    pass
-
 
 from authentication.permissions import IsConsumer
 
@@ -201,6 +187,7 @@ class RecentRescuesView(ListAPIView):
 
 
 class ConsumerBadgesView(ListAPIView):
+    name = "game-badges"
     permission_classes = [IsConsumer]
     serializer_class = BadgeSerializer
     serializer_class = BadgeSerializer
@@ -211,4 +198,4 @@ class ConsumerBadgesView(ListAPIView):
         user = self.request.user
         consumer = Consumer.objects.get(user=user)
 
-        return Badges.objects.filter(consumers_who_have_earned__consumer=consumer)
+        return Badges.objects.filter(consumers_who_have_earned__consumer_id=consumer)
