@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.db.models.aggregates import Count
 from django.utils import timezone
 from django.db.models.aggregates import Count
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -167,11 +168,7 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
                     consumers_who_have_earned__consumer_id=consumer,
                 )
 
-                # print("already have", already_have)
-
                 badges_to_add = badges_can_have.difference(already_have)
-
-                # print("badges to add:", badges_to_add)
 
                 join = [
                     BadgeMapping(consumer_id=consumer, badge_id=b)
@@ -179,6 +176,26 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
                 ]
 
                 BadgeMapping.objects.bulk_create(join)
+
+                last_collected = (
+                    Reservation.objects.filter(status="collected")
+                    .order_by("-collected_at")
+                    .first()
+                )
+
+                if last_collected is not None:
+                    # check
+                    timestamp = last_collected.collected_at
+                    now = instance.collected_at
+
+                    satisfies_streak = now.date() == (
+                        timestamp.date() + timedelta(days=1)
+                    )
+
+                    if satisfies_streak:
+                        consumer.streak += 1
+
+                consumer.save()
 
                 return instance
             case "no-show":
