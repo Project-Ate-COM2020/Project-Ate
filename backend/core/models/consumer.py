@@ -10,7 +10,7 @@ class Consumer(models.Model):
     )
     display_name = models.CharField(max_length=255)
     streak = models.IntegerField(default=0)
-    co2_saved = models.IntegerField(default=0)
+    co2_saved = models.FloatField(default=0)
     categories_collected = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 

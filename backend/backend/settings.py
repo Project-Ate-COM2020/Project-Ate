@@ -14,7 +14,6 @@ from pathlib import Path
 
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,6 +28,22 @@ DEBUG = os.getenv("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
+
+def get_throttling_rate():
+    if os.getenv("DJANGO_DEBUG"):
+        return {
+            "anon": "500000/second",
+            "user": "1000000/second",
+            "user_creation": "50000/second",
+        }
+    else:
+        return {
+            "anon": "100/day",
+            "user": "1500/day",
+            "user_creation": "5/day",
+        }
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -37,12 +52,8 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "5000000000000000000000000/day",
-        "user": "1000000000000000000000000/day",
-        "user_creation": "5000000000000000/day",
-    },
-    "PAGE_SIZE": 20
+    "DEFAULT_THROTTLE_RATES": get_throttling_rate(),
+    "PAGE_SIZE": 20,
 }
 
 # Application definition

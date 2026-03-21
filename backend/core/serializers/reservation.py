@@ -2,7 +2,14 @@ from django.db.models.aggregates import Count
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from core.models import Reservation, Consumer, BundlePosting, Seller
+from core.models import (
+    Reservation,
+    Consumer,
+    BundlePosting,
+    Seller,
+    Badges,
+    BadgeMapping,
+)
 
 
 class CreateReservationSerializer(serializers.ModelSerializer):
@@ -86,15 +93,44 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
                 posting: BundlePosting = instance.posting
                 consumer = instance.consumer
 
+                # update consumer states
                 categories = Reservation.objects.filter(
                     status="collected", consumer=consumer
                 ).aggregate(num=Count("posting__category", distinct=True))
 
                 consumer.categories_collected = categories["num"]
 
-                consumer.co2_saved += CO2_PER_ITEM[posting.category.lower()]
+                number_to_add = CO2_PER_ITEM[posting.category.lower()]
+
+                consumer.co2_saved += number_to_add
 
                 consumer.save()
+
+                consumer.refresh_from_db()
+
+                # create new badge mappings
+                badges_can_have = Badges.objects.filter(
+                    min_categories__lte=consumer.categories_collected,
+                    min_co2__lte=consumer.co2_saved,
+                )
+                # print("can have ", badges_can_have)
+
+                already_have = Badges.objects.filter(
+                    consumers_who_have_earned__consumer_id=consumer,
+                )
+
+                # print("already have", already_have)
+
+                badges_to_add = badges_can_have.difference(already_have)
+
+                # print("badges to add:", badges_to_add)
+
+                join = [
+                    BadgeMapping(consumer_id=consumer, badge_id=b)
+                    for b in badges_to_add
+                ]
+
+                BadgeMapping.objects.bulk_create(join)
 
                 return instance
             case "no-show":
