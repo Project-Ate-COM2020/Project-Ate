@@ -15,49 +15,38 @@ from authentication.tests import (
     setup_random_consumer,
     setup_random_seller,
     get_authorization_headers_for_user,
+    setup_random_reservation,
+    setup_random_bundle_for_seller,
+    setup_random_reservation_for_consumer_and_bundle,
 )
-from core.models import Consumer, Seller, BundlePosting, Reservation
+from core.models import (
+    Consumer,
+    Seller,
+    BundlePosting,
+    Reservation,
+    Badges,
+    BadgeMapping,
+)
+from marketplace.views import ReservationView
+from .constants import CO2_PER_ITEM
+from math import ceil
 
 
-class BaseAuthenticatedTest(APITestCase):
-
+class TestReservationUpdatesBadges(APITestCase):
     def setUp(self):
         pass
 
-        self.headers = get_authorization_headers_for_user(self.user)
+    def get_url(self, pk):
+        return reverse(ReservationView.name, kwargs={"pk": pk})
 
+    def _collect_reservation(self, suser: User, reservation: Reservation):
+        headers = get_authorization_headers_for_user(suser)
 
-class GameSummaryViewTests(BaseAuthenticatedTest):
-
-    def create_posting(self, category, quantity):
-        return BundlePosting.objects.create(
-            seller=self.seller,
-            category=category,
-            quantity=quantity,
-            quantity_remaining=quantity,
-            price=Decimal("10.00"),
-            pickup_window="9:00-17:00",
-            status="active",
+        response = self.client.patch(
+            self.get_url(reservation.pk),
+            data={"status": "collected"},
+            headers=headers,
         )
-
-    def create_reservation(self, posting, code, status="collected"):
-        return Reservation.objects.create(
-            posting=posting,
-            consumer=self.consumer,
-            claim_code=code,
-            status=status,
-            collected_at=timezone.now() if status == "collected" else None,
-        )
-
-    def test_summary_calculates_correct_values(self):
-        posting1 = self.create_posting("Hot Meals", 2)
-        posting2 = self.create_posting("Fresh Produce", 4)
-
-        # Pass explicit hardcoded claim codes
-        self.create_reservation(posting1, "XB9YO1")
-        self.create_reservation(posting2, "AB12CD")
-
-        response = self.client.get(reverse("game-summary"), headers=self.headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
