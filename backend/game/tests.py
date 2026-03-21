@@ -93,9 +93,6 @@ class TestReservationUpdatesBadges(APITestCase):
         for bundle in bundles:
             self._collect_reservation(suser, bundle)
 
-        for mapping in BadgeMapping.objects.all():
-            print(mapping.badge_id.name)
-
         consumer.refresh_from_db()
 
         # test user obtained all badges
