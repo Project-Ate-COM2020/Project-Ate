@@ -1,0 +1,21 @@
+@import "../buyer/profile.css";
+
+.seller-profile-page .profile-stats-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.seller-profile-input {
+  width: 100%;
+  max-width: 16rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--green-pale);
+  font-size: 0.9rem;
+  color: var(--dark);
+  background: white;
+}
+
+.seller-profile-input:focus {
+  border-color: var(--green-light);
+  outline: none;
+}

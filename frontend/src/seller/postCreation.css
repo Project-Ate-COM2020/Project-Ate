@@ -5,18 +5,18 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  background: white;
+  border: 0.0625rem solid var(--green-pale);
   border-radius: 1rem;
   padding: 1.5rem;
   backdrop-filter: blur(0.625rem);
-  box-shadow: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow);
   align-items: center;
 }
 
 .bundleForecast-panel hr {
   border: none;
-  border-top: 0.0625rem solid rgba(255, 255, 255, 0.10);
+  border-top: 0.0625rem solid var(--green-pale);
   margin: 0.75rem 0;
 }
 
@@ -26,13 +26,14 @@
 }
 
 .bundleForecast-panel select,
-.bundleForecast-panel input[type="number"] {
+.bundleForecast-panel input[type="number"],
+.bundleForecast-panel input[type="text"] {
   width: 100%;
   padding: 0.75rem 0.9rem;
   border-radius: 0.75rem;
-  border: 0.125rem solid rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.6);
-  color: inherit;
+  border: 1px solid var(--green-pale);
+  background: white;
+  color: var(--dark);
   font-size: 0.95rem;
   outline: none;
   box-sizing: border-box;
@@ -40,8 +41,9 @@
 }
 
 .bundleForecast-panel select:focus,
-.bundleForecast-panel input[type="number"]:focus {
-  border-color: rgba(35, 240, 199, 0.8);
+.bundleForecast-panel input[type="number"]:focus,
+.bundleForecast-panel input[type="text"]:focus {
+  border-color: var(--green-light);
 }
 
 .bundleForecast-panel button {
@@ -50,9 +52,9 @@
   padding: 0.75rem 1.5rem;
   min-width: 10rem;
   border-radius: 0.75rem;
-  border: 0.125rem solid rgba(0, 0, 0, 0.18);
-  background: rgba(255, 255, 255, 0.6);
-  color: inherit;
+  border: 1px solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -61,22 +63,22 @@
 }
 
 .bundleForecast-panel button:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(35, 240, 199, 0.8);
+  background: var(--green-light);
+  border-color: var(--green);
 }
 
 .bundleForecast-panel button.btn-primary {
-  background: rgba(35, 240, 199, 0.85);
-  border-color: rgba(35, 240, 199, 1);
-  color: #0d2e29;
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
   font-size: 1rem;
   min-width: 14rem;
   padding: 0.85rem 2rem;
 }
 
 .bundleForecast-panel button.btn-primary:hover {
-  background: rgba(35, 240, 199, 1);
-  border-color: rgba(35, 240, 199, 1);
+  background: var(--dark);
+  border-color: var(--dark);
 }
 
 .allergen-checkboxes {
@@ -98,5 +100,5 @@
   width: 1rem;
   height: 1rem;
   cursor: pointer;
-  accent-color: rgba(35, 240, 199, 0.8);
+  accent-color: var(--green);
 }

@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import NavBar from "../reusableComponents/navBar";
 import "./game.css";
-import { useMemo } from "react";
 
 
 /* --- TO USE REAL DATA: --- */
@@ -62,18 +61,20 @@ export default function Game() {
 // memoize queryParams so useEffect doesn't trigger repeatedly
 const queryParams = useMemo(() => ({}), []); // empty object, stable reference
 
-const { data: summary, loading } = USE_MOCK_DATA
-  ? { data: MOCK_SUMMARY, loading: false }
-  : useGetData("game/api/game/summary/", queryParams, false);
+const { data: summary, loading } = useGetData("game/summary/", queryParams, true);
 
   /* --- USING REAL DATA --- */
 
   if (loading || !summary) {
     return (
-      <div className="game-page">
+      <div className="buyer-page game-page">
         <NavBar />
-        <div className="game-state">
-          <h2 className="game-title">Rescue Streaks</h2>
+        <section className="buyer-hero">
+          <p className="buyer-hero-label">Impact</p>
+          <h1 className="buyer-hero-title">Rescue Streaks</h1>
+          <p className="buyer-hero-subtitle">Loading your impact summary…</p>
+        </section>
+        <div className="buyer-container game-state">
           <p className="game-subtitle">Loading…</p>
         </div>
       </div>
@@ -81,37 +82,35 @@ const { data: summary, loading } = USE_MOCK_DATA
   }
 
   return (
-    <div className="game-page">
+    <div className="buyer-page game-page">
       <NavBar />
 
-{/*Dark green banner at the top of the page */}
-      <div className="game-banner">
-        <h1 className="game-banner-title">Your <em>impact</em> matters.</h1>
-        <p className="game-banner-sub">Every bundle you rescue saves food from landfill and reduces your carbon footprint. Keep going!</p>
-      </div>
+      <section className="buyer-hero game-banner">
+        <p className="buyer-hero-label">Impact</p>
+        <h1 className="buyer-hero-title game-banner-title">Your <em>impact</em> matters.</h1>
+        <p className="buyer-hero-subtitle game-banner-sub">Every bundle you rescue saves food from landfill and reduces your carbon footprint. Keep going!</p>
+      </section>
 
-      {/* Three stat cards floating over the banner */}
-      <div className="game-impact-strip">
-        <div className="game-impact-card">
-          <div className="game-impact-number">{summary.total_rescued_bundles}</div>
-          <div className="game-impact-unit">bundles</div>
-          <div className="game-impact-label">Total Rescued</div>
+      <div className="buyer-container game-wrap">
+        <div className="game-impact-strip">
+          <div className="game-impact-card">
+            <div className="game-impact-number">{summary.total_rescued_bundles}</div>
+            <div className="game-impact-unit">bundles</div>
+            <div className="game-impact-label">Total Rescued</div>
+          </div>
+          <div className="game-impact-card">
+            <div className="game-impact-number">{summary.estimated_co2e_saved_kg}<span className="game-impact-number-unit">kg</span></div>
+            <div className="game-impact-unit">CO₂e saved</div>
+            <div className="game-impact-label">Carbon Impact</div>
+          </div>
+          <div className="game-impact-card">
+            <div className="game-impact-number">{summary.current_streak_weeks}</div>
+            <div className="game-impact-unit">weeks</div>
+            <div className="game-impact-label">Current Streak</div>
+          </div>
         </div>
-        <div className="game-impact-card">
-          <div className="game-impact-number">{summary.estimated_co2e_saved_kg}<span style={{fontSize:"1.5rem"}}>kg</span></div>
-          <div className="game-impact-unit">CO₂e saved</div>
-          <div className="game-impact-label">Carbon Impact</div>
-        </div>
-        <div className="game-impact-card">
-          <div className="game-impact-number">{summary.current_streak_weeks}</div>
-          <div className="game-impact-unit">weeks</div>
-          <div className="game-impact-label">Current Streak</div>
-        </div>
-      </div>
 
-      <div className="game-wrap">
-
-        <div style={{ marginBottom: 14 }}>
+        <div className="game-status-pill-wrap">
           <span className="pill">
             {summary.has_rescued_this_week
               ? "Rescued this week"

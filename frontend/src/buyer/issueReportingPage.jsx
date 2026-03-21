@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar";
-import { createIssue, fetchMyIssues } from "../api-legacy/issueReporting";
 import "./issueReportingPage.css";
 
 const CATEGORY_OPTIONS = [
@@ -71,9 +70,14 @@ export default function IssueReportingPage() {
   };
 
   return (
-    <div className="issue-dashboard-page">
+    <div className="buyer-page issue-dashboard-page">
       <NavBar />
-      <div className="issue-dashboard-container">
+      <section className="buyer-hero">
+        <p className="buyer-hero-label">Support</p>
+        <h1 className="buyer-hero-title">Issue Dashboard</h1>
+        <p className="buyer-hero-subtitle">Track your reports and submit new issues in one place.</p>
+      </section>
+      <div className="buyer-container issue-dashboard-container">
         <section className="issue-list-panel">
           <h1 className="issue-dashboard-title">Issue Dashboard</h1>
           <p className="issue-dashboard-subtitle">Your submitted reports</p>
@@ -117,7 +121,7 @@ export default function IssueReportingPage() {
             <label className="issue-label">
               Title
               <input
-                className="issue-input"
+                className="buyer-input issue-input"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="Short summary of the issue"
@@ -128,7 +132,7 @@ export default function IssueReportingPage() {
             <label className="issue-label">
               Category
               <select
-                className="issue-input"
+                className="buyer-input issue-input"
                 value={category}
                 onChange={(event) => setCategory(event.target.value)}
               >
@@ -143,7 +147,7 @@ export default function IssueReportingPage() {
             <label className="issue-label">
               Order ID (optional)
               <input
-                className="issue-input"
+                className="buyer-input issue-input"
                 value={orderId}
                 onChange={(event) => setOrderId(event.target.value)}
                 placeholder="Related order id"
@@ -153,7 +157,7 @@ export default function IssueReportingPage() {
             <label className="issue-label">
               Description
               <textarea
-                className="issue-input issue-textarea"
+                className="buyer-input issue-input issue-textarea"
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 placeholder="Describe the issue in detail"
@@ -162,7 +166,7 @@ export default function IssueReportingPage() {
               />
             </label>
 
-            <button className="issue-submit-btn" disabled={isLoading}>
+            <button className="buyer-btn-primary issue-submit-btn" disabled={isLoading}>
               {isLoading ? "Submitting..." : "Submit issue"}
             </button>
           </form>

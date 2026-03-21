@@ -1,23 +1,23 @@
+@import "./buyerShared.css";
+
 .issue-dashboard-page {
-  min-height: 100vh;
-  background: var(--cream);
+  color: var(--dark);
 }
 
 .issue-dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 16px;
+  gap: 1rem;
   align-items: start;
 }
 
 .issue-list-panel,
 .issue-form-panel {
-  background: #fff;
-  border-radius: 12px;
-  padding: 18px;
+  background: white;
+  border: 1px solid var(--green-pale);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 20px;
 }
 
 .issue-dashboard-title {
@@ -44,8 +44,8 @@
 
 .issue-card {
   border: 1px solid var(--green-pale);
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 14px;
 }
 
 .issue-card-header {
@@ -120,11 +120,7 @@
 }
 
 .issue-input {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--green-pale);
-  outline: none;
-  font-size: 14px;
+  color: inherit;
 }
 
 .issue-textarea {
@@ -132,22 +128,10 @@
 }
 
 .issue-submit-btn {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  background: var(--green);
-  color: white;
+  width: fit-content;
 }
 
 .issue-submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-@media (max-width: 960px) {
-  .issue-dashboard-container {
-    grid-template-columns: 1fr;
-  }
 }

@@ -1,4 +1,8 @@
 /* --- General Import Statements --- */
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { postData } from "./reusableComponents/api.jsx"
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -16,21 +20,27 @@ import HomePage from "./homePage/HomePage.jsx";
 /* --- Auth Imports --- */
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
 import BuyerSignupPage from "./authorisationPages/buyerSignupPage.jsx";
+import LoginPage from "./authorisationPages/loginPage.jsx";
 
 /* --- Seller Imports --- */
-import SellerProfilePage from "./seller/profilePage.jsx";
-import SellerHomePage from "./seller/homePage.jsx";
+import SellerProfilePage from "./seller/profile.jsx";
+import SellerHomePage from "./seller/home.jsx";
 import CreatePostPage from "./seller/postCreation.jsx";
-import Reservation from "./seller/reservation.jsx";
 import Reservations from "./seller/reservations.jsx";
-import Posting from "./seller/posting.jsx";
 import Postings from "./seller/postings.jsx";
 import Analytics from "./seller/analytics.jsx";
+import SellerIssuesPage from "./seller/issuesPage.jsx";
 
 /* --- Buyer Imports --- */
+import Orders from "./buyer/reservations.jsx";
+import GamePage from "./buyer/game.jsx";
+import BuyerProfilePage from "./buyer/profile.jsx";
 import BuyerProfilePage from "./buyer/BuyerProfilePage.jsx";
 import IssueReportingPage from "./buyer/issueReportingPage.jsx";
-import SellerIssuesPage from "./seller/sellerIssuesPage.jsx";
+import UserHomePage from "./buyer/postings.jsx";
+
+
+/* --- Global Imports --- */
 
 /* --- Webpage Imports --- */
 import CookiesConsent from "./cookiePopup/cookiesConsent";
@@ -38,6 +48,8 @@ import TermsAndConditions from "./cookiePopup/TermsAndConditions";
 import CookiePolicy from "./cookiePopup/CookiePolicy";
 import FootNote from "./reusableComponents/footnote";
 import PrivacyPolicy from "./reusableComponents/privacyPolicy";
+import PageNotFound from "./reusableComponents/pageNotFound.jsx";
+import HomePage from "./homePage/HomePage.jsx";
 
 /* --- Maintaner Imports ---*/
 import MaintenancePage from "./maintenancePage/maintenancePage.jsx";
@@ -75,6 +87,10 @@ function App() {
       <CookiesConsent />
 
       <Routes>
+        {/* Auth paths */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup/buyer" element={<BuyerSignupPage />} />
+        <Route path="/signup/seller" element={<SellerSignupPage />} />
         {/* Guest-only paths — redirect logged-in users to their home */}
         <Route path="/" element={<GuestOnlyRoute><HomePage /></GuestOnlyRoute>} />
         <Route path="/login" element={<GuestOnlyRoute><LoginPage /></GuestOnlyRoute>} />
@@ -91,6 +107,21 @@ function App() {
         <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
         {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}
 
+        {/* Buyer paths */}
+        <Route path="/buyer/home" element={<UserHomePage />} />
+        <Route path="/buyer/profile" element={<BuyerProfilePage />} />
+        <Route path="/buyer/orders" element={<Orders />} />
+        <Route path="/buyer/report-issue" element={<IssueReportingPage />} />
+        <Route path="/buyer/game" element={<GamePage />} />
+
+        {/* Seller paths */}
+        <Route path="/seller/home" element={<SellerHomePage />} />
+        <Route path="/seller/profile" element={<SellerProfilePage />} />
+        <Route path="/seller/createPosting" element={<CreatePostPage />} />
+        <Route path="/seller/reservations" element={<Reservations />} />
+        <Route path="/seller/postings" element={<Postings />} />
+        <Route path="/seller/analytics" element={<Analytics />} />
+        <Route path="/seller/issues" element={<SellerIssuesPage />} />
         {/* Seller-only paths */}
         <Route path="/seller/home" element={<ProtectedRoute requiredType="seller"><SellerHomePage /></ProtectedRoute>} />
         <Route path="/seller" element={<ProtectedRoute requiredType="seller"><SellerHomePage /></ProtectedRoute>} />
@@ -103,7 +134,8 @@ function App() {
         <Route path="/seller/analytics" element={<ProtectedRoute requiredType="seller"><Analytics /></ProtectedRoute>} />
         <Route path="/seller/issues" element={<ProtectedRoute requiredType="seller"><SellerIssuesPage /></ProtectedRoute>} />
 
-        {/* Legal pages */}
+        {/* Global paths */}
+        <Route path="/" element={<HomePage />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -114,6 +146,7 @@ function App() {
         {/* Catch-all */}
         <Route path="/user" element={<Navigate to="/buyer/home" replace />} />
         <Route path="*" element={<PageNotFound />} />
+
       </Routes>
 
       <FootNote />

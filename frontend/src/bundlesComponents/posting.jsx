@@ -22,18 +22,20 @@ hard to add once the backend is ready */
 import "./posting.css";
 
 /* --- Test Data Declarations --- */
-const bundleName = "Big Cheese Bundle";
-const bundleCategory = "Dairy";
-const imgPath = "/../../Dairy.jpg";
-const pickupTime = "11:00 - 12:00";
-const seller = "Cheesy Goods Incorporated";
-const price = 14.50;
-const location = "Exeter";
-const stock = 56;
-const allergens = ["Milk", "Eggs", "Cereals containing gluten"];
+const defaultPostingData = {
+    bundleName: "Big Cheese Bundle",
+    bundleCategory: "Dairy",
+    imgPath: "/Dairy.jpg",
+    pickupTime: "11:00 - 12:00",
+    seller: "Cheesy Goods Incorporated",
+    price: 14.50,
+    location: "Exeter",
+    stock: 56,
+    allergens: ["Milk", "Eggs", "Cereals containing gluten"],
+};
 
 /* --- Helper Functions --- */
-function OptionalContainer( { includedAttributes } ) {
+function OptionalContainer({ includedAttributes, postingData, reserveBundleFunction }) {
 
     let pickupTimeDisplayed;
     let bundleCategoryDisplayed;
@@ -57,45 +59,45 @@ function OptionalContainer( { includedAttributes } ) {
 
     return (
         <div className = "infoContainer">
-            {pickupTimeDisplayed && <p>pickup time: {pickupTime}</p>}
+            {pickupTimeDisplayed && <p>pickup time: {postingData.pickupTime}</p>}
 
-            {bundleCategoryDisplayed && <p>Bundle Category: {bundleCategory}</p>}
+            {bundleCategoryDisplayed && <p>Bundle Category: {postingData.bundleCategory}</p>}
 
-            {sellerDisplayed && <p>Seller: {seller}</p>}
+            {sellerDisplayed && <p>Seller: {postingData.seller}</p>}
 
-            {priceDisplayed && <p>Price: £{price}</p>}
+            {priceDisplayed && <p>Price: £{postingData.price}</p>}
 
-            {locationDisplayed && <p>Location: {location}</p>}
+            {locationDisplayed && <p>Location: {postingData.location}</p>}
 
-            {stockDisplayed && <p>Stock: {stock}</p>}
+            {stockDisplayed && <p>Stock: {postingData.stock}</p>}
 
             {allergensDisplayed && (
                 <p>
-                    {allergens.length === 0
+                    {(postingData.allergens ?? []).length === 0
                         ? "Contains: None declared"
-                        : "Contains: " + allergens.join(", ")}
+                        : "Contains: " + (postingData.allergens ?? []).join(", ")}
                 </p>
             )}
 
-            {reserveBundleButtonDisplayed && <button>Reserve bundle</button>}
+            {reserveBundleButtonDisplayed && <button onClick = {reserveBundleFunction}>Reserve bundle</button>}
 
         </div>
     )
 }
 
 /* --- Main Function --- */
-function Bundle( {includedAttributes = [], backFunction } ) {
+function Bundle({ includedAttributes = [], backFunction, postingData = defaultPostingData, reserveBundleFunction }) {
 
     return (
         <div className = "postingDisplay">
-            <button onClick={backFunction}>X</button>
+            <button className="postingCloseButton" onClick={backFunction}>X</button>
             <div className = "postingTitle">
-                <h3>{bundleName}</h3>
+                <h3>{postingData.bundleName}</h3>
             </div>
             <hr />
             <div className = "postingBody">
-                <img src = {imgPath} />
-                <OptionalContainer includedAttributes={includedAttributes} />
+                <img src = {postingData.imgPath} alt={postingData.bundleName} />
+                <OptionalContainer includedAttributes={includedAttributes} postingData={postingData} reserveBundleFunction={reserveBundleFunction} />
             </div>
             
         </div>

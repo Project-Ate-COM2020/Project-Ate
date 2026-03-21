@@ -1,3 +1,5 @@
+@import "./buyerShared.css";
+
 /* page takes full viewport height */
 .game-page {
   min-height: 100vh;
@@ -6,9 +8,7 @@
 /* Shared page container sizing */
 .game-wrap,
 .game-state {
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: 28px 18px 64px;
+  padding-bottom: 2.8rem;
 }
 
 /* header spacing */
@@ -53,25 +53,16 @@
   box-shadow: 0 0 0 4px var(--green-pale);
 }
 
+.game-status-pill-wrap {
+  margin-bottom: 14px;
+}
+
 /* responsive grid */
 .game-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
   margin-top: 16px;
-}
-
-@media (min-width: 860px) {
-  .game-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-
-  /* full-width cards on desktop */
-  .game-card.recent,
-  .game-card--full {
-    grid-column: 1 / -1;
-  }
 }
 
 /* Card styling  */
@@ -82,9 +73,6 @@
   padding: 18px;
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow);
-
-  /* lift + tint on hover */
-  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
 }
 
 .game-card:hover {
@@ -133,8 +121,6 @@
   font-weight: 800;
   letter-spacing: 0.2px;
 }
-
-/* ── Badge section ─────────────────────────────────────────────────────── */
 
 /* grid of badge items */
 .badge-list {
@@ -205,8 +191,6 @@
   opacity: 0.4;
 }
 
-/* ── Recent list ────────────────────────────────────────────────────────── */
-
 /* recent list  */
 .recent-list {
   list-style: none;
@@ -261,28 +245,17 @@
 
 /* ── HERO BANNER ── */
 .game-banner {
-  background: linear-gradient(135deg, #1B2D23, #2D6A4F);
-  padding: 3rem 3rem 6rem;
+  padding-bottom: 2.6rem;
   position: relative;
   overflow: hidden;
 }
 
 .game-banner::before {
-  content: '🌍';
-  font-size: 12rem;
-  position: absolute;
-  right: 5%;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.08;
+  content: none;
 }
 
 .game-banner-title {
-  font-size: 2.8rem;
-  font-weight: 900;
-  color: white;
-  margin-bottom: 0.5rem;
-  line-height: 1.1;
+  margin-bottom: 0;
 }
 
 .game-banner-title em {
@@ -291,25 +264,20 @@
 }
 
 .game-banner-sub {
-  color: var(--green-pale);
-  font-size: 1.05rem;
   max-width: 500px;
 }
 
 .game-impact-strip {
-  max-width: 1040px;
-  margin: -3rem auto 0;
-  padding: 0 18px;
+  margin: 0 0 1rem;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  position: relative;
-  z-index: 2;
 }
 
 .game-impact-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 1.5rem 2rem;
   box-shadow: var(--shadow);
   border: 1px solid var(--green-pale);
@@ -317,7 +285,9 @@
   transition: transform 0.25s;
 }
 
-.game-impact-card:hover { transform: translateY(-3px); }
+.game-impact-card:hover { 
+  transform: translateY(-3px); 
+}
 
 .game-impact-number {
   font-size: 3rem;
@@ -325,6 +295,10 @@
   color: var(--green);
   line-height: 1;
   margin-bottom: 0.3rem;
+}
+
+.game-impact-number-unit {
+  font-size: 1.5rem;
 }
 
 .game-impact-unit {
@@ -448,7 +422,9 @@
   transition: transform 0.2s;
 }
 
-.badge-tile:hover { transform: translateY(-3px); }
+.badge-tile:hover { 
+  transform: translateY(-3px); 
+}
 
 .badge-tile--locked {
   background: #f5f5f5;

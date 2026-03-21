@@ -1,3 +1,5 @@
+@import "./buyerShared.css";
+
 /* page max height */
 .profile-page {
   min-height: 100vh;
@@ -6,13 +8,11 @@
 /* shared page container sizing */
 .profile-wrap,
 .profile-state {
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: 28px 18px 64px;
+  padding-bottom: 2.8rem;
 }
 
 .profile-state {
-  padding-top: 48px;
+  padding-top: 2rem;
   padding-bottom: 48px;
 }
 
@@ -24,15 +24,11 @@
 
 /* profile banner */
 .profile-banner {
-  padding: 28px 18px;
-  background: linear-gradient(135deg, #1B2D23, #2D6A4F);
-  border-bottom: 1px solid var(--green);
+  padding-bottom: 2.2rem;
 }
 
 /* banner inner layout */
 .profile-banner-inner {
-  max-width: 1040px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -51,11 +47,11 @@
 
   border-radius: 50%;
   background: var(--green-light);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
 
   font-size: 2rem;
   font-weight: 800;
-  color: var(--accent);
+  color: white;
 }
 
 /* name + meta block */
@@ -73,6 +69,7 @@
   font-weight: 800;
   letter-spacing: 0.2px;
   line-height: 1.15;
+  color: white;
 }
 
 /* small meta info row */
@@ -83,6 +80,7 @@
   gap: 14px;
   font-size: 0.92rem;
   opacity: 0.72;
+  color: var(--green-pale);
 }
 
 /* small mock tag */
@@ -122,6 +120,11 @@
 
 .profile-btn-ghost:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.profile-btn-ghost--light {
+  color: white;
+  border-color: rgba(255,255,255,0.3);
 }
 
 /* danger button */
@@ -174,6 +177,10 @@
   letter-spacing: -0.5px;
   line-height: 1;
 
+}
+
+.profile-stat-number--accent {
+  color: var(--green);
 }
 
 .profile-stat-label {
@@ -284,6 +291,36 @@
   font-size: 0.92rem;
   opacity: 0.55;
   font-style: italic;
+}
+
+.profile-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.profile-badge-tile {
+  background: var(--green-pale);
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+  border: 1px solid var(--green-light);
+  transition: transform 0.2s;
+}
+
+.profile-badge-tile:hover {
+  transform: translateY(-3px);
+}
+
+.profile-badge-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-badge-name {
+  font-weight: 700;
+  color: var(--green);
+  font-size: 0.85rem;
 }
 
 /* table container */
