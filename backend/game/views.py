@@ -18,7 +18,7 @@ import json
 
 from authentication.permissions import IsConsumer
 
-
+"""
 class GameSummaryView(APIView):
     permission_classes = [IsConsumer]
 
@@ -32,11 +32,12 @@ class GameSummaryView(APIView):
     #         "total_rescued_bundles": 12,
     #
     #         "estimated_co2e_saved_kg": 28.5,
+    
     #         "badges": ["Explorer", "Discoverer", "Eco Starter"],
     #         "unique_categories_rescued": 3,
     #     }
     #     return Response(data)
-    """
+    
      def get(self, request):
          consumer = Consumer.objects.get()
          collected = Reservation.objects.filter(Consumer=consumer, status="collected").select_related("posting")
@@ -85,7 +86,25 @@ class GameSummaryView(APIView):
 """
 
 
+class GameSummaryView(APIView):
+    name = "game-summary"
+    permission_classes = [IsConsumer]
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        consumer = Consumer.objects.get(user=user)
+
+        return Response(
+            {
+                "streak": consumer.streak,
+                "total": consumer.co2_saved,
+                "categories_collected": consumer.categories_collected,
+            }
+        )
+
+
 class RecentRescuesView(ListAPIView):
+    name = "game-rescues"
     permission_classes = [IsConsumer]
     pagination_class = PageNumberPagination
     serializer_class = ReservationSerializer
