@@ -31,14 +31,21 @@ function BuyerSignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsLoading(true);
+
+    try {
 
     // basic password checks ( backend will do futher validation )
     if (password1 !== password2) {
       setError("Passwords do not match");
+      setIsLoading(false);
       return;
     }
     if (password1.length < 8) {
       setError("Password must be at least 8 characters");
+      setIsLoading(false);
       return;
     }
 
@@ -51,35 +58,56 @@ function BuyerSignupPage() {
     }
 
     const createdUser = await postData("auth/user", dataToPost, false);
+    if (!createdUser || !createdUser.id) {
+      setError("Could not create user account.");
+      return;
+    }
     
     // Testing purposes
     console.log(createdUser);
 
     const credentials = await postData("auth/token", {"password": password2, "username": username}, false);
+    if (!credentials || !credentials.access) {
+      setError("Account created, but automatic login failed. Please log in manually.");
+      return;
+    }
 
     // Testing purposes (POTENTIAL SECURITY RISK)
     console.log(credentials);
-
-    localStorage.setItem("access_token", credentials.access);
-    localStorage.setItem("refresh_token", credentials.refresh);
-    localStorage.setItem("user_type", "buyer");
-    
-    // Testing purposes
-    console.log("User should now be logged in");
-    console.log(localStorage.getItem("access_token"));
-    console.log(localStorage.getItem("refresh_token"));
 
     const buyerData = {
       "display_name" : displayName,
       "user_id" : createdUser.id,
     }
 
-    const createdBuyer = await postData("marketplace/consumer", buyerData, true);
+    const createdBuyerResponse = await fetch("http://localhost:8000/marketplace/consumer", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + credentials.access,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(buyerData),
+    });
+
+    const createdBuyer = await createdBuyerResponse.json();
+    if (!createdBuyerResponse.ok || !createdBuyer) {
+      setError("Could not finish buyer registration.");
+      return;
+    }
 
     // Testing Purposes
     console.log(createdBuyer);
 
+    localStorage.setItem("access_token", credentials.access);
+    localStorage.setItem("refresh_token", credentials.refresh || "");
+    localStorage.setItem("user_type", "buyer");
+
     navigate("/buyer/home");
+    } catch {
+      setError("Could not create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
 
 
   };

@@ -11,16 +11,18 @@
 // Potentially connect to google maps API
 
 import { useState } from "react";
+import { customAlphabet } from "nanoid";
 import NavBar from "../reusableComponents/navBar.jsx";
 import Postings from "../bundlesComponents/postings.jsx";
 import Posting from "../bundlesComponents/posting.jsx";
 import { useGetData, postData } from "../reusableComponents/api.jsx";
 import "./postings.css";
 
+const generateClaimCode = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 7);
+
 async function reserveBundle(postingID) {
-    // For some reason the frontend will now need the ability to generate secure random claim codes - TODO
     if (!postingID) return;
-    await postData("marketplace/reservations", { posting: postingID, status: "reserved", "claim_code": "AfFOI" }, true);
+    await postData("marketplace/reservations", { posting: postingID, status: "reserved", "claim_code": generateClaimCode() }, true);
 }
 
 function UserHomePage(){

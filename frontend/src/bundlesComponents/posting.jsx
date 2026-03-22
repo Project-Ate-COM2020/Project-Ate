@@ -21,19 +21,6 @@ hard to add once the backend is ready */
 /* --- Import Statements --- */
 import "./posting.css";
 
-/* --- Test Data Declarations --- */
-const defaultPostingData = {
-    bundleName: "Big Cheese Bundle",
-    bundleCategory: "Dairy",
-    imgPath: "/Dairy.jpg",
-    pickupTime: "11:00 - 12:00",
-    seller: "Cheesy Goods Incorporated",
-    price: 14.50,
-    location: "Exeter",
-    stock: 56,
-    allergens: ["Milk", "Eggs", "Cereals containing gluten"],
-};
-
 /* --- Helper Functions --- */
 function OptionalContainer({ includedAttributes, postingData, reserveBundleFunction }) {
 
@@ -86,17 +73,18 @@ function OptionalContainer({ includedAttributes, postingData, reserveBundleFunct
 }
 
 /* --- Main Function --- */
-function Bundle({ includedAttributes = [], backFunction, postingData = defaultPostingData, reserveBundleFunction }) {
+function Bundle({ includedAttributes = [], backFunction, postingData = {}, reserveBundleFunction }) {
+    const bundleName = postingData.bundleName || "Bundle";
 
     return (
         <div className = "postingDisplay">
             <button className="postingCloseButton" onClick={backFunction}>X</button>
             <div className = "postingTitle">
-                <h3>{postingData.bundleName}</h3>
+                <h3>{bundleName}</h3>
             </div>
             <hr />
             <div className = "postingBody">
-                <img src = {postingData.imgPath} alt={postingData.bundleName} />
+                <img src = {postingData.imgPath || ""} alt={bundleName} />
                 <OptionalContainer includedAttributes={includedAttributes} postingData={postingData} reserveBundleFunction={reserveBundleFunction} />
             </div>
             

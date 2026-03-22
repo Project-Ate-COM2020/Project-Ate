@@ -12,6 +12,8 @@ function SellerPostings() {
     const { data, loading } = useGetData("marketplace/bundle/list", {}, true);
 
     const apiBundles = !loading ? (data?.results ?? []) : [];
+    console.log("API BUNDLES:");
+    console.log(apiBundles);
     const bundles = apiBundles
         .filter((bundle) => Number(bundle?.quantity_remaining ?? 0) > 0)
         .map((bundle) => ({

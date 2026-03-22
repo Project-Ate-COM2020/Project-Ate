@@ -11,7 +11,7 @@ import "./postCreation.css";
 function PostCreation() {
     const [selectedAllergenIds, setSelectedAllergenIds] = useState([]);
     const [timeWindow, setTimeWindow] = useState("09:00-10:00");
-    const [category, setCategory] = useState("Bakery");
+    const [category, setCategory] = useState("bakery");
     const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState("");
     const [contents, setContents] = useState("");
@@ -36,7 +36,7 @@ function PostCreation() {
                 category: category,
                 contents: contents || "Bundle",
                 quantity: qty,
-                quantity_remaining: Math.max(0, qty - 1),
+                quantity_remaining: qty,
                 price: parseFloat(price) || 0,
                 pickup_window: timeWindow,
                 status: status,
@@ -45,20 +45,20 @@ function PostCreation() {
             console.log("Post listing result:", result);
             
             if (result && result.posting_id) {
-                setSubmitStatus("✓ Posted successfully!");
+                setSubmitStatus("Posted successfully!");
                 setTimeWindow("09:00-10:00");
-                setCategory("Bakery");
+                setCategory("bakery");
                 setQuantity(1);
                 setPrice("");
                 setContents("");
                 setSelectedAllergenIds([]);
                 setTimeout(() => setSubmitStatus(""), 3000);
             } else {
-                setSubmitStatus("✗ Failed to post listing");
+                setSubmitStatus("Failed to post listing");
             }
         } catch (err) {
             console.error("Error posting listing:", err);
-            setSubmitStatus("✗ Error posting listing");
+            setSubmitStatus("Error posting listing");
         }
     }
 
@@ -102,12 +102,12 @@ function PostCreation() {
                 <hr />
                 <p>Category</p>
                 <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="Bakery">Bakery</option>
-                    <option value="Hot Meals">Hot Meals</option>
-                    <option value="Fresh Produce">Fresh Produce</option>
-                    <option value="Dairy">Dairy</option>
-                    <option value="Prepared Salads">Prepared Salads</option>
-                    <option value="Desserts">Desserts</option>
+                    <option value="bakery">Bakery</option>
+                    <option value="hot_meals">Hot Meals</option>
+                    <option value="fresh_produce">Fresh Produce</option>
+                    <option value="dairy">Dairy</option>
+                    <option value="prepared_salads">Prepared Salads</option>
+                    <option value="desserts">Desserts</option>
                 </select>
                 <hr />
                 <p>Bundle Description</p>

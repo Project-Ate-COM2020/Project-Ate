@@ -15,21 +15,6 @@ There will probs be more I need to pass */
 /* --- Import Statements --- */
 import "./bundles.css"
 
-/* --- Test Data Declarations --- */
-const bundles = [
-    {
-      bundleName: "Big Cheese Bundle",
-      bundleCategory: "Dairy",
-      imgPath: "/Dairy.jpg",
-      pickupTime: "11:00 - 12:00",
-      seller: "Cheesy Goods Incorporated",
-      buyer: "Bobby",
-      collectionCode: "QWERTY",
-      price: 14.5,
-      location: "Exeter",
-    },
-  ];
-
 /* --- Helper Functions  --- */
 function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFunction}) {
 
@@ -84,7 +69,7 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
 
 /* --- Main Page Function --- */
 function Bundles({bundles: bundlesProp = [], includedAttributes=[], numberOfBundles = 1, endPoint = "", postBody = {}, moreInfoButtonFunction}) {
-    const bundlesToDisplay = bundlesProp.length > 0 ? bundlesProp : bundles;
+    const bundlesToDisplay = Array.isArray(bundlesProp) ? bundlesProp : [];
 
     return (
         <div className = "bundlesContainer">

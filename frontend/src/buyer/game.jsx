@@ -6,20 +6,6 @@ import "./game.css";
 /* --- TO USE REAL DATA: --- */
 import { useGetData } from "../reusableComponents/api.jsx"
 
-// toggle to false when endpoints are ready
-const USE_MOCK_DATA = false;
-
-// local mock data
-const MOCK_SUMMARY = {
-  current_streak_weeks: 3,
-  has_rescued_this_week: true,
-  total_rescued_bundles: 12,
-  estimated_co2e_saved_kg: 28.5,
-  // badges comes from GET /game/api/game/summary/ — array of badge name strings
-  // TODO: swap these for real badge objects once the badge images/assets are decided
-  badges: ["Explorer", "Eco Starter"],
-};
-
 const BADGES = {
   "Explorer": {
     icon: "/badges/explorer.png",
@@ -115,7 +101,6 @@ const { data: summary, loading } = useGetData("game/summary/", queryParams, true
             {summary.has_rescued_this_week
               ? "Rescued this week"
               : "Not yet this week"}
-            {USE_MOCK_DATA ? " • Mock data" : ""}
           </span>
         </div>
 

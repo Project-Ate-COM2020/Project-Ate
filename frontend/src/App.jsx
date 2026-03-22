@@ -56,12 +56,19 @@ import MaintenancePage from "./maintenancePage/maintenancePage.jsx";
 
 /* --- Route Guards --- */
 
+function getRedirectPathForUserType(userType) {
+  if (userType === "seller") return "/seller/home";
+  if (userType === "buyer") return "/buyer/home";
+  if (userType === "maintainer") return "/maintenance";
+  return "/login";
+}
+
 // Redirects logged-in users away from guest-only pages (login, signup, landing)
 function GuestOnlyRoute({ children }) {
   const token = localStorage.getItem("access_token");
   const userType = localStorage.getItem("user_type");
   if (token) {
-    return <Navigate to={userType === "seller" ? "/seller/home" : "/buyer/home"} replace />;
+    return <Navigate to={getRedirectPathForUserType(userType)} replace />;
   }
   return children;
 }
@@ -74,7 +81,7 @@ function ProtectedRoute({ children, requiredType }) {
     return <Navigate to="/login" replace />;
   }
   if (requiredType && userType !== requiredType) {
-    return <Navigate to={userType === "seller" ? "/seller/home" : "/buyer/home"} replace />;
+    return <Navigate to={getRedirectPathForUserType(userType)} replace />;
   }
   return children;
 }

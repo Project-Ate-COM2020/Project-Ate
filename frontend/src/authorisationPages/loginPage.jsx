@@ -30,6 +30,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const redirectPathForType = (type) => {
+    if (type === "seller") return "/seller/home";
+    if (type === "buyer") return "/buyer/home";
+    if (type === "maintainer") return "/maintenance";
+    return "/login";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -40,28 +47,20 @@ export default function LoginPage() {
 
       if (!credentials || !credentials.access) {
         setError("Invalid username or password.");
-        setIsLoading(false);
         return;
       }
 
       localStorage.setItem("access_token", credentials.access);
-      localStorage.setItem("refresh_token", credentials.refresh);
+      localStorage.setItem("refresh_token", credentials.refresh || "");
       localStorage.setItem("user_type", accountType);
 
-    console.log(verify);
-
-    if (accountType == "seller") {
-      localStorage.setItem("user_type", "seller");
-      navigate("/seller/home");
-    } if (accountType == "buyer") {
-      navigate("/buyer/home");
-      localStorage.setItem("user_type", "buyer");
-    } if (accountType == "maintainer"){
-      localStorage.setItem("user_type", "maintainer");
-      navigate("/maintenance")
+      navigate(redirectPathForType(accountType), { replace: true });
+    } catch {
+      setError("Could not log in. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-};
+  };
 
   return (
     <AuthLayout title="Log in">

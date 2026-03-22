@@ -21,19 +21,6 @@ hard to add once the backend is ready */
 /* --- Import Statements --- */
 import "./bundle.css";
 
-/* --- Test Data Declarations --- */
-const defaultBundleData = {
-    bundleName: "Big Cheese Bundle",
-    bundleCategory: "Dairy",
-    imgPath: "/Dairy.jpg",
-    pickupTime: "11:00 - 12:00",
-    seller: "Cheesy Goods Incorporated",
-    buyer: "Bobby",
-    collectionCode: "QWERTY",
-    price: 14.50,
-    location: "Exeter",
-};
-
 /* --- Helper Functions --- */
 function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunction, markCollectedFunction }) {
 
@@ -85,17 +72,18 @@ function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunc
 }
 
 /* --- Main Function --- */
-function Bundle({ includedAttributes = [], backfunction, bundleData = defaultBundleData, unreserveBundleFunction, markCollectedFunction }) {
+function Bundle({ includedAttributes = [], backfunction, bundleData = {}, unreserveBundleFunction, markCollectedFunction }) {
+    const bundleName = bundleData.bundleName || "Bundle";
 
     return (
         <div className = "bundleDisplay">
             <button className="bundleCloseButton" onClick={backfunction}>X</button>
             <div className = "bundleTitle">
-                <h3>{bundleData.bundleName}</h3>
+                <h3>{bundleName}</h3>
             </div>
             <hr />
             <div className = "bundleBody">
-                <img src = {bundleData.imgPath} alt={bundleData.bundleName} />
+                <img src = {bundleData.imgPath || ""} alt={bundleName} />
                 <OptionalContainer includedAttributes={includedAttributes} bundleData={bundleData} unreserveBundleFunction={unreserveBundleFunction} markCollectedFunction={markCollectedFunction}/>
             </div>
             

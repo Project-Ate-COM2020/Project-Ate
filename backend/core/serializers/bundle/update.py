@@ -45,6 +45,7 @@ class SellerUpdateSerializer(UpdateSerializer):
 
 
 class OldUpdateSerializer(UpdateSerializer, serializers.ModelSerializer):
+    category = serializers.CharField(read_only=True)
     allergens = serializers.SerializerMethodField()
 
     class Meta:
