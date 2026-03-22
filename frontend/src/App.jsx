@@ -1,21 +1,17 @@
 /* --- General Import Statements --- */
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { postData } from "./reusableComponents/api.jsx"
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 
 // import the files for each URL endpoint
-import Orders from "./buyer/orders.jsx";
+/* import Orders from "./buyer/orders.jsx";
 import LoginPage from "./authorisationPages/loginPage.jsx";
 import GamePage from "./buyer/game.jsx";
 import MarketplacePage from "./buyer/marketplace.jsx";
 import PageNotFound from "./reusableComponents/pageNotFound.jsx";
 import UserHomePage from "./buyer/userHomePage.jsx";
 import HomePage from "./homePage/HomePage.jsx";
-//import Basket from "./Basket/basket.jsx";
+//import Basket from "./Basket/basket.jsx"; */
 
 /* --- Auth Imports --- */
 import SellerSignupPage from "./authorisationPages/sellerSignupPage.jsx";
@@ -35,7 +31,6 @@ import SellerIssuesPage from "./seller/issuesPage.jsx";
 import Orders from "./buyer/reservations.jsx";
 import GamePage from "./buyer/game.jsx";
 import BuyerProfilePage from "./buyer/profile.jsx";
-import BuyerProfilePage from "./buyer/BuyerProfilePage.jsx";
 import IssueReportingPage from "./buyer/issueReportingPage.jsx";
 import UserHomePage from "./buyer/postings.jsx";
 
@@ -94,10 +89,6 @@ function App() {
       <CookiesConsent />
 
       <Routes>
-        {/* Auth paths */}
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup/buyer" element={<BuyerSignupPage />} />
-        <Route path="/signup/seller" element={<SellerSignupPage />} />
         {/* Guest-only paths — redirect logged-in users to their home */}
         <Route path="/" element={<GuestOnlyRoute><HomePage /></GuestOnlyRoute>} />
         <Route path="/login" element={<GuestOnlyRoute><LoginPage /></GuestOnlyRoute>} />
@@ -114,52 +105,27 @@ function App() {
         <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
         {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}
 
-        {/* Buyer-only paths */}
-        <Route path="/buyer/home" element={<ProtectedRoute requiredType="buyer"><UserHomePage /></ProtectedRoute>} />
-        <Route path="/buyer/profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
-        <Route path="/buyer/orders" element={<ProtectedRoute requiredType="buyer"><Orders /></ProtectedRoute>} />
-        <Route path="/buyer/report-issue" element={<ProtectedRoute requiredType="buyer"><IssueReportingPage /></ProtectedRoute>} />
-        <Route path="/game" element={<ProtectedRoute requiredType="buyer"><GamePage /></ProtectedRoute>} />
-        <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
-        {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}
-
-        {/* Seller paths */}
-        <Route path="/seller/home" element={<SellerHomePage />} />
-        <Route path="/seller/profile" element={<SellerProfilePage />} />
-        <Route path="/seller/createPosting" element={<CreatePostPage />} />
-        <Route path="/seller/reservations" element={<Reservations />} />
-        <Route path="/seller/postings" element={<Postings />} />
-        <Route path="/seller/analytics" element={<Analytics />} />
-        <Route path="/seller/issues" element={<SellerIssuesPage />} />
         {/* Seller-only paths */}
         <Route path="/seller/home" element={<ProtectedRoute requiredType="seller"><SellerHomePage /></ProtectedRoute>} />
         <Route path="/seller" element={<ProtectedRoute requiredType="seller"><SellerHomePage /></ProtectedRoute>} />
         <Route path="/seller/profile" element={<ProtectedRoute requiredType="seller"><SellerProfilePage /></ProtectedRoute>} />
         <Route path="/seller/createPosting" element={<ProtectedRoute requiredType="seller"><CreatePostPage /></ProtectedRoute>} />
-        <Route path="/seller/reservation" element={<ProtectedRoute requiredType="seller"><Reservation /></ProtectedRoute>} />
         <Route path="/seller/reservations" element={<ProtectedRoute requiredType="seller"><Reservations /></ProtectedRoute>} />
-        <Route path="/seller/posting" element={<ProtectedRoute requiredType="seller"><Posting /></ProtectedRoute>} />
         <Route path="/seller/postings" element={<ProtectedRoute requiredType="seller"><Postings /></ProtectedRoute>} />
         <Route path="/seller/analytics" element={<ProtectedRoute requiredType="seller"><Analytics /></ProtectedRoute>} />
         <Route path="/seller/issues" element={<ProtectedRoute requiredType="seller"><SellerIssuesPage /></ProtectedRoute>} />
 
         {/* Global paths */}
-        <Route path="/" element={<HomePage />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         {/* maintainer Page */}
-        <Route path="/maintenance" element={<MaintenancePage />} />
+        <Route path="/maintenance" element={<ProtectedRoute requiredType="maintainer"><MaintenancePage /></ProtectedRoute>} />
 
         {/* Catch-all */}
         <Route path="/user" element={<Navigate to="/buyer/home" replace />} />
         <Route path="*" element={<PageNotFound />} />
-
-        {/* maintainer Page */}
-        <Route path="/maintenance" element={<MaintenancePage />} />
-
-        
 
       </Routes>
 

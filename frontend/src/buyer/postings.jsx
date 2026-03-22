@@ -32,7 +32,7 @@ function UserHomePage(){
 
     const { data, loading } = useGetData("marketplace/bundle/list", { refresh_key: refreshKey }, true);
 
-    const apiBundles = (!loading) ? data.results : [];
+    const apiBundles = Array.isArray(data?.results) ? data.results : [];
 
     console.log(apiBundles);
 

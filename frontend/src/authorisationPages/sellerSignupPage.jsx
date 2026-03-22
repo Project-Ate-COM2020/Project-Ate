@@ -63,14 +63,14 @@ export default function SellerSignupPage() {
     // Testing purposes
     console.log(createdUser);
 
-    const credentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
-    if (!credentials || !credentials.access) {
+    const bootstrapCredentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+    if (!bootstrapCredentials || !bootstrapCredentials.access) {
       setError("Account created, but automatic login failed. Please log in manually.");
       return;
     }
 
     // Testing purposes (POTENTIAL SECURITY RISK)
-    console.log(credentials);
+    console.log(bootstrapCredentials);
 
     const sellerData = {
       "display_name" : businessName,
@@ -82,7 +82,7 @@ export default function SellerSignupPage() {
     const createdSellerResponse = await fetch("http://localhost:8000/marketplace/seller", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + credentials.access,
+        "Authorization": "Bearer " + bootstrapCredentials.access,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(sellerData),
@@ -97,8 +97,14 @@ export default function SellerSignupPage() {
     // Testing Purposes
     console.log(createdSeller);
 
-    localStorage.setItem("access_token", credentials.access);
-    localStorage.setItem("refresh_token", credentials.refresh || "");
+    const finalCredentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+    if (!finalCredentials || !finalCredentials.access) {
+      setError("Seller account created, but automatic login failed. Please log in manually.");
+      return;
+    }
+
+    localStorage.setItem("access_token", finalCredentials.access);
+    localStorage.setItem("refresh_token", finalCredentials.refresh || "");
     localStorage.setItem("user_type", "seller");
 
     navigate("/seller/home");

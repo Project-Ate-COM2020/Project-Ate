@@ -13,6 +13,7 @@ improved to allow proper redirecting*/
 /* --- Import Statements --- */
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import AuthLayout from "../reusableComponents/authLayout";
 import { postData } from "../reusableComponents/api";
 
@@ -29,6 +30,27 @@ export default function LoginPage() {
   // UI feedback state ( loading + error )
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const getUserTypeFromAccessToken = (accessToken, selectedType) => {
+    try {
+      const payload = jwtDecode(accessToken);
+      const hasBuyer = !!payload.consumer_id;
+      const hasSeller = !!payload.seller_id;
+      const hasMaintainer = !!payload.maintainer_id;
+
+      if (selectedType === "buyer" && hasBuyer) return "buyer";
+      if (selectedType === "seller" && hasSeller) return "seller";
+      if (selectedType === "maintainer" && hasMaintainer) return "maintainer";
+
+      if (hasBuyer) return "buyer";
+      if (hasSeller) return "seller";
+      if (hasMaintainer) return "maintainer";
+    } catch {
+      return selectedType;
+    }
+
+    return selectedType;
+  };
 
   const redirectPathForType = (type) => {
     if (type === "seller") return "/seller/home";
@@ -52,9 +74,10 @@ export default function LoginPage() {
 
       localStorage.setItem("access_token", credentials.access);
       localStorage.setItem("refresh_token", credentials.refresh || "");
-      localStorage.setItem("user_type", accountType);
+      const resolvedUserType = getUserTypeFromAccessToken(credentials.access, accountType);
+      localStorage.setItem("user_type", resolvedUserType);
 
-      navigate(redirectPathForType(accountType), { replace: true });
+      navigate(redirectPathForType(resolvedUserType), { replace: true });
     } catch {
       setError("Could not log in. Please try again.");
     } finally {
