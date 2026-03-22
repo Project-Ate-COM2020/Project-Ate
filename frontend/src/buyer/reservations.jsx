@@ -34,7 +34,9 @@ function Reservations() {
   // Defining the api reservations using a hook for automatic updates (utilises refresh key)
   const { data, loading } = useGetData("marketplace/reservations/list", { refresh_key: refreshKey }, true);
 
-  const apiReservations = Array.isArray(data) ? data : [];
+  const apiReservations = Array.isArray(data)
+    ? data
+    : (Array.isArray(data?.results) ? data.results : []);
 
   // function handling the unreserve of a bundle - then refreshes using refresh key
   async function handleUnreserve() {
@@ -47,7 +49,10 @@ function Reservations() {
   let reservations = [];
   if (!loading) {
   reservations = apiReservations
-    .filter((reservation) => String(reservation?.status ?? "").toLowerCase() === "active")
+    .filter((reservation) => {
+      const status = String(reservation?.status ?? "").toLowerCase();
+      return status === "reserved";
+    })
     .map((reservation) => ({
     reservation_id: reservation.reservation_id,
     posting: reservation.posting,

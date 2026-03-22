@@ -13,7 +13,9 @@ function SellerReservations() {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const { data } = useGetData("marketplace/reservations/list", { refresh_key: refreshKey }, true);
-    const apiReservations = Array.isArray(data) ? data : [];
+    const apiReservations = Array.isArray(data)
+        ? data
+        : (Array.isArray(data?.results) ? data.results : []);
 
     async function markCollected() {
         if (!selectedReservation?.reservation_id) return;
@@ -36,8 +38,13 @@ function SellerReservations() {
         setRefreshKey((prev) => prev + 1);
     }
 
-    const reservations = apiReservations
-        .filter((reservation) => String(reservation?.status ?? "").toLowerCase() === "active")
+    const visibleReservations = apiReservations
+        .filter((reservation) => {
+            const status = String(reservation?.status ?? "").toLowerCase();
+            return status === "reserved" || status === "active";
+        });
+
+    const reservations = visibleReservations
         .map((reservation) => ({
         reservation_id: reservation.reservation_id,
         posting: reservation.posting,
@@ -57,6 +64,15 @@ function SellerReservations() {
         price: reservation.price ?? "N/A",
         location: reservation.location ?? "Location unavailable",
     }));
+
+    console.log("[SellerReservations] API payload:", data);
+    console.log("[SellerReservations] apiReservations count:", apiReservations.length);
+    console.log(
+        "[SellerReservations] statuses:",
+        apiReservations.map((reservation) => reservation?.status)
+    );
+    console.log("[SellerReservations] visibleReservations count:", visibleReservations.length);
+    console.log("[SellerReservations] mapped reservations:", reservations);
 
     return (
         <div className="buyer-page buyer-reservations-page">

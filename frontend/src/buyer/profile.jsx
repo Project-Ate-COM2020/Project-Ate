@@ -76,8 +76,10 @@ export default function BuyerProfilePage() {
       setReservations(
         Array.isArray(reservationsData?.reservations)
           ? reservationsData.reservations.filter(
-              (reservation) =>
-                String(reservation?.status ?? "").toLowerCase() === "active"
+              (reservation) => {
+                const status = String(reservation?.status ?? "").toLowerCase();
+                return status === "reserved" || status === "active";
+              }
             )
           : []
       );

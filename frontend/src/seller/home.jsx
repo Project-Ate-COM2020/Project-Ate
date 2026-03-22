@@ -34,6 +34,17 @@ function Analytics() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    function toSafeNumber(value, fallback = 0) {
+        if (typeof value === "number") {
+            return Number.isFinite(value) ? value : fallback;
+        }
+        if (typeof value === "string") {
+            const parsed = Number(value);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        }
+        return fallback;
+    }
+
     useEffect(() => {
         async function fetchStats() {
             try {
@@ -44,9 +55,9 @@ function Analytics() {
                     getData('analytics/food-waste-reduction/', params, true),
                 ]);
                 setStats({
-                    listings: listings ?? 0,
-                    revenue: revenue ?? 0,
-                    collection: collection?.food_waste_reduction_percentage ?? 0,
+                    listings: toSafeNumber(listings, 0),
+                    revenue: toSafeNumber(revenue, 0),
+                    collection: toSafeNumber(collection?.food_waste_reduction_percentage, 0),
                 });
             } catch (err) {
                 console.error('Failed to fetch analytics:', err);
@@ -117,7 +128,7 @@ function BundlePostings() {
                 bundles={bundles}
                 includedAttributes = {["price", "stock", "more info button"]}
                 numberOfBundles={3}
-                moreInfoButtonFunction={(bundle) => navigate("/seller/posting", { state: { postingData: bundle } })}
+                moreInfoButtonFunction={(bundle) => navigate("/seller/postings", { state: { postingData: bundle } })}
             />
         </div>
     )
@@ -126,10 +137,17 @@ function BundlePostings() {
 function BundleReservations() {
     const navigate = useNavigate();
     const { data } = useGetData("marketplace/reservations/list", {}, true);
-    const apiReservations = data ?? [];
+    const apiReservations = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.results)
+            ? data.results
+            : [];
 
     const reservations = apiReservations
-        .filter((reservation) => String(reservation?.status ?? "").toLowerCase() === "active")
+        .filter((reservation) => {
+            const status = String(reservation?.status ?? "").toLowerCase();
+            return status === "reserved" || status === "active";
+        })
         .map((reservation) => ({
         reservation_id: reservation.reservation_id,
         posting: reservation.posting,
@@ -158,7 +176,7 @@ function BundleReservations() {
                 bundles={reservations}
                 includedAttributes = {["buyer", "pickup time", "more info button"]}
                 numberOfBundles={3}
-                moreInfoButtonFunction={(bundle) => navigate("/seller/reservation", { state: { reservationData: bundle } })}
+                moreInfoButtonFunction={(bundle) => navigate("/seller/reservations", { state: { reservationData: bundle } })}
             />
         </div>
     )
