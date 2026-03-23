@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar";
+import { getData, postData } from "../reusableComponents/api";
 import "./issueReportingPage.css";
 
 const CATEGORY_OPTIONS = [
@@ -14,7 +15,9 @@ export default function IssueReportingPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
-  const [orderId, setOrderId] = useState("");
+  const [selectedPostingId, setSelectedPostingId] = useState("");
+  const [reportableOrders, setReportableOrders] = useState([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
 
   const [issues, setIssues] = useState([]);
   const [isLoadingIssues, setIsLoadingIssues] = useState(true);
@@ -22,11 +25,21 @@ export default function IssueReportingPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const formatIssueType = (value) =>
+    String(value || "Issue")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
   const loadIssues = async () => {
     setIsLoadingIssues(true);
     try {
-      const data = await fetchMyIssues();
-      setIssues(Array.isArray(data) ? data : []);
+      const data = await getData("issues/consumer/");
+      const parsedIssues = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.results)
+          ? data.results
+          : [];
+      setIssues(parsedIssues);
     } catch {
       setIssues([]);
     } finally {
@@ -34,8 +47,29 @@ export default function IssueReportingPage() {
     }
   };
 
+  const loadReportableOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const data = await getData("issues/consumer/reportable");
+      const orders = Array.isArray(data) ? data : [];
+      setReportableOrders(orders);
+
+      if (orders.length > 0) {
+        setSelectedPostingId(String(orders[0].posting_id));
+      } else {
+        setSelectedPostingId("");
+      }
+    } catch {
+      setReportableOrders([]);
+      setSelectedPostingId("");
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
+
   useEffect(() => {
     loadIssues();
+    loadReportableOrders();
   }, []);
 
   const handleSubmit = async (event) => {
@@ -45,18 +79,29 @@ export default function IssueReportingPage() {
     setIsLoading(true);
 
     try {
-      await createIssue({
-        title: title.trim(),
-        description: description.trim(),
-        category,
-        orderId: orderId.trim(),
+      const payloadDescription = title.trim()
+        ? `${title.trim()} - ${description.trim()}`
+        : description.trim();
+
+      const response = await postData("issues/report/", {
+        posting: Number(selectedPostingId),
+        type: category,
+        description: payloadDescription,
       });
+
+      if (response?.error) {
+        throw new Error(response.error);
+      }
 
       setSuccess("Issue submitted successfully.");
       setTitle("");
       setDescription("");
       setCategory(CATEGORY_OPTIONS[0]);
-      setOrderId("");
+      if (reportableOrders.length > 0) {
+        setSelectedPostingId(String(reportableOrders[0].posting_id));
+      } else {
+        setSelectedPostingId("");
+      }
       await loadIssues();
     } catch (err) {
       const message =
@@ -90,8 +135,8 @@ export default function IssueReportingPage() {
             <div className="issue-list">
               {issues.map((issue, index) => {
                 const key = issue.id || issue.issue_id || index;
-                const displayTitle = issue.title || "Untitled issue";
-                const displayCategory = issue.category || "Uncategorised";
+                const displayTitle = formatIssueType(issue.type);
+                const displayCategory = issue.posting?.category || "Uncategorised";
                 const displayStatus = issue.status || "Open";
                 const displayDescription =
                   issue.description || "No description provided.";
@@ -145,13 +190,26 @@ export default function IssueReportingPage() {
             </label>
 
             <label className="issue-label">
-              Order ID (optional)
-              <input
+              Select Order
+              <select
                 className="buyer-input issue-input"
-                value={orderId}
-                onChange={(event) => setOrderId(event.target.value)}
-                placeholder="Related order id"
-              />
+                value={selectedPostingId}
+                onChange={(event) => setSelectedPostingId(event.target.value)}
+                required
+                disabled={isLoadingOrders || reportableOrders.length === 0}
+              >
+                {isLoadingOrders ? (
+                  <option value="">Loading orders...</option>
+                ) : reportableOrders.length === 0 ? (
+                  <option value="">No eligible orders found</option>
+                ) : (
+                  reportableOrders.map((order) => (
+                    <option key={order.posting_id} value={String(order.posting_id)}>
+                      #{order.posting_id} - {order.category || "Unknown category"} - {order.pickup_window || "No pickup window"}
+                    </option>
+                  ))
+                )}
+              </select>
             </label>
 
             <label className="issue-label">
@@ -166,7 +224,10 @@ export default function IssueReportingPage() {
               />
             </label>
 
-            <button className="buyer-btn-primary issue-submit-btn" disabled={isLoading}>
+            <button
+              className="buyer-btn-primary issue-submit-btn"
+              disabled={isLoading || isLoadingOrders || reportableOrders.length === 0 || !selectedPostingId}
+            >
               {isLoading ? "Submitting..." : "Submit issue"}
             </button>
           </form>

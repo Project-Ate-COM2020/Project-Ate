@@ -47,6 +47,7 @@ class SellerUpdateSerializer(UpdateSerializer):
 class OldUpdateSerializer(UpdateSerializer, serializers.ModelSerializer):
     category = serializers.CharField(read_only=True)
     allergens = serializers.SerializerMethodField()
+    sellerLocation = serializers.CharField(source="seller.location", read_only=True)
 
     class Meta:
         model = BundlePosting

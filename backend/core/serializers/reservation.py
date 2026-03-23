@@ -204,6 +204,10 @@ class SellerUpdateReservationSerializer(serializers.ModelSerializer):
 
 
 class ReservationSerializer(serializers.ModelSerializer):
+    bundleCategory = serializers.CharField(source="posting.category", read_only=True)
+    consumerDisplayName = serializers.CharField(source="consumer.display_name", read_only=True)
+    sellerLocation = serializers.CharField(source="posting.seller.location", read_only=True)
+
     class Meta:
         model = Reservation
         fields = "__all__"

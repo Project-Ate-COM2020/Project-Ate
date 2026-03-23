@@ -18,6 +18,25 @@ import Posting from "../bundlesComponents/posting.jsx";
 import { useGetData, postData } from "../reusableComponents/api.jsx";
 import "./postings.css";
 
+const CATEGORY_IMAGE_PATHS = {
+    bakery: "/bakery.jpg",
+    dairy: "/dairy.jpg",
+    desserts: "/desserts.jpg",
+    fresh_produce: "/fresh produce.jpg",
+    hot_meals: "/hot meals.jpg",
+    prepared_salads: "/prepared salads.jpg",
+};
+
+function getImagePathFromCategory(category) {
+    return CATEGORY_IMAGE_PATHS[String(category || "").toLowerCase()] || "/dairy.jpg";
+}
+
+function formatCategoryLabel(category) {
+    return String(category || "dairy")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
+
 const generateClaimCode = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 7);
 
 async function reserveBundle(postingID) {
@@ -29,6 +48,8 @@ function UserHomePage(){
 
     const [selectedPosting, setSelectedPosting] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [selectedLocation, setSelectedLocation] = useState("all");
+    const [selectedCategory, setSelectedCategory] = useState("all");
 
     const { data, loading } = useGetData("marketplace/bundle/list", { refresh_key: refreshKey }, true);
 
@@ -52,15 +73,29 @@ function UserHomePage(){
             posting: bundle.posting ?? bundle.posting_id,
             posting_id: bundle.posting_id ?? bundle.posting,
             bundleName: bundle.contents ?? "Unnamed Bundle",
-            bundleCategory: bundle.category ?? "Unknown",
-            imgPath: `/${bundle.category}.jpg`,
+            bundleCategory: formatCategoryLabel(bundle.category),
+            imgPath: getImagePathFromCategory(bundle.category),
             pickupTime: bundle.pickup_window ?? "Not specified",
             seller: bundle.seller ? `Seller #${bundle.seller}` : "Unknown seller",
             price: bundle.price ?? "0.00",
-            location: bundle.location ?? "Location unavailable",
+            location: bundle.sellerLocation || "Location unavailable",
             stock: bundle.quantity_remaining ?? 0,
         }));
     }
+
+    const locationOptions = [...new Set(bundles.map((bundle) => bundle.location))]
+        .filter((location) => Boolean(location))
+        .sort((a, b) => a.localeCompare(b));
+
+    const categoryOptions = [...new Set(bundles.map((bundle) => bundle.bundleCategory))]
+        .filter((category) => Boolean(category))
+        .sort((a, b) => a.localeCompare(b));
+
+    const filteredBundles = bundles.filter((bundle) => {
+        const locationMatches = selectedLocation === "all" || bundle.location === selectedLocation;
+        const categoryMatches = selectedCategory === "all" || bundle.bundleCategory === selectedCategory;
+        return locationMatches && categoryMatches;
+    });
 
     console.log("bundle list response:", data);
 
@@ -87,10 +122,48 @@ function UserHomePage(){
             <p className="buyer-hero-subtitle">Browse local rescue bundles and reserve before they are gone.</p>
         </section>
         <section className="buyer-container buyer-postings-content">
+            <div className="buyer-postings-filters">
+                <div className="buyer-postings-filter-row">
+                    <label className="buyer-postings-filter-label" htmlFor="bundle-location-filter">
+                        Filter by location
+                    </label>
+                    <select
+                        id="bundle-location-filter"
+                        className="buyer-postings-filter-select"
+                        value={selectedLocation}
+                        onChange={(event) => setSelectedLocation(event.target.value)}
+                    >
+                        <option value="all">All locations</option>
+                        {locationOptions.map((location) => (
+                            <option key={location} value={location}>
+                                {location}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="buyer-postings-filter-row">
+                    <label className="buyer-postings-filter-label" htmlFor="bundle-category-filter">
+                        Filter by category
+                    </label>
+                    <select
+                        id="bundle-category-filter"
+                        className="buyer-postings-filter-select"
+                        value={selectedCategory}
+                        onChange={(event) => setSelectedCategory(event.target.value)}
+                    >
+                        <option value="all">All categories</option>
+                        {categoryOptions.map((category) => (
+                            <option key={category} value={category}>
+                                {category}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
             <Postings
-                bundles={bundles}
+                bundles={filteredBundles}
                 includedAttributes = {["price", "more info button", "stock", "seller"]}
-                numberOfBundles = {bundles.length || 50}
+                numberOfBundles = {filteredBundles.length || 50}
                 moreInfoButtonFunction={(bundle) => setSelectedPosting(bundle)}
             />
         </section>

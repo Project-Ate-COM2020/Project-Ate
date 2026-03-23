@@ -7,6 +7,40 @@ import { useGetData, putData } from "../reusableComponents/api.jsx";
 import "../buyer/buyerShared.css";
 import "../buyer/reservations.css";
 
+const CATEGORY_IMAGE_PATHS = {
+    bakery: "/bakery.jpg",
+    dairy: "/dairy.jpg",
+    desserts: "/desserts.jpg",
+    fresh_produce: "/fresh produce.jpg",
+    hot_meals: "/hot meals.jpg",
+    prepared_salads: "/prepared salads.jpg",
+};
+
+function getImagePathFromCategory(category) {
+    return CATEGORY_IMAGE_PATHS[String(category || "").toLowerCase()] || "/dairy.jpg";
+}
+
+function formatCategoryLabel(category) {
+    return String(category || "dairy")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
+
+function formatPickupTime(timestamp) {
+    if (!timestamp) return "Not specified";
+
+    const parsed = new Date(timestamp);
+    if (Number.isNaN(parsed.getTime())) return "Not specified";
+
+    return parsed.toLocaleString(undefined, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
+
 /* --- Main Page Function --- */
 function SellerReservations() {
     const [selectedReservation, setSelectedReservation] = useState(null);
@@ -54,12 +88,12 @@ function SellerReservations() {
         status: reservation.status,
         no_show_reason: reservation.no_show_reason,
         collected_at: reservation.collected_at,
-        bundleName: reservation.contents ?? `Posting #${reservation.posting}`,
-        bundleCategory: reservation.bundleCategory ?? "Reserved bundle",
-        imgPath: `/${reservation.bundleCategory ?? "Dairy"}.jpg`,
-        pickupTime: reservation.timestamp ?? "Not specified",
+        bundleName: reservation.contents ?? `Reservation #${reservation.reservation_id}`,
+        bundleCategory: formatCategoryLabel(reservation.bundleCategory),
+        imgPath: getImagePathFromCategory(reservation.bundleCategory),
+        pickupTime: formatPickupTime(reservation.timestamp),
         seller: reservation.posting ? `Posting #${reservation.posting}` : "Unknown",
-        buyer: reservation.consumer ? `Consumer #${reservation.consumer}` : "Unknown",
+        buyer: reservation.consumerDisplayName || "Unknown",
         collectionCode: reservation.claim_code ?? "N/A",
         price: reservation.price ?? "N/A",
         location: reservation.location ?? "Location unavailable",

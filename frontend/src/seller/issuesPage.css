@@ -39,6 +39,46 @@
   color: var(--muted);
 }
 
+.seller-issues-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.seller-issues-filter-label {
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.seller-issues-filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.seller-issues-filter-btn {
+  border: 1px solid var(--green-pale);
+  background: #f8fbf8;
+  color: var(--dark);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.seller-issues-filter-btn:hover {
+  border-color: var(--green-light);
+}
+
+.seller-issues-filter-btn.active {
+  background: var(--green-pale);
+  border-color: var(--green-light);
+  color: var(--green);
+  font-weight: 600;
+}
+
 .seller-issues-empty-state {
   color: #555;
   margin: 8px 0;

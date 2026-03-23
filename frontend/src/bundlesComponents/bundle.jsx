@@ -48,7 +48,7 @@ function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunc
 
     return (
         <div className = "infoContainer">
-            {pickupTimeDisplayed && <p>pickup time: {bundleData.pickupTime}</p>}
+            {pickupTimeDisplayed && <p>Pick-up Time: {bundleData.pickupTime}</p>}
 
             {bundleCategoryDisplayed && <p>Bundle Category: {bundleData.bundleCategory}</p>}
 

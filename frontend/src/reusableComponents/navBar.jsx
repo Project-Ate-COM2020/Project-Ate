@@ -17,8 +17,9 @@ export default function NavBar() {
     return (
       <nav>
       {/* use NavLink instead of <a href> so react router handles navigation (no page reload) */}
-      <NavLink to="/seller/profile">Project-Ate</NavLink>
+      <NavLink to="/seller/home">Project-Ate</NavLink>
       <ul>
+        <li><NavLink to="/seller/profile">Profile</NavLink></li>
         <li><NavLink to="/seller/home">Home</NavLink></li>
         <li><NavLink to="/seller/analytics">Analytics</NavLink></li>
         <li><NavLink to="/seller/reservations">Reservations</NavLink></li>

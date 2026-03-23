@@ -15,9 +15,20 @@ class BundlePostingNestedSerializer(serializers.ModelSerializer):
 
 
 class IssueReportSerializer(serializers.ModelSerializer):
-    consumer = ConsumerNestedSerializer(allow_null=True)
-    posting = BundlePostingNestedSerializer()
-
     class Meta:
         model = IssueReport
         fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["consumer"] = (
+            ConsumerNestedSerializer(instance.consumer).data
+            if instance.consumer is not None
+            else None
+        )
+        data["posting"] = (
+            BundlePostingNestedSerializer(instance.posting).data
+            if instance.posting is not None
+            else None
+        )
+        return data
