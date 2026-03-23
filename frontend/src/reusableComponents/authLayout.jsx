@@ -12,7 +12,7 @@ export default function authLayout({ title, children }) {
         {/* Green side with branding to match the home page */}
         <div className="auth-left">
           <h1 className="auth-left-logo">Project-Ate</h1>
-          <p className="auth-left-tagline">Eat well, play better.</p>
+          <p className="auth-left-tagline">Eat well, make a difference.</p>
           <p className="auth-left-sub">Fresh food bundles designed around your lifestyle — less waste, more taste.</p>
         </div>
 

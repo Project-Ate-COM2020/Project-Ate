@@ -17,7 +17,7 @@ export default function HomePage() {
       <section className="Website-Description">
         <div className="Web-content">
           <span className="tag-line">Fresh bundles weekly</span>
-          <h1>Eat <em>well,</em><br />play better.</h1>
+          <h1>Eat <em>well,</em><br />make a <em>difference.</em></h1>
           <p>Discover curated food bundles designed for every lifestyle —
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
