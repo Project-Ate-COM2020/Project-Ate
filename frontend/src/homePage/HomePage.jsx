@@ -15,13 +15,8 @@ export default function HomePage() {
       <section className="Website-Description">
         <div className="Web-content">
           <span className="tag-line">Fresh bundles weekly</span>
-<<<<<<< Anna-UI-changes-branch
           <h1>Eat <em>well,</em><br />make a <em>difference.</em></h1>
           <p>Discover curated food bundles designed for every lifestyle —
-=======
-          <h1>Eat <em>well,</em><br />play better.</h1>
-          <p>Discover curated food bundles designed for every lifestyle,
->>>>>>> Development
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
             <NavLink to="/buyer/home" className="btn-primary">Browse Bundles</NavLink>
