@@ -1,17 +1,25 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./maintenance.css";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
 export default function MaintenancePage() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("SELECT * FROM bundle_posting;");
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/");
+  };
+
   const runQuery = async () => {
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
 
     if (!token) {
       setError("No access token found. Please log in as a maintainer.");
@@ -64,16 +72,27 @@ export default function MaintenancePage() {
   return (
     <main className="maintenance-page">
       <div className="maintenance-container">
-        <h1>Developer Maintenance Page</h1>
-
+  
+        {/* Header with logout */}
+        <div className="maintenance-header">
+          <h1>Developer Maintenance Page</h1>
+  
+          <button
+            className="maintenance-button maintenance-logout-button"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+  
         <p className="maintenance-description">
           This page allows authorised maintainers to run SQL queries on the
           Project-Ate database for maintenance and inspection tasks.
         </p>
-
+  
         <section className="maintenance-section">
           <h2>SQL Query</h2>
-
+  
           <textarea
             className="maintenance-textarea"
             value={query}
@@ -81,7 +100,7 @@ export default function MaintenancePage() {
             rows={10}
             placeholder="Enter an SQL query..."
           />
-
+  
           <button
             className="maintenance-button"
             onClick={runQuery}
@@ -90,18 +109,18 @@ export default function MaintenancePage() {
             {loading ? "Running..." : "Run Query"}
           </button>
         </section>
-
+  
         <section className="maintenance-section">
           <h2>Query Results</h2>
-
+  
           {error && <div className="maintenance-error">{error}</div>}
-
+  
           {!error && results.length === 0 && !loading && (
             <div className="maintenance-empty">
               No results to display yet.
             </div>
           )}
-
+  
           {results && results.length > 0 && (
             <pre className="maintenance-results">
               {JSON.stringify(results, null, 2)}
