@@ -11,10 +11,7 @@ export default function MaintenancePage() {
   const [loading, setLoading] = useState(false);
 
   const runQuery = async () => {
-    const token =
-      localStorage.getItem("accessToken") ||
-      localStorage.getItem("access") ||
-      localStorage.getItem("token");
+    const token = localStorage.getItem("access_token")
 
     if (!token) {
       setError("No access token found. Please log in as a maintainer.");
@@ -22,7 +19,7 @@ export default function MaintenancePage() {
       return;
     }
 
-    const url = `${API_BASE_URL}/maintainer/maintainer/sql`;
+    const url = `${API_BASE_URL}/maintainer/sql`;
 
     console.log("Running SQL query at:", url);
 
