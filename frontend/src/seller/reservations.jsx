@@ -41,6 +41,12 @@ function formatPickupTime(timestamp) {
     });
 }
 
+function getReservationSortTime(reservation) {
+    const raw = reservation?.timestamp || reservation?.created_at || reservation?.collected_at;
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime()) ? Number.MAX_SAFE_INTEGER : parsed.getTime();
+}
+
 /* --- Main Page Function --- */
 function SellerReservations() {
     const [selectedReservation, setSelectedReservation] = useState(null);
@@ -78,7 +84,8 @@ function SellerReservations() {
             return status === "reserved" || status === "active";
         });
 
-    const reservations = visibleReservations
+    const reservations = [...visibleReservations]
+        .sort((a, b) => getReservationSortTime(a) - getReservationSortTime(b))
         .map((reservation) => ({
         reservation_id: reservation.reservation_id,
         posting: reservation.posting,

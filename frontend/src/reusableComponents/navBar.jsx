@@ -33,6 +33,7 @@ export default function NavBar() {
     <nav>
       <NavLink to="/buyer/profile">Project-Ate</NavLink>
       <ul>
+        <li><NavLink to="/buyer/profile">Profile</NavLink></li>
         <li><NavLink to="/buyer/game">Game</NavLink></li>
         <li><NavLink to="/buyer/home">Home</NavLink></li>
         <li><NavLink to="/buyer/orders">Orders</NavLink></li>

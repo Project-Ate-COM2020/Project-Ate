@@ -190,11 +190,13 @@
   font-size: 0.95rem;
 }
 
-.recommendation-price {
-  font-size: 1.8rem;
-  font-weight: 700;
+.forecast-section .recommendation-price {
+  font-size: 3.4rem !important;
+  font-weight: 900 !important;
+  line-height: 1.05;
   color: var(--green);
   margin: 1rem 0;
+  letter-spacing: 0.02em;
 }
 
 .models-grid {

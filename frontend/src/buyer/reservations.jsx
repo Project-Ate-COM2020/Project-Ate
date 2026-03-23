@@ -93,8 +93,8 @@ function Reservations() {
     bundleName: reservation.contents ?? `Reservation #${reservation.reservation_id}`,
     bundleCategory: formatCategoryLabel(reservation.bundleCategory),
     imgPath: getImagePathFromCategory(reservation.bundleCategory),
-    pickupTime: formatPickupTime(reservation.timestamp),
-    seller: reservation.posting ? `Posting #${reservation.posting}` : "Unknown",
+    pickupTime: reservation.pickupWindow || "Not specified",
+    seller: reservation.sellerName || (reservation.sellerId ? `Seller #${reservation.sellerId}` : "Unknown"),
     buyer: reservation.consumerDisplayName || "Unknown",
     collectionCode: reservation.claim_code ?? "N/A",
     price: reservation.price ?? "N/A",
@@ -142,7 +142,7 @@ function Reservations() {
             <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
               <Bundle
                 bundleData={selectedReservation}
-                includedAttributes={["pickup time", "collection code", "buyer", "seller", "location", "unreserve bundle button"]}
+                includedAttributes={["pickup time", "collection code", "seller", "location", "unreserve bundle button"]}
                 unreserveBundleFunction={handleUnreserve}
                 backfunction={() => setSelectedReservation(null)}
               />
