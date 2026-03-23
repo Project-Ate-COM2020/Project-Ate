@@ -9,6 +9,7 @@
 /* --- Import Statements --- */
 import React, { useEffect, useState } from "react";
 import NavBar from "../reusableComponents/navBar";
+import { getData, postData } from "../reusableComponents/api";
 import "./issuesPage.css";
 
 // defining constant
@@ -26,15 +27,12 @@ export default function SellerIssuesPage() {
   const [responseText, setResponseText] = useState("");
   const [statusValue, setStatusValue] = useState("open");
   const [isUpdating, setIsUpdating] = useState(false);
-  
-  // TODO: Get seller ID from session/auth context
-  const sellerId = localStorage.getItem("sellerId") || "1";
 
   const loadIssues = async () => {
     setIsLoadingIssues(true);
     try {
-      const data = await fetchSellerIssues(sellerId);
-      setIssues(data ?? []);
+      const data = await getData("issues/seller/");
+      setIssues(Array.isArray(data) ? data : []);
     } catch (err) {
       setIssues([]);
       setError("Failed to load issues");
@@ -68,16 +66,21 @@ export default function SellerIssuesPage() {
     setIsUpdating(true);
 
     try {
-      await updateSellerIssue({
-        issueId: selectedIssueId,
-        status: statusValue,
-        sellerResponse: responseText.trim(),
-        sellerId,
-      });
+      const response = await postData(
+        `issues/seller/${selectedIssueId}/respond/`,
+        {
+          status: statusValue,
+          seller_response: responseText.trim(),
+        }
+      );
 
-      setSuccess("Issue updated successfully.");
-      await loadIssues();
-      handleClearSelection();
+      if (response?.error) {
+        setError(response.error);
+      } else {
+        setSuccess("Issue updated successfully.");
+        await loadIssues();
+        handleClearSelection();
+      }
     } catch (err) {
       const message =
         typeof err?.message === "string" && err.message.trim()
@@ -113,9 +116,13 @@ export default function SellerIssuesPage() {
             <div className="seller-issues-list">
               {issues.map((issue, index) => {
                 const key = issue.issue_id || index;
-                const displayConsumer = issue.consumer_name || "Unknown customer";
+                const displayConsumer = issue.consumer?.display_name || "Unknown customer";
                 const displayStatus = issue.status || "open";
-                const displayType = issue.type || "General inquiry";
+                const displayType = (issue.type || "General inquiry")
+                  .split("_")
+                  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ");
+                const displayCategory = issue.posting?.category || "Unknown";
                 const isSelected = selectedIssueId === issue.issue_id;
 
                 return (
@@ -127,7 +134,7 @@ export default function SellerIssuesPage() {
                       <div className="seller-issue-card-title-section">
                         <h3>{displayType}</h3>
                         <p className="seller-issue-card-customer">
-                          From: {displayConsumer}
+                          {displayConsumer}
                         </p>
                       </div>
                       <span className={`seller-issue-status-pill status-${displayStatus}`}>
@@ -135,7 +142,7 @@ export default function SellerIssuesPage() {
                       </span>
                     </div>
                     <p className="seller-issue-card-category">
-                      Category: {issue.posting_category || "Unknown"}
+                      Category: {displayCategory}
                     </p>
                     <p className="seller-issue-card-description">
                       {issue.description || "No description provided."}
@@ -175,7 +182,7 @@ export default function SellerIssuesPage() {
                 <div className="seller-issue-detail-row">
                   <span className="seller-issue-detail-label">From:</span>
                   <span className="seller-issue-detail-value">
-                    {currentIssue.consumer_name || "Unknown"}
+                    {currentIssue.consumer?.display_name || "Unknown"}
                   </span>
                 </div>
                 <div className="seller-issue-detail-row">
@@ -187,7 +194,7 @@ export default function SellerIssuesPage() {
                 <div className="seller-issue-detail-row">
                   <span className="seller-issue-detail-label">Posting:</span>
                   <span className="seller-issue-detail-value">
-                    {currentIssue.posting_category || "Unknown"}
+                    {currentIssue.posting?.category || "Unknown"}
                   </span>
                 </div>
                 <div className="seller-issue-detail-row">

@@ -119,7 +119,7 @@ class ConsumerReportablePostingsView(APIView):
 class SellerIssueRespondView(APIView):
     name = "seller-issue-response"
 
-    def patch(self, request, issue_id):
+    def post(self, request, issue_id):
         user = request.user
         seller = Seller.objects.get(user=user)
         seller_id = seller.pk
