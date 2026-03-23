@@ -142,8 +142,8 @@ class ConsumerIssuesViewTests(IssueReportingAPITestBase):
 
 class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
     def test_returns_only_reportable_postings(self):
-        self._create_reservation(self.consumer_1, self.posting_1, "collected", "C200")
-        self._create_reservation(self.consumer_1, self.posting_2, "reserved", "C201")
+        reservation_1 = self._create_reservation(self.consumer_1, self.posting_1, "collected", "C200")
+        reservation_2 = self._create_reservation(self.consumer_1, self.posting_2, "reserved", "C201")
         self._create_reservation(self.consumer_1, self.posting_3, "expired", "C202")
 
         url = reverse(
@@ -154,8 +154,10 @@ class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         posting_ids = {posting["posting_id"] for posting in response.data}
         self.assertEqual(posting_ids, {self.posting_1.posting_id, self.posting_2.posting_id})
+        reservation_ids = {posting["reservation_id"] for posting in response.data}
+        self.assertEqual(reservation_ids, {reservation_1.reservation_id, reservation_2.reservation_id})
 
-    def test_deduplicates_postings_with_multiple_collected_reservations(self):
+    def test_returns_all_reportable_reservations_for_same_posting(self):
         self._create_reservation(self.consumer_1, self.posting_1, "collected", "C210")
         self._create_reservation(self.consumer_1, self.posting_1, "collected", "C211")
 
@@ -165,8 +167,9 @@ class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
         response = self.client.get(url, headers=self.consumer_user_1_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 2)
         self.assertEqual(response.data[0]["posting_id"], self.posting_1.posting_id)
+        self.assertEqual(response.data[1]["posting_id"], self.posting_1.posting_id)
 
     def test_returns_empty_when_no_reportable_reservations(self):
         self._create_reservation(self.consumer_1, self.posting_1, "expired", "C220")

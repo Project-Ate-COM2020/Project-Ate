@@ -101,20 +101,19 @@ class ConsumerReportablePostingsView(APIView):
                 consumer__consumer_id=consumer_id,
                 status__in=REPORTABLE_RESERVATION_STATUSES,
             )
-            .order_by("-posting__created_at")
+            .order_by("-timestamp")
         )
 
-        seen_postings = set()
         postings = []
         for reservation in reservations:
             posting = reservation.posting
-            if posting.posting_id in seen_postings:
-                continue
-            seen_postings.add(posting.posting_id)
             postings.append({
+                "reservation_id": reservation.reservation_id,
                 "posting_id": posting.posting_id,
                 "category": posting.category,
                 "pickup_window": posting.pickup_window,
+                "status": reservation.status,
+                "ordered_at": reservation.timestamp,
                 "seller_id": posting.seller_id,
                 "created_at": posting.created_at,
             })
