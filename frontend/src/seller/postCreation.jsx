@@ -7,6 +7,12 @@ import NavBar from "../reusableComponents/navBar";
 import { useGetData, postData } from "../reusableComponents/api";
 import "./postCreation.css";
 
+/* --- Helper to get day of week (1-7, Monday-Sunday) --- */
+function getCurrentDayOfWeek() {
+    const day = new Date().getDay();
+    return day === 0 ? 7 : day;
+}
+
 /* --- Main Page Function --- */
 function PostCreation() {
     const [selectedAllergenIds, setSelectedAllergenIds] = useState([]);
@@ -17,6 +23,9 @@ function PostCreation() {
     const [contents, setContents] = useState("");
     const [status, setStatus] = useState("active");
     const [submitStatus, setSubmitStatus] = useState("");
+    const [forecastData, setForecastData] = useState(null);
+    const [forecastLoading, setForecastLoading] = useState(false);
+    const [showForecastModal, setShowForecastModal] = useState(false);
 
     const { data: allergens, loading: allergensLoading } = useGetData("marketplace/allergens/", {}, false);
 
@@ -26,6 +35,38 @@ function PostCreation() {
                 ? prev.filter(id => id !== allergenId)
                 : [...prev, allergenId]
         );
+    }
+
+    async function handleLoadForecast() {
+        try {
+            setForecastLoading(true);
+            const qty = parseInt(quantity) || 1;
+            const priceValue = price ? parseFloat(price) : null;
+            
+            const forecastResult = await postData("forecast/prediction/", {
+                category: category,
+                day_of_week: getCurrentDayOfWeek(),
+                time_window: timeWindow,
+                no_bundles: qty,
+                price: priceValue,
+            }, true);
+            
+            if (forecastResult && forecastResult.primary_forecast) {
+                setForecastData(forecastResult);
+                setShowForecastModal(true);
+            } else {
+                alert("Failed to load forecast: " + (forecastResult?.error || "Unknown error"));
+            }
+        } catch (err) {
+            console.error("Error loading forecast:", err);
+            alert("Error loading forecast");
+        } finally {
+            setForecastLoading(false);
+        }
+    }
+
+    function closeForecastModal() {
+        setShowForecastModal(false);
     }
 
     async function handlePostListing() {
@@ -164,9 +205,63 @@ function PostCreation() {
                 <hr />
                 <p>Post Bundle Listing</p>
                 <button className="btn-primary" onClick={handlePostListing}>Post Listing</button>
+                <button 
+                    className="btn-secondary" 
+                    onClick={handleLoadForecast}
+                    disabled={forecastLoading}
+                    style={{marginLeft: "10px"}}
+                >
+                    {forecastLoading ? "Loading..." : "Load Forecast"}
+                </button>
                 {submitStatus && <p className="submit-status">{submitStatus}</p>}
             </div>
             </div>
+
+            {/* Forecast Modal */}
+            {showForecastModal && forecastData && (
+                <div className="forecast-modal-overlay" onClick={closeForecastModal}>
+                    <div className="forecast-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="forecast-modal-close" onClick={closeForecastModal}>×</button>
+                        <h2>Demand Forecast</h2>
+                        
+                        <div className="forecast-section">
+                            <h3>Primary Forecast</h3>
+                            <p><strong>Predicted Reservations:</strong> {forecastData.primary_forecast.predicted_reservations}</p>
+                            <p><strong>No-show Probability:</strong> {(forecastData.primary_forecast.no_show_probability * 100).toFixed(2)}%</p>
+                        </div>
+
+                        <div className="forecast-section">
+                            <h3>Model Predictions</h3>
+                            <div className="models-grid">
+                                {Object.entries(forecastData.model_predictions).map(([modelName, modelData]) => (
+                                    <div key={modelName} className="model-card">
+                                        <h4>{modelName.replace(/_/g, ' ')}</h4>
+                                        <p><strong>Predicted Reservations:</strong> {modelData.predicted_reservations}</p>
+                                        <p><strong>No-show Probability:</strong> {(modelData.no_show_probability * 100).toFixed(2)}%</p>
+                                        <p className="model-desc">{modelData.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {forecastData.recommended_price && (
+                            <div className="forecast-section">
+                                <h3>Recommended Price</h3>
+                                <p className="recommendation-price">£{forecastData.recommended_price.toFixed(2)}</p>
+                            </div>
+                        )}
+
+                        <div className="forecast-section">
+                            <h3>Recommendation</h3>
+                            <p><strong>Action:</strong> {forecastData.recommendation.action}</p>
+                            <p><strong>Confidence:</strong> {forecastData.recommendation.confidence}</p>
+                            <p><strong>Rationale:</strong> {forecastData.recommendation.rationale}</p>
+                        </div>
+
+                        <button className="btn-primary" onClick={closeForecastModal}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

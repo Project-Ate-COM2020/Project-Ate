@@ -68,13 +68,14 @@
 
 .seller-issue-card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
   gap: 10px;
+  position: relative;
 }
 
 .seller-issue-card-title-section {
-  flex: 1;
+  text-align: center;
 }
 
 .seller-issue-card-header h3 {
@@ -95,6 +96,9 @@
   font-size: 12px;
   white-space: nowrap;
   font-weight: 500;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .seller-issue-status-pill.status-open {

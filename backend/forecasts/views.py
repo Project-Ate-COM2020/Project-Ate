@@ -54,6 +54,7 @@ class ForecastPredictionView(APIView):
 
             # Load historical data
             df = pd.DataFrame.from_records(ForecastInput.objects.values())
+
             if df.empty:
                 return Response({"error": "No historical data available"}, status=400)
 
