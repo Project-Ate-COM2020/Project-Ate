@@ -1,12 +1,14 @@
 // Import shared nav bar
-import NavBar from "./navBar";
+import { NavLink } from "react-router-dom";
 import "./auth.css";
 
 // wrapper used for login/register pages
 export default function authLayout({ title, children }) {
   return (
     <div className="auth-page">
-      <NavBar />
+      <header className="auth-header">
+        <NavLink to="/" className="auth-header-logo">Project-Ate</NavLink>
+      </header>
       <div className="auth-container">
 
         {/* Green side with branding to match the home page */}

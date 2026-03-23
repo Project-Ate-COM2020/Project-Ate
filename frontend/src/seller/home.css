@@ -1,0 +1,101 @@
+.sellerHomePage {
+  margin: 0;
+  padding: 0;
+}
+
+.topSellerInfo {
+  width: calc(100% - 2rem);
+  margin: 1.5rem auto 0;
+  box-sizing: border-box;
+}
+
+.topSellerInfo .sellerInfo {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sellerHomePage .sellerInfo,
+.sellerHomePage .analytics,
+.sellerHomePage .dashboardPanel {
+  background: white;
+  border: 0.0625rem solid var(--green-pale);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  backdrop-filter: blur(0.625rem);
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+}
+
+.dashboardGrid {
+  width: calc(100% - 1rem);
+  margin: 1.5rem auto 0;
+  max-width: none;
+  padding: 0 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.sellerHomePage .dashboardPanel .postingsContainer,
+.sellerHomePage .dashboardPanel .bundlesContainer {
+  width: 100%;
+  max-width: 100%;
+  margin: 1rem 0 0;
+  padding: 0;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.sellerHomePage .dashboardPanel .bundleContainer {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sellerHomePage h4 {
+  margin: 0 0 0.75rem;
+}
+
+.sellerHomePage .sellerInfo .infoContainer,
+.sellerHomePage .analytics .infoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sellerHomePage .sellerInfo .info,
+.sellerHomePage .analytics .info {
+  padding: 0.75rem 0;
+  border-top: 0.0625rem solid var(--green-pale);
+}
+
+.sellerHomePage .sellerInfo .info:first-child,
+.sellerHomePage .analytics .info:first-child {
+  border-top: none;
+  padding-top: 0.2rem;
+}
+
+.sellerHomePage .info p {
+  margin: 0;
+}
+
+.button {
+  margin-bottom: 1rem;
+  margin-right: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.button:hover {
+  background: var(--green-light);
+  border-color: var(--green);
+}
+

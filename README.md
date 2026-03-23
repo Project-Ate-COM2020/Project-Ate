@@ -56,8 +56,22 @@ Project-Ate/
 
 ### 1) Backend Setup
 
+the backend expects your current directory to be in the backend directory:
+
 ```bash
 cd backend
+```
+
+you must configure environment variables to run the backend. You may copy the example file for a quickstart. 
+These are intentionally designed to be insecure, please do not use them for production environments:
+
+```bash
+cp .env.example .env
+```
+
+then create a virtual environment. Install the dependencies, create the database and run the webserver.
+
+```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -93,11 +107,30 @@ python manage.py test seller.tests
 python manage.py test forecasts.tests
 python manage.py test analytics.tests
 python manage.py test marketplace.tests
+python manage.py test authentication.tests
 ```
 
 ## API Overview
 
 Base URL: `http://127.0.0.1:8000/`
+
+### Authentication (`/authentication`)
+
+- `POST /auth/user` create a base user
+- `POST /auth/token` retrieve a JWT for the account with username and password
+- `POST /auth/refresh` refresh a JWT using the users refresh JWT
+- `POST /auth/verify` verify whether a token is valid
+- `GET /auth/test/seller` returns ok if request is made by seller
+- `GET /auth/test/consumer` returns ok if request is made by consumer
+- `GET /auth/test/maintainer` returned ok if request is made by maintainer
+- `GET /auth/test/consumer-or-seller` returns ok if request is made by consumer or seller
+- `GET /auth/test/consumer-and-seller` returns ok if request is made by consumer and seller
+- `GET /auth/test/maintainer-or-seller` returns ok if request is made by maintainer or seller
+- `GET /auth/test/maintainer-and-seller` returns ok if request is made by maintainer and seller
+- `GET /auth/test/maintainer-or-consumer` returns ok if request is made by maintainer or consumer
+- `GET /auth/test/maintainer-and-consumer` returns ok if request is made by maintainer and consumer
+- `GET /auth/test/maintainer-or-consumer-or-seller` returns ok if request is made by maintainer or consumer or seller
+- `GET /auth/test/maintainer-and-consumer-and-seller `returns ok if request is made by maintainer and consumer and seller
 
 ### Marketplace (`/marketplace/`)
 
@@ -108,26 +141,29 @@ Base URL: `http://127.0.0.1:8000/`
 
 Representative endpoints:
 
-- `POST /marketplace/bundle/`
-- `GET /marketplace/bundles/`
-- `GET /marketplace/bundle/<bundle_id>/`
-- `POST /marketplace/reservations`
-- `POST /marketplace/seller/auth/token`
-- `POST /marketplace/consumer/auth/token`
+for bundles:
 
-### Seller (`/seller/`)
+- `POST /marketplace/bundle/` create a marketplace bundle
+- `GET /marketplace/bundle/list` retrieve a list of bundles by page
+- `GET or PUT or PATCH or Delete /marketplace/bundle/<bundle_id>/` retrieve, update or delete bundle by primary key
 
-- Seller identity and address retrieval
-- Reservation retrieval
-- Listing creation and collection update
+for consumers:
 
-Representative endpoints:
+- `POST /marketplace/consumer/` create a marketplace consumer from a user
+- `GET /marketplace/consumer/list` retrieve a list of consumers
+- `GET or PUT or PATCH or Delete /marketplace/consumer/<consumer_id>/` retrieve, update or delete consumer by primary key
 
-- `GET /seller/getsellername/`
-- `GET /seller/getselleraddress/`
-- `GET /seller/getreservations/`
-- `POST /seller/createlisting/`
-- `POST /seller/collectbundle/`
+for sellers:
+
+- `POST /marketplace/seller/` create a marketplace seller from a user
+- `GET /marketplace/seller/list` retrieve a list of sellers
+- `GET or PUT or PATCH or Delete /marketplace/seller/<seller_id>/` retrieve, update or delete seller by primary key
+
+for reservations:
+
+- `POST /marketplace/reservations/` create a marketplace reservation
+- `GET /marketplace/reservations/list` retrieve a list of reservations
+- `GET or PUT or PATCH or Delete /marketplace/reservation/<reservation_id>/` retrieve, update or delete reservation by primary key
 
 ### Forecasting (`/forecast/`)
 

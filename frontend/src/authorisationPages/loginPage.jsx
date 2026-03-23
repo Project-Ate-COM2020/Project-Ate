@@ -11,8 +11,9 @@ improved to allow proper redirecting*/
 /* I also don't want to edit Harry's layout but it should be at some point */
 
 /* --- Import Statements --- */
-import React, {useState} from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import AuthLayout from "../reusableComponents/authLayout";
 import { postData } from "../reusableComponents/api";
 
@@ -30,27 +31,59 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const getUserTypeFromAccessToken = (accessToken, selectedType) => {
+    try {
+      const payload = jwtDecode(accessToken);
+      const hasBuyer = !!payload.consumer_id;
+      const hasSeller = !!payload.seller_id;
+      const hasMaintainer = !!payload.maintainer_id;
+
+      if (selectedType === "buyer" && hasBuyer) return "buyer";
+      if (selectedType === "seller" && hasSeller) return "seller";
+      if (selectedType === "maintainer" && hasMaintainer) return "maintainer";
+
+      if (hasBuyer) return "buyer";
+      if (hasSeller) return "seller";
+      if (hasMaintainer) return "maintainer";
+    } catch {
+      return selectedType;
+    }
+
+    return selectedType;
+  };
+
+  const redirectPathForType = (type) => {
+    if (type === "seller") return "/seller/home";
+    if (type === "buyer") return "/buyer/home";
+    if (type === "maintainer") return "/maintenance";
+    return "/login";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
+    setError("");
+    setIsLoading(true);
 
-    localStorage.setItem("access_token", credentials.access);
-    localStorage.setItem("refresh_token", credentials.refresh);
+    try {
+      const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
 
-    console.log(credentials);
+      if (!credentials || !credentials.access) {
+        setError("Invalid username or password.");
+        return;
+      }
 
-    const verify = await postData("auth/verify", {"token" : credentials.access});
+      localStorage.setItem("access_token", credentials.access);
+      localStorage.setItem("refresh_token", credentials.refresh || "");
+      const resolvedUserType = getUserTypeFromAccessToken(credentials.access, accountType);
+      localStorage.setItem("user_type", resolvedUserType);
 
-    console.log(verify);
-
-    if (accountType == "seller") {
-      navigate("/seller/home");
-    } if (accountType == "buyer") {
-      navigate("/buyer/home");
-    };
-
-};
+      navigate(redirectPathForType(resolvedUserType), { replace: true });
+    } catch {
+      setError("Could not log in. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <AuthLayout title="Log in">
@@ -81,6 +114,16 @@ export default function LoginPage() {
                 onChange={(e) => setAccountType(e.target.value)}
               />
               Seller
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="accountType"
+                value="maintainer"
+                checked={accountType === "maintainer"}
+                onChange={(e) => setAccountType(e.target.value)}
+              />
+              Maintenence
             </label>
           </div>
         </label>

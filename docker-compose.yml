@@ -1,18 +1,15 @@
 services:
   backend:
+    profiles: [backend]
     build:
       context: ./backend
       dockerfile: Dockerfile
-    volumes:
-      - ./backend/:/app
     ports:
-      - '8000:8000'
+      - '${BACKEND_HOST_PORT:-8000}:8000'
   frontend:
+    profiles: [frontend]
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     ports:
-      - '5173:5173'
+      - '${FRONTEND_HOST_PORT:-80}:80'

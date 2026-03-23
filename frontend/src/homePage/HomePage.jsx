@@ -1,4 +1,5 @@
 // Imports
+import NavBar from "../reusableComponents/navBar";
 import { NavLink } from "react-router-dom";
 import "./HomePage.css";
 
@@ -8,17 +9,19 @@ export default function HomePage() {
     <div className="home-page">
 
       {/* Navbar */}
-      <nav className="home-nav">
-        <NavLink to="/" className="home-nav-logo">Project-Ate</NavLink>
-        <NavLink to="/login" className="btn-primary">Login</NavLink>
-      </nav>
+      <NavBar />
 
       {/* Description */}
       <section className="Website-Description">
         <div className="Web-content">
           <span className="tag-line">Fresh bundles weekly</span>
+<<<<<<< Anna-UI-changes-branch
           <h1>Eat <em>well,</em><br />make a <em>difference.</em></h1>
           <p>Discover curated food bundles designed for every lifestyle —
+=======
+          <h1>Eat <em>well,</em><br />play better.</h1>
+          <p>Discover curated food bundles designed for every lifestyle,
+>>>>>>> Development
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
             <NavLink to="/buyer/home" className="btn-primary">Browse Bundles</NavLink>
@@ -66,7 +69,7 @@ export default function HomePage() {
         <div className="principle-grid">
           {[
             { title: "Bundles for every goal",
-              desc: "Whether it's low-carb, family-friendly, or high protein — we've curated the perfect bundle for your lifestyle." },
+              desc: "Whether it's low-carb, family-friendly, or high protein, we've curated the perfect bundle for your lifestyle." },
             { title: "Earn rewards as you eat",
               desc: "Use the in-app game to rack up points with every order. Turn healthy habits into real rewards." },
             { title: "Quick & easy ordering",

@@ -1,0 +1,449 @@
+@import "./buyerShared.css";
+
+/* page takes full viewport height */
+.game-page {
+  min-height: 100vh;
+}
+
+/* Shared page container sizing */
+.game-wrap,
+.game-state {
+  padding-bottom: 2.8rem;
+}
+
+/* header spacing */
+.game-header {
+  margin: 10px 0 18px;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 0.2px;
+  line-height: 1.15;
+}
+
+.game-subtitle {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  opacity: 0.82;
+  max-width: 62ch;
+}
+
+/* Small status pill */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  background: rgba(82, 183, 136, 0.12);;
+  border: 1px solid var(--green-light);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+/* Dot indicator on the pill */
+.pill::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green-light);
+  box-shadow: 0 0 0 4px var(--green-pale);
+}
+
+.game-status-pill-wrap {
+  margin-bottom: 14px;
+}
+
+/* responsive grid */
+.game-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Card styling  */
+.game-card {
+  background: white;
+  border: 1px solid var(--green-pale);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+}
+
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--green-light);
+  background: var(--green-pale);
+}
+
+.game-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  letter-spacing: 0.2px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* little accent square before card headings */
+.game-card h3::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--green-light);
+  box-shadow: 0 0 0 4px var(--green-pale);
+}
+
+/* stat rows: label left, value right */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+/* Border only between rows  */
+.stat-row + .stat-row {
+  border-top:1px solid var(--green-pale); }
+
+.stat-label {
+  opacity: 0.88;
+}
+
+.stat-value {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* grid of badge items */
+.badge-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* each badge: image stacked above label */
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.badge-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+}
+
+.badge-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.badge-item:hover .badge-img {
+  transform: scale(1.1);
+}
+
+.badge-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.badge-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: white;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  width: 160px;
+  text-align: center;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.badge-wrapper:hover .badge-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Grey out badges the user doesn't have */
+.badge-greyed {
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
+/* recent list  */
+.recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-item {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Divider */
+.recent-item + .recent-item {
+  border-top: 1px solid var(--green-pale);
+}
+
+.recent-item .stat-value {
+  font-size: 1rem;
+}
+
+.recent-item .stat-label {
+  font-size: 0.95rem;
+  opacity: 0.75;
+}
+
+/* error state card */
+.game-error {
+  border: 1px solid rgba(228, 87, 46, 0.5);
+  background: rgba(228, 87, 46, 0.10);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+/* button styling*/
+.game-button {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  border: 1px solid var(--green-pale);
+  background: var(--green-pale);
+  color: var(--dark);
+  cursor: pointer;
+}
+
+.game-button:hover {
+  background: var(--green-light);
+}
+
+/* ── HERO BANNER ── */
+.game-banner {
+  padding-bottom: 2.6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-banner::before {
+  content: none;
+}
+
+.game-banner-title {
+  margin-bottom: 0;
+}
+
+.game-banner-title em {
+  font-style: italic;
+  color: var(--green-light);
+}
+
+.game-banner-sub {
+  max-width: 500px;
+}
+
+.game-impact-strip {
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.game-impact-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--green-pale);
+  text-align: center;
+  transition: transform 0.25s;
+}
+
+.game-impact-card:hover { 
+  transform: translateY(-3px); 
+}
+
+.game-impact-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.game-impact-number-unit {
+  font-size: 1.5rem;
+}
+
+.game-impact-unit {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.game-impact-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+.streak-banner {
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.streak-text {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.streak-sub {
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.streak-dots {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.streak-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.streak-dot.active {
+  background: white;
+  color: var(--green);
+}
+
+.streak-dot.empty {
+  background: rgba(255,255,255,0.15);
+  border: 2px dashed rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.6);
+}
+
+.co2-display {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.co2-number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+}
+
+.co2-unit {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-wrap {
+  background: var(--green-pale);
+  border-radius: 50px;
+  height: 12px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 50px;
+  transition: width 1s ease;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.badge-tile {
+  background: var(--green-pale);
+  border-radius: 16px;
+  padding: 1.2rem 0.8rem;
+  text-align: center;
+  border: 1px solid rgba(82,183,136,0.3);
+  transition: transform 0.2s;
+}
+
+.badge-tile:hover { 
+  transform: translateY(-3px); 
+}
+
+.badge-tile--locked {
+  background: #f5f5f5;
+  border: 2px dashed #ddd;
+  opacity: 0.6;
+}
+
+.badge-emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.badge-tile-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.badge-tile--locked .badge-tile-name {
+  color: var(--muted);
+}

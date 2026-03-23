@@ -1,15 +1,21 @@
-from django.test import TestCase
+import random
+import string
+from typing import Tuple, Any, Dict, Union, List, Optional
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory
-from rest_framework.test import force_authenticate
 from django.urls import reverse
 
 from .permissions import IsSeller
-from .views import UserCreateView
+from .views import *
 
 from marketplace.views import CreateSellerView
 from marketplace.views import CreateBundleView, CreateReservationView
 
+from .token import UserTokenObtainPairSerializer
+from core.models import User, Seller, Consumer, Maintainer, BundlePosting, Reservation
 
 
 class UserTokenTest(APITestCase):
@@ -152,3 +158,774 @@ class TestIsSellerPermission(APITestCase):
         response = self.client.post(url, {}, format="json", headers=self.authorization_headers)
 
         self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+
+def get_random_string(k=10) -> str:
+    return "".join(random.choices(string.ascii_letters + string.digits, k=k))
+
+
+def merge_dict(base: Optional[Dict[Any, Any]], overlay: Optional[Dict[Any, Any]]) -> Dict[Any, Any]:
+    if base is None:
+        return overlay
+
+    if overlay is None:
+        return base
+
+    merged = base.copy()
+
+    for key, val in overlay.items():
+        if key in merged:
+            merged[key] = val
+
+    return merged
+
+def random_user_args() -> Dict[str, Any]:
+    random_string = get_random_string(10)
+
+    random_email = f'{random_string}@{random_string}.com'
+
+    random_password = get_random_string(10)
+
+    user_args = {
+        "username": random_string,
+        "email": random_email,
+        "password": random_password,
+    }
+
+    return user_args
+
+def random_seller_args() -> Dict[str, Any]:
+    name = get_random_string(10)
+    location = get_random_string(6)
+    opening_hours = get_random_string(8)
+    contact_stub = get_random_string(7)
+
+    seller_args = {
+        "name": name,
+        "location": location,
+        "opening_hours": opening_hours,
+        "contact_stub": contact_stub,
+    }
+
+    return seller_args
+
+def random_consumer_args() -> Dict[str, Any]:
+    display_name = get_random_string(10)
+    streak = random.randint(1, 10)
+
+    consumer_args = {
+        "display_name": display_name,
+        "streak": streak,
+    }
+
+    return consumer_args
+
+def random_bundle_args() -> Dict[str, Any]:
+    return {
+        "category": random.choice(random.choice(BundlePosting.CATEGORY_CHOICES)),
+        "contents": get_random_string(10),
+        "quantity": random.randint(6, 10),
+        "quantity_remaining": random.randint(1, 5),
+        "price": random.randint(1, 10),
+        "pickup_window": get_random_string(10),
+        "status": "active",
+        "created_at": get_random_string(10),
+        "updated_at": get_random_string(10),
+    }
+
+def random_reservation_args() -> Dict[str, Any]:
+    claim_code = get_random_string(10)
+
+    while Reservation.objects.filter(claim_code=claim_code).exists():
+        claim_code = get_random_string(10)
+
+    return {
+        "status": "reserved",
+        "claim_code": claim_code,
+        "no_show_reason": get_random_string(10),
+    }
+
+def random_reservation_args_for_bundle(bundle: int) -> Dict[str, any]:
+    claim_code = get_random_string(10)
+
+    while Reservation.objects.filter(claim_code=claim_code).exists():
+        claim_code = get_random_string(10)
+
+    return {
+        "status": "reserved",
+        "claim_code": claim_code,
+        "no_show_reason": get_random_string(10),
+        "posting": bundle
+    }
+
+def random_maintainer_args() -> Dict[str, Any]:
+    return {}
+
+class RandomMarker:
+    pass
+
+# helper functions that generate every permutation of permission
+# where or is used like isMaintainerOrSeller it generates both possibilities
+
+def setup_base_user(**kwargs) -> User:
+    user_model = get_user_model()
+
+    return user_model.objects.create_user(**kwargs)
+
+def make_user_seller(user: User, **kwargs: Any) -> Seller:
+    return Seller.objects.create(user=user, **kwargs)
+
+def make_user_consumer(user: User, **kwargs: Any) -> Consumer:
+    return Consumer.objects.create(user=user, **kwargs)
+
+def make_user_maintainer(user: User, **kwargs: Any) -> Maintainer:
+    return Maintainer.objects.create(user=user, **kwargs)
+
+def setup_seller(user_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[User, Seller]:
+    user = setup_base_user(**user_args)
+    seller = make_user_seller(user, **seller_args)
+
+    return user, seller
+
+def setup_consumer(user_args: Dict[str, Any], consumer_args: Dict[str, Any]) -> Tuple[User, Consumer]:
+    user = setup_base_user(**user_args)
+    consumer = make_user_consumer(user, **consumer_args)
+
+    return user, consumer
+
+def setup_maintainer(user_args: Dict[str, Any], maintainer_args: Dict[str, Any]) -> Tuple[User, Maintainer]:
+    user = setup_base_user(**user_args)
+    maintainer = make_user_maintainer(user, **maintainer_args)
+
+    return user, maintainer
+
+def setup_consumer_and_seller(user_args: Dict[str, Any], consumer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[User, Consumer, Seller]:
+    user = setup_base_user(**user_args)
+    seller = make_user_seller(user, **seller_args)
+    consumer = make_user_consumer(user, **consumer_args)
+
+    return user, consumer, seller
+
+def setup_consumer_or_seller(consumer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[Tuple[User, Consumer], Tuple[User, Seller]]:
+    return setup_consumer(**consumer_args), setup_seller(**seller_args)
+
+def setup_maintainer_and_seller(user_args: Dict[str, Any], maintainer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[User, Maintainer, Seller]:
+    user = setup_base_user(**user_args)
+    maintainer = make_user_maintainer(user, **maintainer_args)
+    seller = make_user_seller(user, **seller_args)
+    return user, maintainer, seller
+
+def setup_maintainer_or_seller(maintainer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[Tuple[User, Maintainer], Tuple[User, Seller]]:
+    return setup_maintainer(**maintainer_args), setup_seller(**seller_args)
+
+def setup_maintainer_and_consumer(user_args: Dict[str, Any], maintainer_args: Dict[str, Any], consumer_args: Dict[str, Any]) -> Tuple[User, Maintainer, Consumer]:
+    user = setup_base_user(**user_args)
+    consumer = make_user_consumer(user, **consumer_args)
+    maintainer = make_user_maintainer(user, **maintainer_args)
+    return user, maintainer, consumer
+
+def setup_maintainer_or_consumer(maintainer_args: Dict[str, Any], consumer_args: Dict[str, Any]) -> Tuple[Tuple[User, Maintainer], Tuple[User, Consumer]]:
+    return setup_maintainer(**maintainer_args), setup_consumer(**consumer_args)
+
+def setup_maintainer_or_consumer_or_seller(maintainer_args: Dict[str, Any], consumer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[Tuple[User, Maintainer], Tuple[User, Consumer], Tuple[User, Seller]]:
+    return setup_maintainer(**maintainer_args), setup_consumer(**consumer_args), setup_seller(**seller_args)
+
+def setup_maintainer_and_consumer_and_seller(user_args: Union[Dict[str, Any], RandomMarker], maintainer_args: Dict[str, Any], consumer_args: Dict[str, Any], seller_args: Dict[str, Any]) -> Tuple[User, Maintainer, Consumer, Seller]:
+    user = setup_base_user(**user_args)
+    consumer = make_user_consumer(user, **consumer_args)
+    maintainer = make_user_maintainer(user, **maintainer_args)
+    seller = make_user_seller(user, **seller_args)
+    return user, maintainer, consumer, seller
+
+def setup_random_user(**kwargs):
+    r = random_user_args()
+    m = merge_dict(r, kwargs)
+    return setup_base_user(**m)
+
+def setup_random_seller(user_override={}, seller_override=None) -> Tuple[User, Seller]:
+    user = setup_random_user(**user_override)
+    r = random_seller_args()
+    m = merge_dict(r, seller_override)
+    seller = make_user_seller(user, **m)
+    return user, seller
+
+def setup_random_consumer(user_override={}, consumer_override=None) -> Tuple[User, Consumer]:
+    user = setup_random_user(**user_override)
+    r = random_consumer_args()
+    m = merge_dict(r, consumer_override)
+    consumer = make_user_consumer(user, **m)
+    return user, consumer
+
+def setup_random_maintainer(user_override={}, maintainer_override=None) -> Tuple[User, Maintainer]:
+    user = setup_random_user(**user_override)
+    r = random_maintainer_args()
+    m = merge_dict(r, maintainer_override)
+    maintainer = make_user_maintainer(user, **m)
+    return user, maintainer
+
+def setup_random_consumer_or_seller():
+    return setup_random_consumer(), setup_random_seller()
+
+def setup_random_consumer_and_seller(user_override={}, seller_override=None, consumer_override=None) -> Tuple[User, Consumer, Seller]:
+    user = setup_random_user(**user_override)
+    r_consumer = random_consumer_args()
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
+    r_seller = random_seller_args()
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
+    return user, consumer, seller
+
+def setup_random_maintainer_and_seller(user_override={}, seller_override=None, maintainer_override=None):
+    user = setup_random_user(**user_override)
+    r_maintainer = random_maintainer_args()
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
+    r_seller = random_seller_args()
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
+    return user, maintainer, seller
+
+def setup_random_maintainer_or_seller():
+    return setup_random_maintainer(), setup_random_seller()
+
+def setup_random_maintainer_or_consumer():
+    return setup_random_maintainer(), setup_random_consumer()
+
+def setup_random_maintainer_and_consumer(user_override={}, maintainer_override=None, consumer_override=None):
+    user = setup_random_user(**user_override)
+    r_consumer = random_consumer_args()
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
+    r_maintainer = random_maintainer_args()
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
+    return user, maintainer, consumer
+
+def setup_random_maintainer_or_consumer_or_seller():
+    return setup_random_maintainer(), setup_random_consumer(), setup_random_seller()
+
+def setup_random_maintainer_and_consumer_and_seller(user_override={}, seller_override=None, maintainer_override=None, consumer_override=None):
+    user = setup_random_user(**user_override)
+    r_consumer = random_consumer_args()
+    m_consumer = merge_dict(r_consumer, consumer_override)
+    consumer = make_user_consumer(user, **m_consumer)
+    r_maintainer = random_maintainer_args()
+    m_maintainer = merge_dict(r_maintainer, maintainer_override)
+    maintainer = make_user_maintainer(user, **m_maintainer)
+    r_seller = random_seller_args()
+    m_seller = merge_dict(r_seller, seller_override)
+    seller = make_user_seller(user, **m_seller)
+    return user, maintainer, consumer, seller
+
+def setup_bundle(consumer: Consumer, **kwargs) -> BundlePosting:
+    return BundlePosting.objects.create(consumer=consumer, **kwargs)
+
+def setup_random_bundle() -> Tuple[User, Seller, BundlePosting]:
+    user, seller = setup_random_seller()
+    create = BundlePosting.objects.create(seller=seller, **random_bundle_args())
+    return user, seller, create
+
+def setup_n_random_bundles(n) -> Tuple[User, Seller, List[BundlePosting]]:
+    user, seller = setup_random_seller()
+
+    bundles = []
+
+    for x in range(n):
+        bundle = setup_random_bundle_for_seller(seller)
+
+        bundles.append(bundle)
+
+    return user, seller, bundles
+
+def setup_random_bundle_for_seller(seller: Seller, bundle_override={}) -> BundlePosting:
+    r = random_bundle_args()
+    m = merge_dict(r, bundle_override)
+    create = BundlePosting.objects.create(seller=seller, **m)
+    return create
+
+def setup_reservation(posting: BundlePosting, consumer: Consumer, **kwargs) -> Reservation:
+    reservation = Reservation.objects.create(posting=posting, consumer=consumer, **kwargs)
+    return reservation
+
+def setup_random_reservation() -> Tuple[Tuple[User, Consumer], Tuple[User, Seller], BundlePosting, Reservation]:
+    seller_user, seller, bundle = setup_random_bundle()
+    consumer_user, consumer = setup_random_consumer()
+    create = setup_reservation(bundle, consumer, **random_reservation_args())
+    return (consumer_user, consumer), (seller_user, seller), bundle, create
+
+def setup_random_reservation_for_consumer(consumer: Consumer) -> Tuple[User, Seller, BundlePosting, Reservation]:
+    seller_user, seller, bundle = setup_random_bundle()
+    create = setup_reservation(bundle, consumer, **random_reservation_args())
+    return seller_user, seller, bundle, create
+
+def setup_random_reservation_for_seller(seller: Seller) -> Tuple[User, Consumer, BundlePosting, Reservation]:
+    bundle = setup_random_bundle_for_seller(seller)
+    user, consumer = setup_random_consumer()
+    r = random_reservation_args()
+    create = setup_reservation(bundle, consumer, **r)
+    return user, consumer, bundle, create
+
+def setup_random_reservation_for_consumer_and_bundle(consumer: Consumer, bundle: BundlePosting) -> Reservation:
+    r = random_reservation_args()
+    create = setup_reservation(bundle, consumer, **r)
+    return create
+
+
+def get_authorization_headers_for_user(user: User):
+    token = UserTokenObtainPairSerializer.get_token(user).access_token
+
+    return {"Authorization": f"Bearer {token}"}
+
+class TestMaintainerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_can_access(self):
+        user, _, _ = setup_random_maintainer_and_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_seller_can_access(self):
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_ok(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestSellerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(SellerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_cannot_access(self):
+        user, _  = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_seller_can_access(self):
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_ok(user)
+
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestConsumerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(ConsumerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_can_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_seller_cannot_access(self):
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestConsumerOrSellerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(ConsumerOrSellerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_can_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_seller_can_access(self):
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_ok(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestConsumerAndSellerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(ConsumerAndSellerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_consumer_and_seller_can_access(self):
+        user, _, _ = setup_random_consumer_and_seller()
+        self.expect_ok(user)
+
+    def test_maintainer_and_seller_cannot_access(self):
+        user, _, _ = setup_random_maintainer_and_seller()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestMaintainerOrConsumerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerOrConsumerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_can_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestMaintainerAndConsumerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerAndConsumerView.name)
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestMaintainerOrSellerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerOrSellerView.name)
+        pass
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestMaintainerAndConsumerAndSellerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerAndConsumerAndSellerView.name)
+        pass
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_cannot_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_forbidden(user)
+
+    def test_only_seller_cannot_access(self):
+        user, _ = setup_random_seller()
+        self.expect_forbidden(user)
+
+    def test_only_consumer_cannot_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_forbidden(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+class TestMaintainerOrSellerOrConsumerPermission(APITestCase):
+    def setUp(self):
+        self.url = reverse(MaintainerOrConsumerOrSellerView.name)
+        pass
+
+    def expect_forbidden(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def expect_ok(self, user):
+        headers = get_authorization_headers_for_user(user)
+
+        response = self.client.get(self.url, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_base_user_cannot_access(self):
+        self.expect_forbidden(setup_random_user())
+
+    def test_only_maintainer_can_access(self):
+        user, _ = setup_random_maintainer()
+        self.expect_ok(user)
+
+    def test_only_seller_can_access(self):
+        user, _ = setup_random_seller()
+        self.expect_ok(user)
+
+    def test_only_consumer_can_access(self):
+        user, _ = setup_random_consumer()
+        self.expect_ok(user)
+
+    def test_maintainer_and_consumer_and_seller_can_access(self):
+        user, _, _, _ = setup_random_maintainer_and_consumer_and_seller()
+        self.expect_ok(user)
+
+
+class TestChangePasswordView(APITestCase):
+    def setUp(self):
+        self.url = reverse(UpdatePasswordView.name)
+
+    def test_can_change_own_password(self):
+        login_url = reverse("user-token")
+
+        us = setup_base_user(username="test", email="test@test.com", password="old_password")
+
+        headers=get_authorization_headers_for_user(us)
+
+        # check we can login
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "old_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # change password
+        response = self.client.post(self.url, data={
+            "new_password": "new_password",
+        }, headers=headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # test old password no longer works
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "old_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # test new password does work
+        response = self.client.post(login_url, data={
+            "username": "test",
+            "password": "new_password",
+        })
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class TestRegisterUserThrottling(APITestCase):
+    def setUp(self):
+        self.limit = settings.REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"][UserCreationThrottling.scope]
+
+    def test_throttled_by_day(self):
+        self.assertTrue("day" in self.limit)

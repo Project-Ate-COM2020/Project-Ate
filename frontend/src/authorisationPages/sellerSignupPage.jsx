@@ -3,7 +3,6 @@
 // jsx for the seller sign up page ( matches LoginPage + BuyerSignupPage styling )
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { signupSeller } from "../api-legacy/authorisation";
 import AuthLayout from "../reusableComponents/authLayout";
 import {postData } from "../reusableComponents/api.jsx";
 
@@ -29,14 +28,21 @@ export default function SellerSignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsLoading(true);
+
+    try {
 
     // basic password checks ( backend will do futher validation )
     if (password1 !== password2) {
       setError("Passwords do not match");
+      setIsLoading(false);
       return;
     }
     if (password1.length < 8) {
       setError("Password must be at least 8 characters");
+      setIsLoading(false);
       return;
     }
 
@@ -49,34 +55,64 @@ export default function SellerSignupPage() {
     }
 
     const createdUser = await postData("auth/user", dataToPost, false);
+    if (!createdUser || !createdUser.id) {
+      setError("Could not create user account.");
+      return;
+    }
     
     // Testing purposes
     console.log(createdUser);
 
-    const credentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+    const bootstrapCredentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+    if (!bootstrapCredentials || !bootstrapCredentials.access) {
+      setError("Account created, but automatic login failed. Please log in manually.");
+      return;
+    }
 
     // Testing purposes (POTENTIAL SECURITY RISK)
-    console.log(credentials);
-
-    localStorage.setItem("access_token", credentials.access);
-    localStorage.setItem("refresh_token", credentials.refresh);
-    
-    // Testing purposes
-    console.log("User should now be logged in");
-    console.log(localStorage.getItem("access_token"));
-    console.log(localStorage.getItem("refresh_token"));
+    console.log(bootstrapCredentials);
 
     const sellerData = {
       "display_name" : businessName,
       "user_id" : createdUser.id,
+      "name": businessName,
+      "location": location,
     }
 
-    const createdSeller = await postData("marketplace/consumer", sellerData, true);
+    const createdSellerResponse = await fetch("http://localhost:8000/marketplace/seller", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + bootstrapCredentials.access,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sellerData),
+    });
+
+    const createdSeller = await createdSellerResponse.json();
+    if (!createdSellerResponse.ok || !createdSeller) {
+      setError("Could not finish seller registration.");
+      return;
+    }
 
     // Testing Purposes
     console.log(createdSeller);
 
+    const finalCredentials = await postData("auth/token", {"password": password2, "username": businessName}, false);
+    if (!finalCredentials || !finalCredentials.access) {
+      setError("Seller account created, but automatic login failed. Please log in manually.");
+      return;
+    }
+
+    localStorage.setItem("access_token", finalCredentials.access);
+    localStorage.setItem("refresh_token", finalCredentials.refresh || "");
+    localStorage.setItem("user_type", "seller");
+
     navigate("/seller/home");
+    } catch {
+      setError("Could not create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   
   };
 

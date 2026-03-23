@@ -1,18 +1,28 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
+from django.template.context_processors import request
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    ListAPIView,
+)
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from core.models import Allergen
-from core.serializers import AllergenSerializer
+from core.models import Allergen, Seller
+from core.serializers import (
+    AllergenSerializer,
+    BundlePostingSerializer,
+    CreateBundlePostingSerializer,
+)
 from ..models import (
     BundlePosting,
     BundlePostingSerializer,
 )
-from authentication.permissions import IsSeller
+from authentication.permissions import IsSeller, IsConsumerOrSeller, IsConsumer
 
 
 class AllergenListView(APIView):
@@ -27,106 +37,60 @@ class AllergenListView(APIView):
 
 class CreateBundleView(CreateAPIView):
     name = "bundle-create"
-    serializer_class = BundlePostingSerializer
+    serializer_class = CreateBundlePostingSerializer
     queryset = BundlePosting
     permission_classes = [IsSeller]
 
 
+class ListBundlesView(ListAPIView):
+    name = "bundle-list"
+    serializer_class = BundlePostingSerializer
+    permission_classes = [IsConsumerOrSeller]
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        is_seller = IsSeller().has_permission(self.request, self)
+        is_consumer = IsConsumer().has_permission(self.request, self)
+
+        # sellers do not need to see other sellers bundles if they are not consumers
+        if is_seller and not is_consumer:
+            seller = Seller.objects.get(user=self.request.user)
+            return BundlePosting.objects.filter(seller=seller).order_by('posting_id')
+        else:
+            return BundlePosting.objects.all().order_by('posting_id')
+
+
 # get all bundles
-class BundlesView(APIView):
-    name: str = "bundles"
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        bundles = BundlePosting.objects.all()
-
-        ids = [bundle_id for bundle_id in bundles.values_list("pk", flat=True)]
-
-        return Response(ids)
-      
-    # permission_classes = [AllowAny]
-
-    def get(self, request):
-        bundles = BundlePosting.objects.all()
-        serializer = BundlePostingSerializer(bundles, many=True)
-        return Response(serializer.data)
-
-
-# get a specific bundle
-class BundleView(APIView):
+class BundlesView(RetrieveUpdateDestroyAPIView):
     name: str = "bundle"
-    # permission_classes = [IsAuthenticated]
+    serializer_class = BundlePostingSerializer
+    permission_classes = [IsConsumerOrSeller]
 
-    def get(self, request, bundle_id):
-        try:
-            bundle = BundlePosting.objects.get(pk=bundle_id)
+    def get_queryset(self):
+        if self.request.method == "GET":
+            is_seller = IsSeller().has_permission(self.request, self)
+            is_consumer = IsConsumer().has_permission(self.request, self)
 
-            serializer = BundlePostingSerializer(bundle)
+            # sellers do not need to see other sellers bundles if they are not consumers
+            if is_seller and not is_consumer:
+                seller = Seller.objects.get(user=self.request.user)
+                return BundlePosting.objects.filter(seller=seller)
+            else:
+                return BundlePosting.objects.all()
+        elif (
+            self.request.method == "PATCH"
+            or self.request.method == "PUT"
+            or self.request.method == "DELETE"
+        ):
+            # only sellers can update or delete bundles
+            # sellers can only update or delete their own bundles
+            is_seller = IsSeller().has_permission(self.request, self)
 
-            return Response(serializer.data)
-        except BundlePosting.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            if is_seller:
+                seller = Seller.objects.get(user=self.request.user)
 
-
-# get newest bundles
-class BundleNewestView(APIView):
-    name = "bundles-newest"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        count = request.GET.get("count", 20)
-
-
-# get oldest bundles
-class BundleOldestView(APIView):
-    name = "bundles-oldest"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        count = request.GET.get("count", 20)
-
-
-# get bundles made between date range bundles
-class BundleBetweenView(APIView):
-    name = "bundles-between"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        date_from = request.GET.get("from")
-        date_to = request.GET.get("to")
-
-
-# get bundles made between date range bundles
-class BundleOlderView(APIView):
-    name = "bundles-older"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        date = request.GET.get("date")
-
-
-# get bundles newer than a specified date
-class BundleNewerView(APIView):
-    name = "bundles-newer"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        date = request.GET.get("date")
-
-
-# get bundles with open businesses
-class BundleOpenView(APIView):
-    name = "bundles-open"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        pass
-
-
-# get bundles made between date range bundles
-class BundleCollectionView(APIView):
-    name = "bundles-collection"
-    # permission_classes = [IsAuthenticated]
-
-    def get(self, request, bundle_id):
-        pass
+                return BundlePosting.objects.filter(seller=seller)
+            else:
+                return None
+        else:
+            return None

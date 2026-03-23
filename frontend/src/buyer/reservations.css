@@ -1,0 +1,14 @@
+@import "./buyerShared.css";
+
+.buyer-reservations-page {
+  --reservations-content-max: 1040px;
+}
+
+.buyer-reservations-hero {
+  padding-bottom: 3.5rem;
+}
+
+.buyer-reservations-content {
+  max-width: var(--reservations-content-max);
+  margin: 0 auto;
+}

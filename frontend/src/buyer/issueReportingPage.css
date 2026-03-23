@@ -1,0 +1,137 @@
+@import "./buyerShared.css";
+
+.issue-dashboard-page {
+  color: var(--dark);
+}
+
+.issue-dashboard-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.issue-list-panel,
+.issue-form-panel {
+  background: white;
+  border: 1px solid var(--green-pale);
+  box-shadow: var(--shadow);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.issue-dashboard-title {
+  margin: 0;
+  color: var(--green);
+  font-size: 24px;
+}
+
+.issue-dashboard-subtitle {
+  margin-top: 8px;
+  margin-bottom: 14px;
+  color: var(--muted);
+}
+
+.issue-empty-state {
+  color: var(--muted);
+  margin: 8px 0;
+}
+
+.issue-list {
+  display: grid;
+  gap: 12px;
+}
+
+.issue-card {
+  border: 1px solid var(--green-pale);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.issue-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.issue-card-header h3 {
+  margin: 0;
+  color: var(--dark);
+  font-size: 16px;
+}
+
+.issue-status-pill {
+  background: var(--green-pale);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--green);
+  white-space: nowrap;
+}
+
+.issue-card-category {
+  margin: 8px 0 6px;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.issue-card-description {
+  margin: 0;
+  color: var(--dark);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.issue-form-title {
+  margin: 0 0 14px;
+  color: var(--green);
+}
+
+.issue-feedback {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.issue-error {
+  background: #ffe8e8;
+  border: 1px solid #ffb3b3;
+  color: #7a0000;
+}
+
+.issue-success {
+  background: #e9ffe8;
+  border: 1px solid #b6f0b3;
+  color: #0b5f00;
+}
+
+.issue-form {
+  display: grid;
+  gap: 12px;
+}
+
+.issue-label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--dark);
+}
+
+.issue-input {
+  color: inherit;
+}
+
+.issue-textarea {
+  resize: vertical;
+}
+
+.issue-submit-btn {
+  width: fit-content;
+}
+
+.issue-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
