@@ -10,6 +10,9 @@ from core.models import BundlePosting, IssueReport, Reservation, Consumer, Selle
 from .serializers import IssueReportSerializer
 
 
+REPORTABLE_RESERVATION_STATUSES = ["reserved", "active", "collected"]
+
+
 def _seller_issue_queryset(seller_id):
     seller_posting_ids = BundlePosting.objects.filter(
         seller_id=seller_id
@@ -45,12 +48,12 @@ class ConsumerCreateIssueView(APIView):
         has_reservation = Reservation.objects.filter(
             consumer__consumer_id=consumer_id,
             posting__posting_id=posting_id,
-            status="collected",
+            status__in=REPORTABLE_RESERVATION_STATUSES,
         ).exists()
 
         if not has_reservation:
             return Response(
-                {"error": "You can only report bundles you have collected"},
+                {"error": "You can only report bundles you have reserved or collected"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -94,7 +97,10 @@ class ConsumerReportablePostingsView(APIView):
         reservations = (
             Reservation.objects
             .select_related("posting")
-            .filter(consumer__consumer_id=consumer_id, status="collected")
+            .filter(
+                consumer__consumer_id=consumer_id,
+                status__in=REPORTABLE_RESERVATION_STATUSES,
+            )
             .order_by("-posting__created_at")
         )
 
@@ -118,6 +124,7 @@ class ConsumerReportablePostingsView(APIView):
 
 class SellerIssueRespondView(APIView):
     name = "seller-issue-response"
+    permission_classes = [IsSeller]
 
     def post(self, request, issue_id):
         user = request.user
