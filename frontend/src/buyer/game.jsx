@@ -42,12 +42,24 @@ const BADGES = {
   }
 };
 
+function normalizeBadgeName(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ");
+}
+
 export default function Game() {
 
 // memoize queryParams so useEffect doesn't trigger repeatedly
 const queryParams = useMemo(() => ({}), []); // empty object, stable reference
 
 const { data: summary, loading } = useGetData("game/summary/", queryParams, true);
+const earnedBadges = useMemo(() => {
+  const badges = Array.isArray(summary?.badges) ? summary.badges : [];
+  return new Set(badges.map(normalizeBadgeName));
+}, [summary]);
 
   /* --- USING REAL DATA --- */
 
@@ -162,8 +174,6 @@ const { data: summary, loading } = useGetData("game/summary/", queryParams, true
 
             <ul className="badge-list">
               {Object.keys(BADGES).map((badge) => {
-                const hasBadge = summary.badges.includes(badge); // check if user has it
-
                 // Define badge requirements
                 const badgeRequirements = {
                   "Explorer": { type: "categories", required: 2 },
@@ -185,7 +195,11 @@ const { data: summary, loading } = useGetData("game/summary/", queryParams, true
                   current = (summary.estimated_co2e_saved_kg || 0);
                 }
 
-                const tooltipText = hasBadge
+                const hasBadge = earnedBadges.has(normalizeBadgeName(badge));
+                const meetsRequirement = current >= req.required;
+                const isUnlocked = hasBadge || meetsRequirement;
+
+                const tooltipText = isUnlocked
                   ? BADGES[badge].description
                   : req.type === "categories"
                     ? `${current}/${req.required} unique categories.`
@@ -197,7 +211,7 @@ const { data: summary, loading } = useGetData("game/summary/", queryParams, true
                       <img
                         src={BADGES[badge].icon}
                         alt={badge}
-                        className={`badge-img ${hasBadge ? "" : "badge-greyed"}`}
+                        className={`badge-img ${isUnlocked ? "" : "badge-greyed"}`}
                       />
                       <div className="badge-tooltip">{tooltipText}</div>
                     </div>

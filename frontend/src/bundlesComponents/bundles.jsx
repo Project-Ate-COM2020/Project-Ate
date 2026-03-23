@@ -45,7 +45,7 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
 
             <img src = {bundleData.imgPath} alt = {bundleData.bundleName} />
 
-            {pickupTimeDisplayed && <p>pickup time: {bundleData.pickupTime}</p>}
+            {pickupTimeDisplayed && <p>Pick-up Time: {bundleData.pickupTime}</p>}
 
             {bundleCategoryDisplayed && <p>Bundle Category: {bundleData.bundleCategory}</p>}
 

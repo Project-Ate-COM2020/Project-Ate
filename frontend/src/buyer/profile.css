@@ -317,6 +317,29 @@
   margin-bottom: 0.5rem;
 }
 
+.profile-badge-image {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.6rem;
+}
+
+.profile-badge-fallback {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.6rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--green);
+  background: white;
+  border: 1px solid var(--green-light);
+}
+
 .profile-badge-name {
   font-weight: 700;
   color: var(--green);

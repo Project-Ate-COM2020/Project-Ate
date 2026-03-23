@@ -101,6 +101,7 @@ function App() {
         <Route path="/buyer/profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
         <Route path="/buyer/orders" element={<ProtectedRoute requiredType="buyer"><Orders /></ProtectedRoute>} />
         <Route path="/buyer/report-issue" element={<ProtectedRoute requiredType="buyer"><IssueReportingPage /></ProtectedRoute>} />
+        <Route path="/buyer/game" element={<ProtectedRoute requiredType="buyer"><GamePage /></ProtectedRoute>} />
         <Route path="/game" element={<ProtectedRoute requiredType="buyer"><GamePage /></ProtectedRoute>} />
         <Route path="/buyer-profile" element={<ProtectedRoute requiredType="buyer"><BuyerProfilePage /></ProtectedRoute>} />
         {/*<Route path="/basket" element={<ProtectedRoute requiredType="buyer"><Basket /></ProtectedRoute>} />*/}

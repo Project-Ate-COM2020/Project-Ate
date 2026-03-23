@@ -5,6 +5,42 @@ import NavBar from "../reusableComponents/navBar";
 import "./profile.css";
 import { getData } from "../reusableComponents/api.jsx";
 
+const BADGE_IMAGE_PATHS = {
+  "explorer": "/badges/explorer.png",
+  "discoverer": "/badges/discoverer.png",
+  "adventurer": "/badges/adventurer.png",
+  "master": "/badges/master.png",
+  "eco starter": "/badges/eco_starter.png",
+  "eco friend": "/badges/eco_friend.png",
+  "climate hero": "/badges/climate_hero.png",
+  "planet saver": "/badges/planet_saver.png",
+};
+
+const BADGE_IMAGE_ALIASES = {
+  "no waste hero": "eco starter",
+  "early bird": "explorer",
+};
+
+function normalizeBadgeName(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+function getBadgeImagePath(badgeName) {
+  const normalized = normalizeBadgeName(badgeName);
+  const resolvedName = BADGE_IMAGE_ALIASES[normalized] || normalized;
+  return BADGE_IMAGE_PATHS[resolvedName] || "/badges/explorer.png";
+}
+
+function getReservationSortTime(reservation) {
+  const raw = reservation?.timestamp || reservation?.created_at || reservation?.collected_at;
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+}
+
 // formats api timestamps into readable dates
 function formatDate(isoString) {
   if (!isoString) return "N/A";
@@ -21,7 +57,7 @@ function getConsumerIdFromToken() {
 
   try {
     const payload = jwtDecode(token);
-    return payload?.user_id ?? payload?.id ?? null;
+    return payload?.consumer_id ?? payload?.user_id ?? payload?.id ?? null;
   } catch {
     return null;
   }
@@ -55,14 +91,35 @@ export default function BuyerProfilePage() {
     setError(null);
 
     try {
-      const consumerId = getConsumerIdFromToken();
-      if (!consumerId) throw new Error("Not authenticated");
+      let consumerId =
+        getConsumerIdFromToken() ||
+        localStorage.getItem("consumer_id") ||
+        localStorage.getItem("consumerId");
+
+      if (!consumerId) {
+        const consumerList = await getData("marketplace/consumer/list", {}, true);
+        if (Array.isArray(consumerList) && consumerList.length > 0) {
+          consumerId = consumerList[0]?.consumer_id ?? consumerList[0]?.id ?? null;
+        }
+      }
+
+      if (!consumerId) throw new Error("Could not determine buyer account. Please log in again.");
+
+      localStorage.setItem("consumer_id", String(consumerId));
 
       const [userData, summaryData, reservationsData] = await Promise.all([
         getData(`marketplace/consumer/${consumerId}/`, {}, true),
         getData("game/summary/", {}, true),
-        getData(`marketplace/reservations/${consumerId}/`, {}, true),
+        getData("marketplace/reservations/list", {}, true),
       ]);
+
+      if (!userData || userData.detail) {
+        throw new Error(
+          typeof userData?.detail === "string"
+            ? userData.detail
+            : "Failed to load buyer profile"
+        );
+      }
 
       setUser(userData);
       setSummary({
@@ -74,12 +131,9 @@ export default function BuyerProfilePage() {
         unique_categories_rescued: summaryData?.unique_categories_rescued ?? 0,
       });
       setReservations(
-        Array.isArray(reservationsData?.reservations)
-          ? reservationsData.reservations.filter(
-              (reservation) => {
-                const status = String(reservation?.status ?? "").toLowerCase();
-                return status === "reserved" || status === "active";
-              }
+        Array.isArray(reservationsData)
+          ? [...reservationsData].sort(
+              (a, b) => getReservationSortTime(b) - getReservationSortTime(a)
             )
           : []
       );
@@ -142,12 +196,6 @@ export default function BuyerProfilePage() {
 
           <div className="profile-identity">
             <h1 className="profile-name">{user.display_name || "Unknown"}</h1>
-            <p className="profile-meta">              
-              <span>
-                {summary.current_streak_weeks ?? 0} week{summary.current_streak_weeks !== 1 ? "s" : ""} streak
-                {summary.has_rescued_this_week ? " • rescued this week" : " • no rescue this week yet"}
-              </span>
-            </p>
           </div>
 
           <div className="profile-actions">
@@ -224,7 +272,11 @@ export default function BuyerProfilePage() {
               <div className="profile-badge-grid">
               {badges.map((badge) => (
                 <div key={badge} className="profile-badge-tile">
-                  <div className="profile-badge-icon"></div>
+                  <img
+                    src={getBadgeImagePath(badge)}
+                    alt={badge}
+                    className="profile-badge-image"
+                  />
                   <div className="profile-badge-name">{badge}</div>
                 </div>
               ))}
@@ -254,9 +306,9 @@ export default function BuyerProfilePage() {
                   <tbody>
                     {reservations.map((r) => (
                       <tr key={r.reservation_id}>
-                        <td>{formatDate(r.created_at)}</td>
+                        <td>{formatDate(r.timestamp || r.created_at || r.collected_at)}</td>
                         <td>{r.claim_code || "N/A"}</td>
-                        <td>{r.posting_id || "N/A"}</td>
+                        <td>{r.posting || r.posting_id || "N/A"}</td>
                         <td>
                           {r.status && (
                             <span className="profile-status-badge">{r.status}</span>
