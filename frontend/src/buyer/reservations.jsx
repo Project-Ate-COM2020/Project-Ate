@@ -18,6 +18,40 @@ import Bundle from "../bundlesComponents/bundle.jsx";
 import { useGetData, deleteData } from "../reusableComponents/api.jsx";
 import "./reservations.css";
 
+const CATEGORY_IMAGE_PATHS = {
+  bakery: "/bakery.jpg",
+  dairy: "/dairy.jpg",
+  desserts: "/desserts.jpg",
+  fresh_produce: "/fresh produce.jpg",
+  hot_meals: "/hot meals.jpg",
+  prepared_salads: "/prepared salads.jpg",
+};
+
+function getImagePathFromCategory(category) {
+  return CATEGORY_IMAGE_PATHS[String(category || "").toLowerCase()] || "/dairy.jpg";
+}
+
+function formatCategoryLabel(category) {
+  return String(category || "dairy")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
+
+function formatPickupTime(timestamp) {
+  if (!timestamp) return "Not specified";
+
+  const parsed = new Date(timestamp);
+  if (Number.isNaN(parsed.getTime())) return "Not specified";
+
+  return parsed.toLocaleString(undefined, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 /* --- Helper Functions --- */
 async function unreserveBundle(reservationID) {
   await deleteData(`marketplace/reservations/${reservationID}/`, true);
@@ -56,15 +90,15 @@ function Reservations() {
     .map((reservation) => ({
     reservation_id: reservation.reservation_id,
     posting: reservation.posting,
-    bundleName: reservation.contents ?? "Unnamed Bundle",
-    bundleCategory: "Reserved bundle",
-    imgPath: `/${reservation.bundleCategory}.jpg`,
-    pickupTime: reservation.timestamp ?? "Not specified",
-    seller: reservation.posting ? `Posting #${reservation.posting}` : "Unknown",
-    buyer: reservation.consumer ? `Consumer #${reservation.consumer}` : "Unknown",
+    bundleName: reservation.contents ?? `Reservation #${reservation.reservation_id}`,
+    bundleCategory: formatCategoryLabel(reservation.bundleCategory),
+    imgPath: getImagePathFromCategory(reservation.bundleCategory),
+    pickupTime: reservation.pickupWindow || "Not specified",
+    seller: reservation.sellerName || (reservation.sellerId ? `Seller #${reservation.sellerId}` : "Unknown"),
+    buyer: reservation.consumerDisplayName || "Unknown",
     collectionCode: reservation.claim_code ?? "N/A",
     price: reservation.price ?? "N/A",
-    location: reservation.location ?? "Location unavailable",
+    location: reservation.sellerLocation || "Location unavailable",
   }));
   }
 
@@ -108,7 +142,7 @@ function Reservations() {
             <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
               <Bundle
                 bundleData={selectedReservation}
-                includedAttributes={["pickup time", "collection code", "buyer", "seller", "price", "location", "unreserve bundle button"]}
+                includedAttributes={["pickup time", "collection code", "seller", "location", "unreserve bundle button"]}
                 unreserveBundleFunction={handleUnreserve}
                 backfunction={() => setSelectedReservation(null)}
               />

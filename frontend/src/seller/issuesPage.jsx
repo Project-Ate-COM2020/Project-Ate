@@ -14,6 +14,7 @@ import "./issuesPage.css";
 
 // defining constant
 const STATUS_OPTIONS = ["open", "responded", "resolved"];
+const FILTER_OPTIONS = ["all", ...STATUS_OPTIONS];
 
 
 /* --- Main Page Function --- */
@@ -27,6 +28,7 @@ export default function SellerIssuesPage() {
   const [responseText, setResponseText] = useState("");
   const [statusValue, setStatusValue] = useState("open");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const loadIssues = async () => {
     setIsLoadingIssues(true);
@@ -93,6 +95,9 @@ export default function SellerIssuesPage() {
   };
 
   const currentIssue = issues.find((issue) => issue.issue_id === selectedIssueId);
+  const filteredIssues = activeFilter === "all"
+    ? issues
+    : issues.filter((issue) => (issue.status || "open") === activeFilter);
 
   return (
     <div className="buyer-page seller-issues-page">
@@ -108,13 +113,36 @@ export default function SellerIssuesPage() {
           <h1 className="seller-issues-title">Customer Queries</h1>
           <p className="seller-issues-subtitle">Open queries from customers</p>
 
+          <div className="seller-issues-filter-row">
+            <span className="seller-issues-filter-label">Filter:</span>
+            <div className="seller-issues-filter-buttons">
+              {FILTER_OPTIONS.map((option) => {
+                const isActive = activeFilter === option;
+                const label = option === "all"
+                  ? "All"
+                  : option.charAt(0).toUpperCase() + option.slice(1);
+
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`seller-issues-filter-btn ${isActive ? "active" : ""}`}
+                    onClick={() => setActiveFilter(option)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {isLoadingIssues ? (
             <p className="seller-issues-empty-state">Loading issues...</p>
-          ) : issues.length === 0 ? (
-            <p className="seller-issues-empty-state">No open queries yet.</p>
+          ) : filteredIssues.length === 0 ? (
+            <p className="seller-issues-empty-state">No issues found for this stage.</p>
           ) : (
             <div className="seller-issues-list">
-              {issues.map((issue, index) => {
+              {filteredIssues.map((issue, index) => {
                 const key = issue.issue_id || index;
                 const displayConsumer = issue.consumer?.display_name || "Unknown customer";
                 const displayStatus = issue.status || "open";

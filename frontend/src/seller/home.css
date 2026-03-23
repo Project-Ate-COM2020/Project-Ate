@@ -26,16 +26,23 @@
   box-sizing: border-box;
 }
 
-.dashboardGrid {
-  width: calc(100% - 1rem);
+.sellerHomePage .buyer-container.dashboardGrid {
+  width: 80%;
   margin: 1.5rem auto 0;
   max-width: none;
-  padding: 0 0.5rem;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   align-items: start;
   box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  .sellerHomePage .buyer-container.dashboardGrid {
+    width: 95%;
+    grid-template-columns: 1fr;
+  }
 }
 
 .sellerHomePage .dashboardPanel .postingsContainer,

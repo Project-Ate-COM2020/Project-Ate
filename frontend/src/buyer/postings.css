@@ -4,6 +4,39 @@
   padding-top: 1.4rem;
 }
 
+.buyer-postings-filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.buyer-postings-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.buyer-postings-filter-label {
+  color: var(--green);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.buyer-postings-filter-select {
+  border: 1px solid var(--green-pale);
+  border-radius: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  background: white;
+  color: var(--dark);
+  font-size: 0.9rem;
+}
+
+.buyer-postings-filter-select:focus {
+  outline: none;
+  border-color: var(--green-light);
+}
+
 .buyer-postings-loading {
   max-width: 1040px;
   margin: 0 auto;

@@ -206,9 +206,6 @@ function SellerProfilePage() {
 
                     <div className="profile-identity">
                         <h1 className="profile-name">{sellerInfo.sellerName || "Unknown Seller"}</h1>
-                        <p className="profile-meta">
-                            <span>{sellerInfo.location || "No location set"}</span>
-                        </p>
                     </div>
 
                     <div className="profile-actions">
