@@ -126,7 +126,7 @@ function SellerReservations() {
             <section className="buyer-container buyer-reservations-content">
                 <Bundles
                     bundles={reservations}
-                    includedAttributes={["buyer", "pickup time", "more info button"]}
+                    includedAttributes={["buyer", "Pickup time", "more info button"]}
                     numberOfBundles={reservations.length || 50}
                     moreInfoButtonFunction={(bundle) => setSelectedReservation(bundle)}
                 />
@@ -137,7 +137,7 @@ function SellerReservations() {
                     <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
                         <Bundle
                             bundleData={selectedReservation}
-                            includedAttributes={["buyer", "pickup time", "mark collected button", "collection code"]}
+                            includedAttributes={["buyer", "Pickup time", "mark collected button", "collection code"]}
                             markCollectedFunction={markCollected}
                             backfunction={() => setSelectedReservation(null)}
                         />

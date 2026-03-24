@@ -208,7 +208,7 @@ function BundleReservations() {
             <button className = "button" onClick={() => navigate("/seller/reservations")}>View All Reservations</button>
             <ReservedBundles
                 bundles={reservations}
-                includedAttributes = {["buyer", "pickup time", "more info button"]}
+                includedAttributes = {["buyer", "Pickup time", "more info button"]}
                 numberOfBundles={3}
                 moreInfoButtonFunction={(bundle) => navigate("/seller/reservations", { state: { reservationData: bundle } })}
             />

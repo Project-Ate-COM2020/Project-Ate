@@ -174,7 +174,7 @@ function UserHomePage(){
                 <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
                     <Posting
                         postingData={selectedPosting}
-                        includedAttributes={["stock", "pickup time", "location", "price", "seller", "allergens", "reserve bundle button"]}
+                        includedAttributes={["stock", "Pickup time", "location", "price", "seller", "allergens", "reserve bundle button"]}
                         reserveBundleFunction={handleReserve}
                         backFunction={() => setSelectedPosting(null)}
                     />

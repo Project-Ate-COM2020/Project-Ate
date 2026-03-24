@@ -71,7 +71,7 @@ function SellerPostings() {
                     <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
                         <Posting
                             postingData={selectedPosting}
-                            includedAttributes={["stock", "pickup time", "location", "price", "allergens"]}
+                            includedAttributes={["stock", "Pickup time", "location", "price", "allergens"]}
                             backFunction={() => setSelectedPosting(null)}
                         />
                     </div>
