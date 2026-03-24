@@ -1,4 +1,4 @@
-FROM python:3.14.3-slim
+FROM python:3.12-slim
 WORKDIR /backend/
 LABEL authors="jacob"
 COPY requirements.txt .env ./

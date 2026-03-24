@@ -28,6 +28,10 @@ DEBUG = os.getenv("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
+import pymysql
+
+pymysql.install_as_MySQLdb()
+
 
 def get_throttling_rate():
     if os.getenv("DJANGO_DEBUG"):
@@ -113,20 +117,23 @@ AUTH_USER_MODEL = "core.User"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+ssl_path = os.getenv("DB_SSL_PATH")
 
 if os.getenv("DB_ENGINE") == "mysql":
+    print("using mysql")
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backend.mysql",
+            "ENGINE": "django.db.backends.mysql",
             "NAME": os.getenv("DB_NAME"),
             "USER": os.getenv("DB_USER"),
             "PASSWORD": os.getenv("DB_PASSWORD"),
             "HOST": os.getenv("DB_HOST"),
             "PORT": os.getenv("DB_PORT"),
+            "OPTIONS": {"ssl": {"ca": ssl_path}},
         }
     }
 else:
+    print("using sqlite")
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -203,5 +210,5 @@ CSRF_TRUSTED_ORIGINS = [
 frontend_api = os.getenv("FRONTEND_DOMAIN")
 
 if frontend_api is not None:
-    CORS_ALLOWED_ORIGINS.append(frontend_api)
-    CSRF_TRUSTED_ORIGINS.append(frontend_api)
+    CORS_ALLOWED_ORIGINS.append("http://" + frontend_api)
+    CSRF_TRUSTED_ORIGINS.append("http://" + frontend_api)

@@ -17,6 +17,13 @@ to automatically refresh invalid tokens */
 the user is a buyer or a seller, either refresh tokens endpoints need to 
 be merged or more likely I need to store this fact in cookies */
 
+const api = import.meta.env.VITE_API_HOST;
+const port = import.meta.env.VITE_API_PORT;
+
+const base = `http://${api}:${port}`;
+
+console.log(base)
+
 /* --- Helper Functions --- */
 function buildQueryString(queryParams = {}) {
     let queryString = "";
@@ -36,7 +43,7 @@ async function refreshTokens() {
     console.log(user_type);
     let response = null;
     if (user_type === "seller") {
-        response = await fetch("http://localhost:8000/auth/refresh", {
+        response = await fetch(`${base}/auth/refresh`, {
             method : "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -47,7 +54,7 @@ async function refreshTokens() {
             
         });
     } else if (user_type === "buyer") {
-        response = await fetch("http://localhost:8000/auth/refresh", {
+        response = await fetch(`${base}/auth/refresh`, {
             method : "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -82,7 +89,7 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
         if (include_auth) {
             for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
-                response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                response = await fetch(`${base}/` + endpoint + queryString, {
                     headers: {
                         "Authorization": "Bearer " + token,
                         "Content-Type": "application/json"
@@ -100,7 +107,7 @@ async function getData(endpoint, queryParams = {}, authenticate = true) {
             }
         }
         else {
-            response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+            response = await fetch(`${base}` + endpoint + queryString, {
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -123,7 +130,7 @@ async function postData(endpoint, postData, authenticate = true) {
         if (include_auth) {
             for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
-                response = await fetch("http://localhost:8000/"  + endpoint, {
+                response = await fetch(`${base}/`  + endpoint, {
                     method: "POST",
                     headers: {
                         "Authorization": "Bearer " + token,
@@ -143,7 +150,7 @@ async function postData(endpoint, postData, authenticate = true) {
             }
         }
         else {
-            response = await fetch("http://localhost:8000/" + endpoint, {
+            response = await fetch(`${base}/` + endpoint, {
                 method : "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -169,7 +176,7 @@ async function putData(endpoint, putData, authenticate = true) {
         if (include_auth) {
             for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
-                response = await fetch("http://localhost:8000/"  + endpoint, {
+                response = await fetch(`${base}/`  + endpoint, {
                     method: "PUT",
                     headers: {
                         "Authorization": "Bearer " + token,
@@ -189,7 +196,7 @@ async function putData(endpoint, putData, authenticate = true) {
             }
         }
         else {
-            response = await fetch("http://localhost:8000/" + endpoint, {
+            response = await fetch(`${base}/` + endpoint, {
                 method : "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -215,7 +222,7 @@ async function deleteData(endpoint, authenticate = true) {
         if (include_auth) {
             for (let i = 0; i < 4; i++) {
                 const token = localStorage.getItem("access_token");
-                response = await fetch("http://localhost:8000/"  + endpoint, {
+                response = await fetch(`${base}/`  + endpoint, {
                     method: "DELETE",
                     headers: {
                         "Authorization": "Bearer " + token,
@@ -234,7 +241,7 @@ async function deleteData(endpoint, authenticate = true) {
             }
         }
         else {
-            response = await fetch("http://localhost:8000/" + endpoint, {
+            response = await fetch(`${base}/` + endpoint, {
                 method : "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -280,7 +287,7 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
                 if (include_auth) {
                     for (let i = 0; i < 4; i++) {
                         const token = localStorage.getItem('access_token');
-                        response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                        response = await fetch(`${base}/` + endpoint + queryString, {
                             headers: { 
                                 "Authorization" : "Bearer " + token,
                                 "Content-Type": "application/json"
@@ -294,7 +301,7 @@ function useGetData(endpoint, queryParams = {}, authenticate = true ) {
                     }
                 }
                 else {
-                    response = await fetch("http://localhost:8000/" + endpoint + queryString, {
+                    response = await fetch(`${base}/` + endpoint + queryString, {
                         headers: { 
                             "Content-Type": "application/json"
                         },
@@ -339,7 +346,7 @@ function usePostData(endpoint, postData, authenticate = true ) {
                 if (include_auth) {
                     for (let i = 0; i < 4; i++) {
                         const token = localStorage.getItem('access_token');
-                        response = await fetch("http://localhost:8000/" + endpoint + "/", {
+                        response = await fetch(`${base}/` + endpoint + "/", {
                             method: "POST",
                             headers: { 
                                 "Authorization" : "Bearer " + token,
@@ -355,7 +362,7 @@ function usePostData(endpoint, postData, authenticate = true ) {
                     }
                 }
                 else {
-                    response = await fetch("http://localhost:8000/" + endpoint + "/", {
+                    response = await fetch(`${base}/` + endpoint + "/", {
                         headers: { 
                             "Content-Type": "application/json"
                         },

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import "./maintenance.css";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const api = import.meta.env.VITE_API_HOST;
+const port = import.meta.env.VITE_API_PORT;
+
+const base = `http://${api}:${port}`;
+
+const API_BASE_URL = base;
 
 export default function MaintenancePage() {
   const [query, setQuery] = useState("SELECT * FROM bundle_posting;");
