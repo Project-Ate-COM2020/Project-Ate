@@ -9,3 +9,4 @@ argon2-cffi
 pandas
 numpy
 matplotlib
+PyMySQL

@@ -5,7 +5,7 @@ from core.models.consumer import Consumer
 
 class Badges(models.Model):
     badge_id = models.AutoField(primary_key=True)
-    name = models.TextField(unique=True, max_length=30)
+    name = models.CharField(unique=True, max_length=30)
     description = models.TextField(null=True)
     min_categories = models.IntegerField()
     min_co2 = models.IntegerField()
