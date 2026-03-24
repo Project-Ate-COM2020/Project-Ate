@@ -65,7 +65,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const credentials = await postData("auth/token", {"username" : identifier, "password" : password});
+      const credentials = await postData("auth/token", {"username" : identifier, "password" : password}, false);
 
       if (!credentials || !credentials.access) {
         setError("Invalid username or password.");

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./maintenance.css";
 
-const api = import.meta.env.VITE_API_HOST;
-const port = import.meta.env.VITE_API_PORT;
+const api = import.meta.env.VITE_API_HOST || import.meta.env.API_HOST || "localhost";
+const port = import.meta.env.VITE_API_PORT || import.meta.env.API_PORT || "8000";
 
 const base = `http://${api}:${port}`;
 
