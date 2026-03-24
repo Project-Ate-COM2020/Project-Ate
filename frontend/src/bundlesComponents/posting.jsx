@@ -34,7 +34,7 @@ function OptionalContainer({ includedAttributes, postingData, reserveBundleFunct
     let allergensDisplayed;
 
     for (const i of includedAttributes) {
-        if (i == "pickup time") {pickupTimeDisplayed = true;}
+        if (i == "pickup time" || i == "Pickup time") {pickupTimeDisplayed = true;}
         if (i == "bundle category") {bundleCategoryDisplayed = true;}
         if (i == "seller") {sellerDisplayed = true;}
         if (i == "price") {priceDisplayed = true;}
@@ -46,7 +46,7 @@ function OptionalContainer({ includedAttributes, postingData, reserveBundleFunct
 
     return (
         <div className = "infoContainer">
-            {pickupTimeDisplayed && <p>pickup time: {postingData.pickupTime}</p>}
+            {pickupTimeDisplayed && <p>Pickup time: {postingData.pickupTime}</p>}
 
             {bundleCategoryDisplayed && <p>Bundle Category: {postingData.bundleCategory}</p>}
 

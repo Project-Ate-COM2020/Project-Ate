@@ -28,7 +28,7 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
     let moreInfoButtonDisplayed = false;
 
     for (const i of includedAttributes) {
-        if (i === "pickup time") {pickupTimeDisplayed = true;}
+        if (i === "pickup time" || i === "Pickup time") {pickupTimeDisplayed = true;}
         if (i === "bundle category") {bundleCategoryDisplayed = true;}
         if (i === "seller") {sellerDisplayed = true;}
         if (i === "buyer") {buyerDisplayed = true;}
@@ -45,7 +45,7 @@ function SingleBundle({bundleData, includedAttributes = [], moreInfoButtonFuncti
 
             <img src = {bundleData.imgPath} alt = {bundleData.bundleName} />
 
-            {pickupTimeDisplayed && <p>Pick-up Time: {bundleData.pickupTime}</p>}
+            {pickupTimeDisplayed && <p>Pickup time: {bundleData.pickupTime}</p>}
 
             {bundleCategoryDisplayed && <p>Bundle Category: {bundleData.bundleCategory}</p>}
 

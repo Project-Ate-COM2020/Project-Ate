@@ -35,7 +35,7 @@ function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunc
     let unreserveBundleButtonDisplayed;
 
     for (const i of includedAttributes) {
-        if (i == "pickup time") {pickupTimeDisplayed = true;}
+        if (i == "pickup time" || i == "Pickup time") {pickupTimeDisplayed = true;}
         if (i == "bundle category") {bundleCategoryDisplayed = true;}
         if (i == "seller") {sellerDisplayed = true;}
         if (i == "buyer") {buyerDisplayed = true;}
@@ -48,7 +48,7 @@ function OptionalContainer({ includedAttributes, bundleData, unreserveBundleFunc
 
     return (
         <div className = "infoContainer">
-            {pickupTimeDisplayed && <p>Pick-up Time: {bundleData.pickupTime}</p>}
+            {pickupTimeDisplayed && <p>Pickup time: {bundleData.pickupTime}</p>}
 
             {bundleCategoryDisplayed && <p>Bundle Category: {bundleData.bundleCategory}</p>}
 

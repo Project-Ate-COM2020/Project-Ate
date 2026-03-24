@@ -98,7 +98,7 @@ function SellerReservations() {
         bundleName: reservation.contents ?? `Reservation #${reservation.reservation_id}`,
         bundleCategory: formatCategoryLabel(reservation.bundleCategory),
         imgPath: getImagePathFromCategory(reservation.bundleCategory),
-        pickupTime: formatPickupTime(reservation.timestamp),
+        pickupTime: reservation.pickupWindow || formatPickupTime(reservation.timestamp),
         seller: reservation.posting ? `Posting #${reservation.posting}` : "Unknown",
         buyer: reservation.consumerDisplayName || "Unknown",
         collectionCode: reservation.claim_code ?? "N/A",
