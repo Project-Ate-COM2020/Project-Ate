@@ -53,7 +53,7 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": get_throttling_rate(),
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 200,
 }
 
 # Application definition
