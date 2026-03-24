@@ -83,18 +83,18 @@ class ForecastPredictionView(APIView):
                     status=404,
                 )
 
-            # ── baseline comparison via leave-one-out cross-validation ────────
+            #baseline comparison via leave-one-out cross-validation
             baseline_metrics = evaluate_baselines(df)
             best_approach = _best_approach(baseline_metrics)
             best_rmse = (baseline_metrics.get(best_approach) or {}).get("rmse")
 
-            # ── confidence & recommendation ───────────────────────────────────
+            #confidence & recommendation
             confidence = get_confidence_level(len(subset), best_rmse)
             recommendation = generate_recommendation(
                 inp, sim_reservations, sim_no_show, len(subset)
             )
 
-            # ── recommended price (from similarity neighbourhood) ─────────────
+            #recommended price (from similarity neighbourhood)
             rec_price = calculate_recommended_price(subset, inp)
 
             return Response(

@@ -91,8 +91,8 @@ class ConsumerCreateIssueViewTests(IssueReportingAPITestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_issue_rejects_when_bundle_not_collected(self):
-        self._create_reservation(self.consumer_1, self.posting_1, "reserved", "C101")
+    def test_create_issue_rejects_when_bundle_not_reportable(self):
+        self._create_reservation(self.consumer_1, self.posting_1, "expired", "C101")
         url = reverse(ConsumerCreateIssueView.name)
         response = self.client.post(
             url,
@@ -141,9 +141,10 @@ class ConsumerIssuesViewTests(IssueReportingAPITestBase):
 
 
 class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
-    def test_returns_only_collected_postings(self):
-        self._create_reservation(self.consumer_1, self.posting_1, "collected", "C200")
-        self._create_reservation(self.consumer_1, self.posting_2, "reserved", "C201")
+    def test_returns_only_reportable_postings(self):
+        reservation_1 = self._create_reservation(self.consumer_1, self.posting_1, "collected", "C200")
+        reservation_2 = self._create_reservation(self.consumer_1, self.posting_2, "reserved", "C201")
+        self._create_reservation(self.consumer_1, self.posting_3, "expired", "C202")
 
         url = reverse(
             "consumer-reportable-postings",
@@ -151,10 +152,12 @@ class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
         response = self.client.get(url, headers=self.consumer_user_1_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]["posting_id"], self.posting_1.posting_id)
+        posting_ids = {posting["posting_id"] for posting in response.data}
+        self.assertEqual(posting_ids, {self.posting_1.posting_id, self.posting_2.posting_id})
+        reservation_ids = {posting["reservation_id"] for posting in response.data}
+        self.assertEqual(reservation_ids, {reservation_1.reservation_id, reservation_2.reservation_id})
 
-    def test_deduplicates_postings_with_multiple_collected_reservations(self):
+    def test_returns_all_reportable_reservations_for_same_posting(self):
         self._create_reservation(self.consumer_1, self.posting_1, "collected", "C210")
         self._create_reservation(self.consumer_1, self.posting_1, "collected", "C211")
 
@@ -164,11 +167,12 @@ class ConsumerReportablePostingsViewTests(IssueReportingAPITestBase):
         response = self.client.get(url, headers=self.consumer_user_1_headers)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data), 2)
         self.assertEqual(response.data[0]["posting_id"], self.posting_1.posting_id)
+        self.assertEqual(response.data[1]["posting_id"], self.posting_1.posting_id)
 
-    def test_returns_empty_when_no_collected_reservations(self):
-        self._create_reservation(self.consumer_1, self.posting_1, "reserved", "C220")
+    def test_returns_empty_when_no_reportable_reservations(self):
+        self._create_reservation(self.consumer_1, self.posting_1, "expired", "C220")
         url = reverse(
             "consumer-reportable-postings",
         )
@@ -274,13 +278,13 @@ class SellerIssuesOverviewViewTests(IssueReportingAPITestBase):
 
 
 class SellerIssueRespondViewTests(IssueReportingAPITestBase):
-    def test_patch_updates_status_and_seller_response(self):
+    def test_post_updates_status_and_seller_response(self):
         issue = self._create_issue(self.posting_1, self.consumer_1, "open", desc="Need reply")
         url = reverse(
             SellerIssueRespondView.name,
             kwargs={"issue_id": issue.issue_id},
         )
-        response = self.client.patch(
+        response = self.client.post(
             url,
             {"status": "responded", "seller_response": "Sorry about that."},
             format="json",
@@ -292,13 +296,13 @@ class SellerIssueRespondViewTests(IssueReportingAPITestBase):
         self.assertEqual(issue.status, "responded")
         self.assertEqual(issue.seller_response, "Sorry about that.")
 
-    def test_patch_ignores_non_allowed_fields(self):
+    def test_post_ignores_non_allowed_fields(self):
         issue = self._create_issue(self.posting_1, self.consumer_1, "open", desc="Original")
         url = reverse(
             SellerIssueRespondView.name,
             kwargs={"issue_id": issue.issue_id},
         )
-        response = self.client.patch(
+        response = self.client.post(
             url,
             {"description": "Should not change", "status": "resolved"},
             format="json",
@@ -315,16 +319,16 @@ class SellerIssueRespondViewTests(IssueReportingAPITestBase):
             SellerIssueRespondView.name,
             kwargs={"issue_id": issue.issue_id},
         )
-        response = self.client.patch(url, {"status": "responded"}, format="json", headers=self.seller_user_1_headers)
+        response = self.client.post(url, {"status": "responded"}, format="json", headers=self.seller_user_1_headers)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_patch_works_for_non_default_seller_id(self):
+    def test_post_works_for_non_default_seller_id(self):
         issue = self._create_issue(self.posting_3, self.consumer_1, "open", desc="Need seller two")
         url = reverse(
             SellerIssueRespondView.name,
             kwargs={"issue_id": issue.issue_id},
         )
-        response = self.client.patch(
+        response = self.client.post(
             url,
             {"status": "responded", "seller_response": "Acknowledged."},
             format="json",

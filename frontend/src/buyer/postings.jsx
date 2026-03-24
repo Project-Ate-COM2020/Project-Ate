@@ -80,6 +80,7 @@ function UserHomePage(){
             price: bundle.price ?? "0.00",
             location: bundle.sellerLocation || "Location unavailable",
             stock: bundle.quantity_remaining ?? 0,
+            allergens: bundle.allergens ?? [],
         }));
     }
 
@@ -173,7 +174,7 @@ function UserHomePage(){
                 <div className="buyer-modal-content" onClick={(event) => event.stopPropagation()}>
                     <Posting
                         postingData={selectedPosting}
-                        includedAttributes={["stock", "pickup time", "location", "price", "seller", "reserve bundle button"]}
+                        includedAttributes={["stock", "pickup time", "location", "price", "seller", "allergens", "reserve bundle button"]}
                         reserveBundleFunction={handleReserve}
                         backFunction={() => setSelectedPosting(null)}
                     />

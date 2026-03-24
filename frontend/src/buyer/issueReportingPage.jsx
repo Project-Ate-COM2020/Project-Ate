@@ -15,7 +15,7 @@ export default function IssueReportingPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORY_OPTIONS[0]);
-  const [selectedPostingId, setSelectedPostingId] = useState("");
+  const [selectedReservationId, setSelectedReservationId] = useState("");
   const [reportableOrders, setReportableOrders] = useState([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
 
@@ -29,6 +29,19 @@ export default function IssueReportingPage() {
     String(value || "Issue")
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const normalizeReportableOrders = (orders) => {
+    if (!Array.isArray(orders)) return [];
+
+    return orders
+      .filter((order) => order?.posting_id)
+      .map((order) => ({
+        reservation_id: order?.reservation_id,
+        posting_id: order?.posting_id,
+        category: order?.category || "Unknown category",
+        pickup_window: order?.pickup_window || "No pickup window",
+      }));
+  };
 
   const loadIssues = async () => {
     setIsLoadingIssues(true);
@@ -51,17 +64,37 @@ export default function IssueReportingPage() {
     setIsLoadingOrders(true);
     try {
       const data = await getData("issues/consumer/reportable");
-      const orders = Array.isArray(data) ? data : [];
+      let orders = normalizeReportableOrders(data);
+
+      // Fallback: build buyer-specific order list from reservations endpoint.
+      if (orders.length === 0) {
+        const reservations = await getData("marketplace/reservations/list");
+        const reportableReservations = Array.isArray(reservations)
+          ? reservations.filter((reservation) => {
+              const status = String(reservation?.status || "").toLowerCase();
+              return status === "reserved" || status === "active" || status === "collected";
+            })
+          : [];
+
+        orders = normalizeReportableOrders(
+          reportableReservations.map((reservation) => ({
+            posting_id: reservation?.posting,
+            category: reservation?.bundleCategory,
+            pickup_window: reservation?.pickupWindow,
+          }))
+        );
+      }
+
       setReportableOrders(orders);
 
       if (orders.length > 0) {
-        setSelectedPostingId(String(orders[0].posting_id));
+        setSelectedReservationId(String(orders[0].reservation_id || ""));
       } else {
-        setSelectedPostingId("");
+        setSelectedReservationId("");
       }
     } catch {
       setReportableOrders([]);
-      setSelectedPostingId("");
+      setSelectedReservationId("");
     } finally {
       setIsLoadingOrders(false);
     }
@@ -79,12 +112,21 @@ export default function IssueReportingPage() {
     setIsLoading(true);
 
     try {
+      const selectedOrder = reportableOrders.find(
+        (order) => String(order.reservation_id) === String(selectedReservationId)
+      );
+      const postingIdForIssue = selectedOrder?.posting_id;
+
+      if (!postingIdForIssue) {
+        throw new Error("Please select a valid reservation.");
+      }
+
       const payloadDescription = title.trim()
         ? `${title.trim()} - ${description.trim()}`
         : description.trim();
 
       const response = await postData("issues/report/", {
-        posting: Number(selectedPostingId),
+        posting: Number(postingIdForIssue),
         type: category,
         description: payloadDescription,
       });
@@ -98,9 +140,9 @@ export default function IssueReportingPage() {
       setDescription("");
       setCategory(CATEGORY_OPTIONS[0]);
       if (reportableOrders.length > 0) {
-        setSelectedPostingId(String(reportableOrders[0].posting_id));
+        setSelectedReservationId(String(reportableOrders[0].reservation_id || ""));
       } else {
-        setSelectedPostingId("");
+        setSelectedReservationId("");
       }
       await loadIssues();
     } catch (err) {
@@ -193,8 +235,8 @@ export default function IssueReportingPage() {
               Select Order
               <select
                 className="buyer-input issue-input"
-                value={selectedPostingId}
-                onChange={(event) => setSelectedPostingId(event.target.value)}
+                value={selectedReservationId}
+                onChange={(event) => setSelectedReservationId(event.target.value)}
                 required
                 disabled={isLoadingOrders || reportableOrders.length === 0}
               >
@@ -204,8 +246,11 @@ export default function IssueReportingPage() {
                   <option value="">No eligible orders found</option>
                 ) : (
                   reportableOrders.map((order) => (
-                    <option key={order.posting_id} value={String(order.posting_id)}>
-                      #{order.posting_id} - {order.category || "Unknown category"} - {order.pickup_window || "No pickup window"}
+                    <option
+                      key={order.reservation_id || `${order.posting_id}-${order.pickup_window}`}
+                      value={String(order.reservation_id || "")}
+                    >
+                      Reservation #{order.reservation_id || "N/A"} - {order.category || "Unknown category"} - {order.pickup_window || "No pickup window"}
                     </option>
                   ))
                 )}
@@ -226,7 +271,7 @@ export default function IssueReportingPage() {
 
             <button
               className="buyer-btn-primary issue-submit-btn"
-              disabled={isLoading || isLoadingOrders || reportableOrders.length === 0 || !selectedPostingId}
+              disabled={isLoading || isLoadingOrders || reportableOrders.length === 0 || !selectedReservationId}
             >
               {isLoading ? "Submitting..." : "Submit issue"}
             </button>
