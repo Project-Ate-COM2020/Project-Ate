@@ -16,7 +16,7 @@ export default function HomePage() {
         <div className="Web-content">
           <span className="tag-line">Fresh bundles weekly</span>
           <h1>Eat <em>well,</em><br />make a <em>difference.</em></h1>
-          <p>Discover curated food bundles designed for every lifestyle —
+          <p>Discover curated food bundles designed for every lifestyle -
             from family favourites to healthy goals.</p>
           <div className="web-buttons">
             <NavLink to="/buyer/home" className="btn-primary">Browse Bundles</NavLink>
@@ -42,19 +42,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Taglines */}
-      <div className="tagline-bar">
-        {[
-          { text: "Loved by 2,000+ families" },
-          { text: "Free delivery over £30"   },
-          { text: "Eco-friendly packaging"   },
-          { text: "Secure checkout"          },
-        ].map((t) => (
-          <div className="tagline-item" key={t.text}>
-            {t.text}
-          </div>
-        ))}
-      </div>
 
       {/* Principle cards - explains the key benefits of Project-Ate */}
       <section className="principle-section">
@@ -86,7 +73,7 @@ export default function HomePage() {
 
         <div className="bundles-grid">
           {[
-            { name: "Kids Favourites Bundle", meta: "6 items · Perfect for ages 4–12",   price: "£18.75", tag: "Popular" },
+            { name: "Kids Favourites Bundle", meta: "6 items · Perfect for ages 4-12",   price: "£18.75", tag: "Popular" },
             { name: "Low Carb Bundle",         meta: "8 items · High in protein & fibre", price: "£20.00", tag: "Healthy" },
             { name: "Vegan Delight Bundle",    meta: "7 items · 100% plant-based",        price: "£22.50", tag: null     },
           ].map((b) => (
